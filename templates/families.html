@@ -1,6 +1,8 @@
 <html>
   <body>
-    <div>You are: {{ current_user.nickname }}.</div>
+    <div>You are: {{ current_user.nickname }}.
+      <a href="{{ log_out_url }}">[log out]</a>
+    </div>
 
   </body>
 </html>

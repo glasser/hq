@@ -20,6 +20,7 @@ class FamilyHandler(webapp.RequestHandler):
     path = os.path.join(os.path.dirname(__file__), 'templates',
                         '%s.html' % template_name)
     params['current_user'] = users.get_current_user()
+    params['log_out_url'] = users.create_logout_url('/')
     self.response.out.write(template.render(path, params))
 
   def get(self):
