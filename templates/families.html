@@ -1,8 +1,7 @@
-<html>
-  <body>
-    <div>You are: {{ current_user.nickname }}.
-      <a href="{{ log_out_url }}">[log out]</a>
-    </div>
+{% extends "template.html" %}
 
-  </body>
-</html>
+{% block title %}Tag Families{% endblock %}
+
+{% block content %}
+<h3>Tag Families</h3>
+{% endblock content %}

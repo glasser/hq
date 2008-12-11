@@ -9,6 +9,9 @@ from google.appengine.ext import webapp
 from google.appengine.ext.webapp import template
 
 
+INSTANCE_NAME = 'Primal Funk'
+
+
 class TagFamily(db.Model):
   name = db.StringProperty()
   options = db.StringListProperty()
@@ -21,6 +24,7 @@ class FamilyHandler(webapp.RequestHandler):
                         '%s.html' % template_name)
     params['current_user'] = users.get_current_user()
     params['log_out_url'] = users.create_logout_url('/')
+    params['instance_name'] = INSTANCE_NAME
     self.response.out.write(template.render(path, params))
 
   def get(self):

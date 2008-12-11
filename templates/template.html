@@ -1,0 +1,16 @@
+<html>
+  <head>
+    <title>{{ instance_name|escape }} HQ: {% block title %}some page{% endblock %}</title>
+  </head>
+  <body>
+    <div id="current-user-info">You are: {{ current_user.nickname }}.
+      <a href="{{ log_out_url }}">[log out]</a>
+    </div>
+
+    <div id="content">
+      {% block content %}
+        This page seems to have no content!
+      {% endblock content %}
+    </div>
+  </body>
+</html>
