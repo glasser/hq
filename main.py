@@ -89,12 +89,40 @@ class FamilyOptionCreateHandler(RequestHandler):
     self.redirect(FamilyListHandler.get_url())
 
 
+class FamilyOptionDeleteHandler(RequestHandler):
+  def get(self, family_name, option):
+    family = TagFamily.get_by_key_name(family_name)
+    # TODO(glasser): Better error handling.
+    assert family is not None
+    # TODO(glasser): Check whether any puzzle has the tag before
+    # deleting?
+    family.options.remove(option)
+    family.put()
+    self.redirect(FamilyListHandler.get_url())
+
+
+class FamilyDeleteHandler(RequestHandler):
+  def get(self, family_name):
+    family = TagFamily.get_by_key_name(family_name)
+    # TODO(glasser): Better error handling.
+    assert family is not None
+    # TODO(glasser): Better error handling.
+    assert not family.options
+    family.delete()
+    self.redirect(FamilyListHandler.get_url())
+
+
 def main():
   application = webapp.WSGIApplication([('/family/?', FamilyListHandler),
                                         (('/family/add-option/(%s)/?'
                                           % TAG_PIECE),
                                          FamilyOptionCreateHandler),
+                                        (('/family/delete-option/(%s)/(%s)/?'
+                                          % (TAG_PIECE, TAG_PIECE)),
+                                         FamilyOptionDeleteHandler),
                                         ('/family/add/?', FamilyCreateHandler),
+                                        ('/family/delete/(%s)/?' % TAG_PIECE,
+                                         FamilyDeleteHandler),
                                         ],
                                        debug=True)
   wsgiref.handlers.CGIHandler().run(application)

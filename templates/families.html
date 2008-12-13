@@ -8,9 +8,14 @@
 <ul>
   {% for family in families %}
     <li>{{ family.key.name }}
+      {% if not family.options %}
+        <a href="{% url FamilyDeleteHandler family.key.name %}">[delete]</a>
+      {% endif %}
       <ul>
         {% for option in family.options %}
-          <li>{{ option }}</li>
+          <li>{{ option }}
+            <a href="{% url FamilyOptionDeleteHandler family.key.name,option %}"
+               >[delete]</a></li>
         {% endfor %}
           <li>
             <form action="{% url FamilyOptionCreateHandler family.key.name %}" method="post">
