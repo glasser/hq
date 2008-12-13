@@ -1,0 +1,20 @@
+Mystery Hunt collaboration site, built for Optimus Funk for Hunt 2009.
+
+Runs on Google App Engine.
+
+Note: Vaguely using Google's Python style, a version of which is at
+http://code.google.com/p/soc/wiki/PythonStyleGuide.
+
+Rules I actually care about:
+
+  - no 'from foo import *'
+
+  - no 'from foo import FunctionOrClass' (but importing a submodule is fine)
+
+  - when passing an argument to a function that takes default
+    arguments (like "def foo(x, y=2)") always name the argument during
+    the call "foo(x, y=3)".  (Of course, you can leave the argument
+    out too to use the default.)
+
+  - 2-space indents; no tabs ever.  for line continuations, align
+    vertically or use a 4-space indent
