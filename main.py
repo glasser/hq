@@ -64,7 +64,7 @@ class FamilyListHandler(RequestHandler):
 
 class FamilyCreateHandler(RequestHandler):
   def post(self):
-    name = self.request.get('name')
+    name = CanonicalizeTagName(self.request.get('name'))
     # TODO(glasser): Better error handling.
     assert IsValidTagPiece(name)
     TagFamily.get_or_insert(name)
@@ -73,10 +73,11 @@ class FamilyCreateHandler(RequestHandler):
 
 class FamilyOptionCreateHandler(RequestHandler):
   def post(self, family_name):
+    family_name = CanonicalizeTagName(family_name)
     family = TagFamily.get_by_key_name(family_name)
     # TODO(glasser): Better error handling.
     assert family is not None
-    option = self.request.get('option')
+    option = CanonicalizeTagName(self.request.get('option'))
     # TODO(glasser): Better error handling.
     assert IsValidTagPiece(option)
     # TODO(glasser): Technically this is an unlocked read-modify-write
@@ -91,6 +92,8 @@ class FamilyOptionCreateHandler(RequestHandler):
 
 class FamilyOptionDeleteHandler(RequestHandler):
   def get(self, family_name, option):
+    family_name = CanonicalizeTagName(family_name)
+    option = CanonicalizeTagName(option)
     family = TagFamily.get_by_key_name(family_name)
     # TODO(glasser): Better error handling.
     assert family is not None
@@ -103,6 +106,7 @@ class FamilyOptionDeleteHandler(RequestHandler):
 
 class FamilyDeleteHandler(RequestHandler):
   def get(self, family_name):
+    family_name = CanonicalizeTagName(family_name)
     family = TagFamily.get_by_key_name(family_name)
     # TODO(glasser): Better error handling.
     assert family is not None
