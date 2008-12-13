@@ -113,18 +113,16 @@ class FamilyDeleteHandler(RequestHandler):
 
 
 def main():
-  application = webapp.WSGIApplication([('/family/?', FamilyListHandler),
-                                        (('/family/add-option/(%s)/?'
-                                          % TAG_PIECE),
-                                         FamilyOptionCreateHandler),
-                                        (('/family/delete-option/(%s)/(%s)/?'
-                                          % (TAG_PIECE, TAG_PIECE)),
-                                         FamilyOptionDeleteHandler),
-                                        ('/family/add/?', FamilyCreateHandler),
-                                        ('/family/delete/(%s)/?' % TAG_PIECE,
-                                         FamilyDeleteHandler),
-                                        ],
-                                       debug=True)
+  application = webapp.WSGIApplication([
+      ('/admin/family/?', FamilyListHandler),
+      ('/admin/family/add-option/(%s)/?' % TAG_PIECE,
+       FamilyOptionCreateHandler),
+      ('/admin/family/delete-option/(%s)/(%s)/?' % (TAG_PIECE, TAG_PIECE),
+       FamilyOptionDeleteHandler),
+      ('/admin/family/add/?', FamilyCreateHandler),
+      ('/admin/family/delete/(%s)/?' % TAG_PIECE,
+       FamilyDeleteHandler),
+      ], debug=True)
   wsgiref.handlers.CGIHandler().run(application)
 
 
