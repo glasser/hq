@@ -4,4 +4,29 @@
 
 {% block content %}
 <h3>Tag Families</h3>
+
+<ul>
+  {% for family in families %}
+    <li>{{ family.key.name }}
+      <ul>
+        {% for option in family.options %}
+          <li>{{ option }}</li>
+        {% endfor %}
+          <li>
+            <form action="{% url FamilyOptionCreateHandler family.key.name %}" method="post">
+              <input type="text" name="option" />
+              <input type="submit" value="add option" />
+            </form>
+          </li>
+      </ul>
+    </li>
+  {% endfor %}
+    <li>
+      <form action="{% url FamilyCreateHandler %}" method="post">
+        <input type="text" name="name" />
+        <input type="submit" value="add family" />
+      </form>
+    </li>
+</ul>
+
 {% endblock content %}
