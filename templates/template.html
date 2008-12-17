@@ -6,6 +6,10 @@
     <div id="current-user-info">You are: {{ current_user.nickname }}.
       <a href="{{ log_out_url }}">[log out]</a>
     </div>
+    <div id="header-links">
+      <a href="{% url PuzzleListHandler %}">Puzzles</a>
+      <a href="{% url FamilyListHandler %}">Admin</a>
+    </div>
 
     <div id="content">
       {% block content %}

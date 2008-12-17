@@ -1,0 +1,29 @@
+{% extends "template.html" %}
+
+{% block title %}Puzzles{% endblock %}
+
+{% block content %}
+<h3>Puzzles</h3>
+
+<ul>
+  {% for puzzle in puzzles %}
+    <li>{{ puzzle.title|escape }}
+      {% if puzzle.tags %}
+        [
+          {% for tag in puzzle.tags %}
+            {{ tag }}
+          {% endfor %}
+        ]
+      {% endif %}
+    </li>
+  {% endfor %}
+    <li>
+      <form action="{% url PuzzleCreateHandler %}" method="post">
+        <input type="text" name="title" />
+        [<input type="text" name="tags" />]
+        <input type="submit" value="add puzzle" />
+      </form>
+    </li>
+</ul>
+
+{% endblock content %}
