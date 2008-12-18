@@ -7,33 +7,35 @@ from google.appengine.ext import db
 # We assume throughout the templates that tag names don't need to be
 # escaped.
 
-# TODO(glasser): Turn all Is/AreValids into proper validators by
-# making them raise.
-
 TAG_PIECE = '[a-zA-Z0-9-]+'
 _VALID_TAG_PIECE_RE = re.compile('^%s$' % TAG_PIECE)
-def IsValidTagPiece(name):
+def ValidateTagPiece(name):
   """Checks to see if NAME is a valid name for a tag family, a family option,
-  or a non-family tag."""
-  return _VALID_TAG_PIECE_RE.match(name)
+  or a non-family tag; raises db.BadValueError if not."""
+  if not _VALID_TAG_PIECE_RE.match(name):
+    raise db.BadValueError("Invalid tag piece '%s'" % name)
 
 
-def AreValidTagPieces(names):
-  return all(map(IsValidTagPiece, names))
+def ValidateTagPieces(names):
+  for name in names:
+    ValidateTagPiece(name)
 
 
-def IsValidTagName(name):
+def ValidateTagName(name):
   """Checks to see if NAME is a *syntactically* valid tag name (but not that
-  it necessarily exists, if it's a familial tag)."""
+  it necessarily exists, if it's a familial tag); raises db.BadValueError if
+  not."""
   if TagIsFamilial(name):
     family, option = name.split(':', 1)
-    return IsValidTagPiece(family) and IsValidTagPiece(option)
+    ValidateTagPiece(family)
+    ValidateTagPiece(option)
   else:
-    return IsValidTagPiece(name)
+    ValidateTagPiece(name)
 
 
-def AreValidTagNames(names):
-  return all(map(IsValidTagName, names))
+def ValidateTagNames(names):
+  for name in names:
+    ValidateTagNames(name)
 
 
 def TagIsFamilial(name):
@@ -46,7 +48,7 @@ def CanonicalizeTagName(name):
 
 class TagFamily(db.Model):
   # Its key_name is the family name.
-  options = db.StringListProperty(validator=AreValidTagPieces)
+  options = db.StringListProperty(validator=ValidateTagPieces)
 
 
 class Puzzle(db.Model):
@@ -54,4 +56,4 @@ class Puzzle(db.Model):
   # TextProperty is unlimited); is this OK?
   # TODO(glasser): Test that unicode titles work properly.
   title = db.StringProperty()
-  tags = db.StringListProperty(validator=AreValidTagNames)
+  tags = db.StringListProperty(validator=ValidateTagNames)

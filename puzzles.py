@@ -19,7 +19,7 @@ class PuzzleCreateHandler(handler.RequestHandler):
     tag_list = map(model.CanonicalizeTagName, tags.split())
     for tag in tag_list:
       # TODO(glasser): Better error handling.
-      assert model.IsValidTagName(tag)
+      assert model.ValidateTagName(tag)
       if model.TagIsFamilial(tag):
         # TODO(glasser): Check that familial tags actually exist.
         # (Or ban familial tags from the free-form tag box.)

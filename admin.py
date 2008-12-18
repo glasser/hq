@@ -14,7 +14,7 @@ class FamilyCreateHandler(handler.RequestHandler):
   def post(self):
     name = model.CanonicalizeTagName(self.request.get('name'))
     # TODO(glasser): Better error handling.
-    assert model.IsValidTagPiece(name)
+    model.ValidateTagPiece(name)
     model.TagFamily.get_or_insert(name)
     self.redirect(FamilyListHandler.get_url())
 
@@ -27,7 +27,7 @@ class FamilyOptionCreateHandler(handler.RequestHandler):
     assert family is not None
     option = model.CanonicalizeTagName(self.request.get('option'))
     # TODO(glasser): Better error handling.
-    assert model.IsValidTagPiece(option)
+    model.ValidateTagPiece(option)
     # TODO(glasser): Technically this is an unlocked read-modify-write
     # and there could be a race condition; in this particular
     # admin-only case I'm going to lean towards the impact being
