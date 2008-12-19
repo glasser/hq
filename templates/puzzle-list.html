@@ -11,7 +11,7 @@
       {% if puzzle.tags %}
         [
           {% for tag in puzzle.tags %}
-            {{ tag }}
+            <a href="{% url PuzzleListHandler tag %}">{{ tag }}</a>
           {% endfor %}
         ]
       {% endif %}

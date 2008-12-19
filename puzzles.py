@@ -3,8 +3,11 @@ import model
 import handler
 
 class PuzzleListHandler(handler.RequestHandler):
-  def get(self):
+  def get(self, tag=None):
     puzzles = model.Puzzle.all()
+    if tag is not None:
+      tag = model.CanonicalizeTagNameFromQuery(tag)
+      puzzles.filter("tags =", tag)
     self.render_template("puzzle-list", {
       "puzzles": puzzles
     })
@@ -32,5 +35,7 @@ class PuzzleCreateHandler(handler.RequestHandler):
 
 HANDLERS = [
     ('/puzzles/?', PuzzleListHandler),
+    # TODO(glasser): Support multiple tags (intersection).
+    ('/puzzles/tags/(%s)/?' % model.TAG_NAME, PuzzleListHandler),
     ('/puzzles/create/?', PuzzleCreateHandler),
 ]

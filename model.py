@@ -18,8 +18,14 @@ class ValidatingStringListProperty(db.StringListProperty):
 # We assume throughout the templates that tag names don't need to be
 # escaped.
 
+# TAG_PIECE and TAG_NAME can be interpolated into URL regexps in
+# handler lists; if so, they should be in parentheses (specifically,
+# because TAG_NAME uses |).  Note that TAG_NAME can't use (?:) because
+# reverse_helper does not support that.  Also, you need to pass tag
+# names through CanonicalizeTagNameFromQuery.
 TAG_PIECE = '[a-zA-Z0-9-]+'
 _VALID_TAG_PIECE_RE = re.compile('^%s$' % TAG_PIECE)
+TAG_NAME = '%s|%s%%3[Aa]%s' % (TAG_PIECE, TAG_PIECE, TAG_PIECE)
 def ValidateTagPiece(name):
   """Checks to see if NAME is a valid name for a tag family, a family option,
   or a non-family tag; raises db.BadValueError if not."""
@@ -55,6 +61,10 @@ def TagIsFamilial(name):
 
 def CanonicalizeTagName(name):
   return name.lower()
+
+
+def CanonicalizeTagNameFromQuery(name):
+  return name.replace('%3a', ':').replace('%3A', ':').lower()
 
 
 class TagFamily(db.Model):
