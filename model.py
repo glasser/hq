@@ -4,6 +4,17 @@ import re
 
 from google.appengine.ext import db
 
+# Temporary workaround for an upstream bug where ListPropertys are
+# only validated at set time (ie, mutation isn't detected).
+# TODO(glasser): See if upstream patch is accepted and released.
+class ValidatingStringListProperty(db.StringListProperty):
+  def get_value_for_datastore(self, model_instance):
+    value = super(ValidatingStringListProperty, self).get_value_for_datastore(
+        model_instance)
+    if self.validator:
+      self.validator(value)
+    return value
+
 # We assume throughout the templates that tag names don't need to be
 # escaped.
 
@@ -35,7 +46,7 @@ def ValidateTagName(name):
 
 def ValidateTagNames(names):
   for name in names:
-    ValidateTagNames(name)
+    ValidateTagName(name)
 
 
 def TagIsFamilial(name):
@@ -48,7 +59,14 @@ def CanonicalizeTagName(name):
 
 class TagFamily(db.Model):
   # Its key_name is the family name.
-  options = db.StringListProperty(validator=ValidateTagPieces)
+  def __init__(self, *args, **kwds):
+    if 'key_name' in kwds:
+      assert kwds['key_name'] is not None
+      # TODO(glasser): Better error handling.
+      ValidateTagPiece(kwds['key_name'])
+    super(TagFamily, self).__init__(*args, **kwds)
+
+  options = ValidatingStringListProperty(validator=ValidateTagPieces)
 
 
 class Puzzle(db.Model):
@@ -56,4 +74,4 @@ class Puzzle(db.Model):
   # TextProperty is unlimited); is this OK?
   # TODO(glasser): Test that unicode titles work properly.
   title = db.StringProperty()
-  tags = db.StringListProperty(validator=ValidateTagNames)
+  tags = ValidatingStringListProperty(validator=ValidateTagNames)

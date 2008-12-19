@@ -18,14 +18,13 @@ class PuzzleCreateHandler(handler.RequestHandler):
     tags = self.request.get('tags')
     tag_list = map(model.CanonicalizeTagName, tags.split())
     for tag in tag_list:
-      # TODO(glasser): Better error handling.
-      assert model.ValidateTagName(tag)
       if model.TagIsFamilial(tag):
         # TODO(glasser): Check that familial tags actually exist.
         # (Or ban familial tags from the free-form tag box.)
         pass
     puzzle = model.Puzzle()
     puzzle.title = title
+    # TODO(glasser): Better error handling.
     puzzle.tags = tag_list
     puzzle.put()
     # TODO(glasser): Redirect to individual puzzle page.
