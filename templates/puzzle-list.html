@@ -1,9 +1,9 @@
 {% extends "template.html" %}
 
-{% block title %}Puzzles{% endblock %}
+{% block title %}Puzzles{% if searchtag %} [{{searchtag}}]{% endif %}{% endblock %}
 
 {% block content %}
-<h3>Puzzles</h3>
+<h3>Puzzles{% if searchtag %} [{{searchtag}}]{% endif %}</h3>
 
 <ul>
   {% for puzzle in puzzles %}

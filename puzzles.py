@@ -7,9 +7,12 @@ class PuzzleListHandler(handler.RequestHandler):
     puzzles = model.Puzzle.all()
     if tag is not None:
       tag = model.CanonicalizeTagNameFromQuery(tag)
+      # TODO(glasser): Better error handling.
+      model.ValidateTagName(tag)
       puzzles.filter("tags =", tag)
     self.render_template("puzzle-list", {
-      "puzzles": puzzles
+      "puzzles": puzzles,
+      "searchtag": tag,
     })
 
 
