@@ -1,0 +1,14 @@
+{% extends "template.html" %}
+
+{% block title %}Puzzle: {{ puzzle.title|escape }}{% endblock %}
+
+{% block content %}
+<h3>Puzzle: {{ puzzle.title|escape }}</h3>
+
+<div id="tag-list">
+  {% for tag in puzzle.tags %}
+    <a href="{% url PuzzleListHandler tag %}">{{ tag }}</a>
+  {% endfor %}
+</div>
+
+{% endblock content %}

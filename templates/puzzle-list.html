@@ -7,7 +7,7 @@
 
 <ul>
   {% for puzzle in puzzles %}
-    <li>{{ puzzle.title|escape }}
+    <li><a href="{% url PuzzleHandler puzzle.key.id %}">{{ puzzle.title|escape }}</a>
       {% if puzzle.tags %}
         [
           {% for tag in puzzle.tags %}

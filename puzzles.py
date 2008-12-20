@@ -16,6 +16,16 @@ class PuzzleListHandler(handler.RequestHandler):
     })
 
 
+class PuzzleHandler(handler.RequestHandler):
+  def get(self, key_id):
+    puzzle = model.Puzzle.get_by_id(long(key_id))
+    # TODO(glasser): Better error handling.
+    assert puzzle is not None
+    self.render_template("puzzle", {
+      "puzzle": puzzle,
+    })
+
+
 class PuzzleCreateHandler(handler.RequestHandler):
   def post(self):
     title = self.request.get('title')
@@ -41,4 +51,5 @@ HANDLERS = [
     # TODO(glasser): Support multiple tags (intersection).
     ('/puzzles/tags/(%s)/?' % model.TAG_NAME, PuzzleListHandler),
     ('/puzzles/create/?', PuzzleCreateHandler),
+    ('/puzzles/show/(\\d+)/?', PuzzleHandler),
 ]
