@@ -2,6 +2,7 @@
 
 import re
 
+from google.appengine.api import memcache
 from google.appengine.ext import db
 
 # Temporary workaround for an upstream bug where ListPropertys are
@@ -133,3 +134,10 @@ class Puzzle(db.Model):
 class Banner(db.Model):
   contents = db.TextProperty()
 
+  # Warning: using db.put or db.delete won't trigger these memcache flushes!
+  def delete(self):
+    super(Banner, self).delete()
+    memcache.flush_all()
+  def put(self):
+    super(Banner, self).put()
+    memcache.flush_all()

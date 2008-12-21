@@ -2,6 +2,7 @@
 
 import os
 
+from google.appengine.api import memcache
 from google.appengine.api import users
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp import template
@@ -11,6 +12,7 @@ import model
 INSTANCE_NAME = 'Primal Funk'
 
 class RequestHandler(webapp.RequestHandler):
+  RENDERED_BANNERS_KEY = 'rendered:banners'
 
   def render_template(self, template_name, params):
     self.response.out.write(self.render_template_to_string(template_name,
@@ -27,7 +29,12 @@ class RequestHandler(webapp.RequestHandler):
     return template.render(path, params)
 
   def render_banners(self):
+    rendered = memcache.get(self.RENDERED_BANNERS_KEY)
+    if rendered is not None:
+      return rendered
     banners = model.Banner.all()
-    return self.render_template_to_string('banners', {
+    rendered = self.render_template_to_string('banners', {
       "banners": banners,
     })
+    memcache.set(self.RENDERED_BANNERS_KEY, rendered)
+    return rendered
