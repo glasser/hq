@@ -22,6 +22,20 @@ class TagTest(unittest.TestCase):
 class PuzzleTest(unittest.TestCase):
 
   def test_tag_race_condition(self):
+    """This is a failed attempt to make a test that shows that there could
+    be race conditions in add_tag and delete_tag, but that they are
+    avoided.  However, there's a problem: the 'correct' API requires
+    that the test make single calls to a Puzzle.add_tag(id, tag),
+    which doesn't let it insert any sort of explicit "yield", and you
+    can't actually use threading or multiprocessing in App Engine, so
+    yields really do have to be explicit.  So I couldn't figure out
+    how to structure the code to expose the race condition *and* allow
+    for a transaction-based solution, at the same time (though each
+    separate was possible).
+
+    But for the hell of it, a test that doesn't actually have a race
+    condition."""
+
     puzzle = model.Puzzle(title='Some puzzle')
     puzzle_id = puzzle.put().id()
 
@@ -30,28 +44,19 @@ class PuzzleTest(unittest.TestCase):
 
     def incrementer_coroutine(my_prefix):
       for index in xrange(runs):
-        my_puzzle = model.Puzzle.get_by_id(puzzle_id)
         old_tag = '%s%d' % (my_prefix, index)
-        self.assertTrue(my_puzzle.delete_tag(old_tag),
+        self.assertTrue(model.Puzzle.delete_tag(puzzle_id, old_tag),
                         "Couldn't delete '%s'" % old_tag)
         yield
-        my_puzzle.put()
-        yield
-        my_puzzle = model.Puzzle.get_by_id(puzzle_id)
         new_tag = '%s%d' % (my_prefix, index + 1)
-        self.assertTrue(my_puzzle.add_tag(new_tag),
+        self.assertTrue(model.Puzzle.add_tag(puzzle_id, new_tag),
                         "Couldn't add '%s'" % new_tag)
-        yield
-        my_puzzle.put()
         yield
 
     incrementers = []
-    puzzle = model.Puzzle.get_by_id(puzzle_id)
     for prefix in prefixes:
-      puzzle.add_tag('%s0' % prefix)
+      model.Puzzle.add_tag(puzzle_id, '%s0' % prefix)
       incrementers.append(incrementer_coroutine(prefix))
-    puzzle.put()
-    my_puzzle = model.Puzzle.get_by_id(puzzle_id)
 
     while incrementers:
       incrementer = incrementers.pop(random.randint(0, len(incrementers) - 1))

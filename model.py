@@ -98,19 +98,29 @@ class Puzzle(db.Model):
   title = db.StringProperty()
   tags = ValidatingStringListProperty(validator=ValidateUniqueTagNames)
 
-  def add_tag(self, tag):
+  @classmethod
+  def add_tag(cls, id, tag):
     """Adds a tag to the puzzle; returns True if this was a change (ie, the
     tag was not already there."""
-    ValidateTagName(tag)
-    if tag in self.tags:
-      return False
-    self.tags.append(tag)
-    return True
+    def txn():
+      puzzle = cls.get_by_id(id)
+      ValidateTagName(tag)
+      if tag in puzzle.tags:
+        return False
+      puzzle.tags.append(tag)
+      puzzle.put()
+      return True
+    return db.run_in_transaction(txn)
 
-  def delete_tag(self, tag):
+  @classmethod
+  def delete_tag(cls, id, tag):
     """Removes a tag from the puzzle; returns True if this was a change (ie,
     the tag was actually there."""
-    if tag in self.tags:
-      self.tags.remove(tag)
-      return True
-    return False
+    def txn():
+      puzzle = cls.get_by_id(id)
+      if tag in puzzle.tags:
+        puzzle.tags.remove(tag)
+        puzzle.put()
+        return True
+      return False
+    return db.run_in_transaction(txn)
