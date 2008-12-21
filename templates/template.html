@@ -10,6 +10,9 @@
       <a href="{% url PuzzleListHandler %}">Puzzles</a>
       <a href="{% url FamilyListHandler %}">Admin</a>
     </div>
+    <div id="banners">
+      {{ rendered_banners }}
+    </div>
 
     <div id="content">
       {% block content %}

@@ -1,0 +1,7 @@
+<ul>
+  {% for banner in banners %}
+    <li>{{ banner.contents|escape }}</li>
+  {% endfor %}
+</ul>
+
+<a href="{% url BannerListHandler %}">[edit banners]</a>
