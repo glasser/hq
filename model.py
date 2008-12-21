@@ -38,6 +38,12 @@ def ValidateTagPieces(names):
     ValidateTagPiece(name)
 
 
+def ValidateUniqueTagPieces(pieces):
+  ValidateTagPieces(pieces)
+  if len(pieces) != len(set(pieces)):
+    raise db.BadValueError("Duplicated tag pieces")
+
+
 def ValidateTagName(name):
   """Checks to see if NAME is a *syntactically* valid tag name (but not that
   it necessarily exists, if it's a familial tag); raises db.BadValueError if
@@ -53,6 +59,12 @@ def ValidateTagName(name):
 def ValidateTagNames(names):
   for name in names:
     ValidateTagName(name)
+
+
+def ValidateUniqueTagNames(names):
+  ValidateTagNames(names)
+  if len(names) != len(set(names)):
+    raise db.BadValueError("Duplicated tag names")
 
 
 def TagIsFamilial(name):
@@ -76,7 +88,7 @@ class TagFamily(db.Model):
       ValidateTagPiece(kwds['key_name'])
     super(TagFamily, self).__init__(*args, **kwds)
 
-  options = ValidatingStringListProperty(validator=ValidateTagPieces)
+  options = ValidatingStringListProperty(validator=ValidateUniqueTagPieces)
 
 
 class Puzzle(db.Model):
@@ -84,4 +96,21 @@ class Puzzle(db.Model):
   # TextProperty is unlimited); is this OK?
   # TODO(glasser): Test that unicode titles work properly.
   title = db.StringProperty()
-  tags = ValidatingStringListProperty(validator=ValidateTagNames)
+  tags = ValidatingStringListProperty(validator=ValidateUniqueTagNames)
+
+  def add_tag(self, tag):
+    """Adds a tag to the puzzle; returns True if this was a change (ie, the
+    tag was not already there."""
+    ValidateTagName(tag)
+    if tag in self.tags:
+      return False
+    self.tags.append(tag)
+    return True
+
+  def delete_tag(self, tag):
+    """Removes a tag from the puzzle; returns True if this was a change (ie,
+    the tag was actually there."""
+    if tag in self.tags:
+      self.tags.remove(tag)
+      return True
+    return False

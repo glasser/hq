@@ -32,7 +32,7 @@ class PuzzleCreateHandler(handler.RequestHandler):
     # TODO(glasser): Better error handling.
     assert len(title)
     tags = self.request.get('tags')
-    tag_list = map(model.CanonicalizeTagName, tags.split())
+    tag_list = list(set(map(model.CanonicalizeTagName, tags.split())))
     for tag in tag_list:
       if model.TagIsFamilial(tag):
         # TODO(glasser): Check that familial tags actually exist.
