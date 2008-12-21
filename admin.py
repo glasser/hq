@@ -66,7 +66,7 @@ class FamilyDeleteHandler(handler.RequestHandler):
 class BannerListHandler(handler.RequestHandler):
   def get(self):
     banners = model.Banner.all()
-    self.render_template("banners", {
+    self.render_template("admin-banners", {
       "banners": banners,
     })
 
