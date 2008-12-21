@@ -1,5 +1,5 @@
 #!/usr/bin/env python2.5
-import threading
+import random
 import unittest
 
 from google.appengine.ext import db
@@ -22,33 +22,45 @@ class TagTest(unittest.TestCase):
 class PuzzleTest(unittest.TestCase):
 
   def test_tag_race_condition(self):
-    puzzle = model.Puzzle(title='Some puzzle',
-                          tags=['a0', 'b0'])
+    puzzle = model.Puzzle(title='Some puzzle')
     puzzle_id = puzzle.put().id()
 
-    class Incrementer(threading.Thread):
-      def __init__(self, puzzle_id, prefix):
-        super(Incrementer, self).__init__()
-        self.puzzle_id = puzzle_id
-        self.prefix = prefix
-        self.failed = False
+    runs = 20
+    prefixes = ('a', 'b', 'c', 'd')
 
-      def run(self):
-        for index in xrange(500):
-          my_puzzle = model.Puzzle.get_by_id(self.puzzle_id)
-          if not my_puzzle.delete_tag('%s%d' % (self.prefix, index)):
-            self.failed = True
-          my_puzzle.put()
-          my_puzzle = model.Puzzle.get_by_id(self.puzzle_id)
-          if not my_puzzle.add_tag('%s%d' % (self.prefix, index + 1)):
-            self.failed = True
-          my_puzzle.put()
+    def incrementer_coroutine(my_prefix):
+      for index in xrange(runs):
+        my_puzzle = model.Puzzle.get_by_id(puzzle_id)
+        old_tag = '%s%d' % (my_prefix, index)
+        self.assertTrue(my_puzzle.delete_tag(old_tag),
+                        "Couldn't delete '%s'" % old_tag)
+        yield
+        my_puzzle.put()
+        yield
+        my_puzzle = model.Puzzle.get_by_id(puzzle_id)
+        new_tag = '%s%d' % (my_prefix, index + 1)
+        self.assertTrue(my_puzzle.add_tag(new_tag),
+                        "Couldn't add '%s'" % new_tag)
+        yield
+        my_puzzle.put()
+        yield
 
-    a_incrementer = Incrementer(puzzle_id, 'a')
-    b_incrementer = Incrementer(puzzle_id, 'b')
-    a_incrementer.start()
-    b_incrementer.start()
-    a_incrementer.join()
-    b_incrementer.join()
-    self.assertFalse(a_incrementer.failed)
-    self.assertFalse(b_incrementer.failed)
+    incrementers = []
+    puzzle = model.Puzzle.get_by_id(puzzle_id)
+    for prefix in prefixes:
+      puzzle.add_tag('%s0' % prefix)
+      incrementers.append(incrementer_coroutine(prefix))
+    puzzle.put()
+    my_puzzle = model.Puzzle.get_by_id(puzzle_id)
+
+    while incrementers:
+      incrementer = incrementers.pop(random.randint(0, len(incrementers) - 1))
+      try:
+        incrementer.next()
+      except StopIteration:
+        continue
+      incrementers.append(incrementer)
+
+    puzzle = model.Puzzle.get_by_id(puzzle_id)
+    self.assertEquals(set([u'%s%d' % (prefix, runs) for prefix in prefixes]),
+                      set(puzzle.tags))
