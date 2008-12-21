@@ -169,11 +169,12 @@ class Puzzle(db.Model):
       puzzle_options = []
       found_any = False
       for option in family.options:
-        found = '%s:%s' % (family.key().name(), option) in self.tags
-        puzzle_options.append((option, found))
+        tag_name = '%s:%s' % (family.key().name(), option)
+        found = tag_name in self.tags
+        puzzle_options.append((option, found, tag_name))
         if found:
           found_any = True
-      puzzle_options.insert(0, ('', not found_any))
+      puzzle_options.insert(0, ('', not found_any, ''))
       ret[family.key().name()] = puzzle_options
     return ret
 

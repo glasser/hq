@@ -20,8 +20,9 @@
         <form action="{% url PuzzleTagAddHandler puzzle.key.id %}" method="post">
           {{ family__options.0 }}:
           {% for option__selected in family__options.1 %}
-            {% if option__selected.1 %}
-              {{ option__selected.0 }}
+            {% if option__selected.0 and option__selected.1 %}
+              <a href="{% url PuzzleListHandler option__selected.2 %}"
+                 >{{ option__selected.0 }}</a>
             {% endif %}
           {% endfor %}
           <select name="tag">
