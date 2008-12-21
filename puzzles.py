@@ -46,10 +46,30 @@ class PuzzleCreateHandler(handler.RequestHandler):
     # TODO(glasser): Redirect to individual puzzle page.
     self.redirect(PuzzleListHandler.get_url())
 
+
+class PuzzleTagDeleteHandler(handler.RequestHandler):
+  def get(self, puzzle_id, tag):
+    puzzle_id = long(puzzle_id)
+    tag = model.CanonicalizeTagNameFromQuery(tag)
+    model.Puzzle.delete_tag(puzzle_id, tag)
+    self.redirect(PuzzleHandler.get_url(puzzle_id))
+
+
+class PuzzleTagAddHandler(handler.RequestHandler):
+  def post(self, puzzle_id):
+    puzzle_id = long(puzzle_id)
+    tag = model.CanonicalizeTagName(self.request.get('tag'))
+    # TODO(glasser): Better error handling.
+    model.Puzzle.add_tag(puzzle_id, tag)
+    self.redirect(PuzzleHandler.get_url(puzzle_id))
+
 HANDLERS = [
     ('/puzzles/?', PuzzleListHandler),
     # TODO(glasser): Support multiple tags (intersection).
     ('/puzzles/tags/(%s)/?' % model.TAG_NAME, PuzzleListHandler),
     ('/puzzles/create/?', PuzzleCreateHandler),
     ('/puzzles/show/(\\d+)/?', PuzzleHandler),
+    ('/puzzles/add-tag/(\\d+)/?', PuzzleTagAddHandler),
+    ('/puzzles/delete-tag/(\\d+)/(%s)/?' % model.TAG_NAME,
+     PuzzleTagDeleteHandler),
 ]

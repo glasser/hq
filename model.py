@@ -104,6 +104,8 @@ class Puzzle(db.Model):
     tag was not already there."""
     def txn():
       puzzle = cls.get_by_id(id)
+      # TODO(glasser): Better error handling.
+      assert puzzle is not None
       ValidateTagName(tag)
       if tag in puzzle.tags:
         return False
@@ -118,6 +120,8 @@ class Puzzle(db.Model):
     the tag was actually there."""
     def txn():
       puzzle = cls.get_by_id(id)
+      # TODO(glasser): Better error handling.
+      assert puzzle is not None
       if tag in puzzle.tags:
         puzzle.tags.remove(tag)
         puzzle.put()
