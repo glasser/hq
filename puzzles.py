@@ -58,6 +58,8 @@ class PuzzleTagDeleteHandler(handler.RequestHandler):
 class PuzzleTagAddHandler(handler.RequestHandler):
   def post(self, puzzle_id):
     puzzle_id = long(puzzle_id)
+    # Note that "foo:" is a valid tag value here, meaning to delete
+    # all tags in the "foo" family.
     tag = model.CanonicalizeTagName(self.request.get('tag'))
     # TODO(glasser): Better error handling.
     model.Puzzle.add_tag(puzzle_id, tag)

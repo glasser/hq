@@ -50,7 +50,7 @@ def ValidateTagName(name):
   it necessarily exists, if it's a familial tag); raises db.BadValueError if
   not."""
   if TagIsFamilial(name):
-    family, option = name.split(':', 1)
+    family, option = SplitFamilialTag(name)
     ValidateTagPiece(family)
     ValidateTagPiece(option)
   else:
@@ -68,8 +68,17 @@ def ValidateUniqueTagNames(names):
     raise db.BadValueError("Duplicated tag names")
 
 
+def SplitFamilialTag(name):
+  assert TagIsFamilial(name)
+  return name.split(':', 1)
+
+
 def TagIsFamilial(name):
   return ':' in name
+
+
+def TagIsGeneric(name):
+  return not TagIsFamilial(name)
 
 
 def CanonicalizeTagName(name):
@@ -97,19 +106,39 @@ class Puzzle(db.Model):
   # TextProperty is unlimited); is this OK?
   # TODO(glasser): Test that unicode titles work properly.
   title = db.StringProperty()
+  # TODO(glasser): Validate that no family has multiple tags.
   tags = ValidatingStringListProperty(validator=ValidateUniqueTagNames)
 
   @classmethod
   def add_tag(cls, id, tag):
-    """Adds a tag to the puzzle; returns True if this was a change (ie, the
-    tag was not already there."""
+    """Adds a tag to the puzzle; returns True if this was a change
+    (ie, the tag was not already there.  If it is a familial tag,
+    deletes all other tags of the same family.  As a special case,
+    'family:' deletes all tags in the given family without adding
+    anything."""
     def txn():
       puzzle = cls.get_by_id(id)
       # TODO(glasser): Better error handling.
       assert puzzle is not None
+
+      changed = False
+
+      if TagIsFamilial(tag):
+        family, option = SplitFamilialTag(tag)
+        old_len = len(puzzle.tags)
+        puzzle.tags = filter(lambda t: not t.startswith('%s:' % family),
+                             puzzle.tags)
+        changed = old_len != len(puzzle.tags)
+        if not option:
+          if changed:
+            puzzle.put()
+          return changed
+
       ValidateTagName(tag)
       if tag in puzzle.tags:
-        return False
+        if changed:
+          puzzle.put()
+        return changed
       puzzle.tags.append(tag)
       puzzle.put()
       return True
@@ -130,6 +159,23 @@ class Puzzle(db.Model):
       return False
     return db.run_in_transaction(txn)
 
+  def generic_tags(self):
+    return filter(TagIsGeneric, self.tags)
+
+  def families(self):
+    ret = {}
+    families = TagFamily.all()
+    for family in families:
+      puzzle_options = []
+      found_any = False
+      for option in family.options:
+        found = '%s:%s' % (family.key().name(), option) in self.tags
+        puzzle_options.append((option, found))
+        if found:
+          found_any = True
+      puzzle_options.insert(0, ('', not found_any))
+      ret[family.key().name()] = puzzle_options
+    return ret
 
 class Banner(db.Model):
   contents = db.TextProperty()
