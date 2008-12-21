@@ -62,6 +62,33 @@ class FamilyDeleteHandler(handler.RequestHandler):
     family.delete()
     self.redirect(FamilyListHandler.get_url())
 
+
+class BannerListHandler(handler.RequestHandler):
+  def get(self):
+    banners = model.Banner.all()
+    self.render_template("banners", {
+      "banners": banners,
+    })
+
+
+class BannerAddHandler(handler.RequestHandler):
+  def post(self):
+    contents = self.request.get('contents')
+    # TODO(glasser): Better error handling.
+    assert contents
+    banner = model.Banner(contents=contents)
+    banner.put()
+    self.redirect(BannerListHandler.get_url())
+
+class BannerDeleteHandler(handler.RequestHandler):
+  def get(self, banner_id):
+    banner = model.Banner.get_by_id(long(banner_id))
+    # TODO(glasser): Better error handling.
+    assert banner is not None
+    banner.delete()
+    self.redirect(BannerListHandler.get_url())
+
+
 HANDLERS = [
     ('/admin/tags/?', FamilyListHandler),
     ('/admin/tags/add-option/(%s)/?' % model.TAG_PIECE,
@@ -70,4 +97,7 @@ HANDLERS = [
      % (model.TAG_PIECE, model.TAG_PIECE), FamilyOptionDeleteHandler),
     ('/admin/tags/add/?', FamilyCreateHandler),
     ('/admin/tags/delete/(%s)/?' % model.TAG_PIECE, FamilyDeleteHandler),
+    ('/admin/banners/?', BannerListHandler),
+    ('/admin/banners/add/?', BannerAddHandler),
+    ('/admin/banners/delete/(\\d+)/?', BannerDeleteHandler),
 ]

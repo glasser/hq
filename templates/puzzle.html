@@ -8,7 +8,7 @@
 <div id="tag-list">
   {% for tag in puzzle.tags %}
     <a href="{% url PuzzleListHandler tag %}">{{ tag }}</a>
-    <a href="{% url PuzzleTagDeleteHandler puzzle.key.id,tag %}">[x]</a>
+    <a href="{% url PuzzleTagDeleteHandler puzzle.key.id,tag %}">[delete]</a>
   {% endfor %}
   <form action="{% url PuzzleTagAddHandler puzzle.key.id %}" method="post">
     <input type="text" name="tag" />

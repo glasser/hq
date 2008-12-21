@@ -1,0 +1,22 @@
+{% extends "template.html" %}
+
+{% block title %}Banners{% endblock %}
+
+{% block content %}
+<h3>Banners</h3>
+
+<ul>
+  {% for banner in banners %}
+    <li>{{ banner.contents|escape }}
+      <a href="{% url BannerDeleteHandler banner.key.id %}">[delete]</a>
+    </li>
+  {% endfor %}
+    <li>
+      <form action="{% url BannerAddHandler %}" method="post">
+        <input type="text" name="contents" />
+        <input type="submit" value="add banner" />
+      </form>
+    </li>
+</ul>
+
+{% endblock content %}

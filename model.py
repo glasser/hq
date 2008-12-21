@@ -128,3 +128,8 @@ class Puzzle(db.Model):
         return True
       return False
     return db.run_in_transaction(txn)
+
+
+class Banner(db.Model):
+  contents = db.TextProperty()
+
