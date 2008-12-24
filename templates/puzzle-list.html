@@ -7,14 +7,17 @@
 
 <ul>
   {% for puzzle in puzzles %}
-    <li><a href="{% url PuzzleHandler puzzle.key.id %}">{{ puzzle.title|escape }}</a>
-      {% if puzzle.tags %}
-        [
-          {% for tag in puzzle.tags %}
-            <a href="{% url PuzzleListHandler tag %}">{{ tag }}</a>
-          {% endfor %}
-        ]
-      {% endif %}
+    <li class="puzzle-listing">
+      <span class="{{ puzzle.tags_as_css_classes }}">
+        <a href="{% url PuzzleHandler puzzle.key.id %}">{{ puzzle.title|escape }}</a>
+        {% if puzzle.tags %}
+          [
+            {% for tag in puzzle.tags %}
+              <a href="{% url PuzzleListHandler tag %}">{{ tag }}</a>
+            {% endfor %}
+          ]
+        {% endif %}
+      </span>
     </li>
   {% endfor %}
     <li>
