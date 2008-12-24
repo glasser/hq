@@ -5,7 +5,7 @@
       {{ custom_css }}
     </style>
   </head>
-  <body>
+  <body {% block bodyattrs %}{% endblock bodyattrs %}>
     <div id="current-user-info">You are: {{ current_user.nickname }}.
       <a href="{{ log_out_url }}">[log out]</a>
     </div>

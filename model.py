@@ -178,6 +178,13 @@ class Puzzle(db.Model):
       ret[family.key().name()] = puzzle_options
     return ret
 
+  def tags_as_css_classes(self):
+    def as_css_class(tag):
+      return 'tag_' + tag.replace(':', '_')
+    classes = map(as_css_class, self.tags)
+    classes.append('puzzle')
+    return ' '.join(classes)
+
 class Banner(db.Model):
   contents = db.TextProperty()
 

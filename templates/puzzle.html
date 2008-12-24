@@ -2,6 +2,8 @@
 
 {% block title %}Puzzle: {{ puzzle.title|escape }}{% endblock %}
 
+{% block bodyattrs %} class="{{ puzzle.tags_as_css_classes }}" {% endblock bodyattrs %}
+
 {% block content %}
 <h3>Puzzle: {{ puzzle.title|escape }}</h3>
 
