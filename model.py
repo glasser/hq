@@ -5,6 +5,8 @@ import re
 from google.appengine.api import memcache
 from google.appengine.ext import db
 
+import handler
+
 # Temporary workaround for an upstream bug where ListPropertys are
 # only validated at set time (ie, mutation isn't detected).
 # TODO(glasser): See if upstream patch is accepted and released.
@@ -188,6 +190,8 @@ class Puzzle(db.Model):
 class Banner(db.Model):
   contents = db.TextProperty()
 
+  MEMCACHE_KEY = 'rendered:banners'
+
   # Warning: using db.put or db.delete won't trigger these memcache flushes!
   def delete(self):
     super(Banner, self).delete()
@@ -195,6 +199,18 @@ class Banner(db.Model):
   def put(self):
     super(Banner, self).put()
     memcache.flush_all()
+
+  @classmethod
+  def get_rendered(cls):
+    rendered = memcache.get(cls.MEMCACHE_KEY)
+    if rendered is not None:
+      return rendered
+    banners = cls.all()
+    rendered = handler.RequestHandler.render_template_to_string('banners', {
+      'banners': banners,
+    }, include_rendered_banners=False)
+    memcache.set(cls.MEMCACHE_KEY, rendered)
+    return rendered
 
 
 # Don't manipulate elements of this class directly: just use
