@@ -89,6 +89,18 @@ class BannerDeleteHandler(handler.RequestHandler):
     self.redirect(BannerListHandler.get_url())
 
 
+class CssHandler(handler.RequestHandler):
+  def get(self):
+    css = model.Css.get_custom_css()
+    self.render_template('admin-css', {
+      'css': css,
+    }, include_custom_css=False)
+
+  def post(self):
+    model.Css.set_custom_css(self.request.get('css'))
+    # Redirect so that CSS takes effect.
+    self.redirect(CssHandler.get_url())
+
 HANDLERS = [
     ('/admin/tags/?', FamilyListHandler),
     ('/admin/tags/add-option/(%s)/?' % model.TAG_PIECE,
@@ -100,4 +112,5 @@ HANDLERS = [
     ('/admin/banners/?', BannerListHandler),
     ('/admin/banners/add/?', BannerAddHandler),
     ('/admin/banners/delete/(\\d+)/?', BannerDeleteHandler),
+    ('/admin/css/?', CssHandler),
 ]

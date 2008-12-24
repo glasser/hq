@@ -1,0 +1,18 @@
+{% extends "template.html" %}
+
+{% block title %}Custom CSS{% endblock %}
+
+{% block content %}
+<h3>Custom CSS</h3>
+
+<p>This lets you update the custom CSS block in every page's headers.
+  <strong>This is included on every page except for this one, without
+    any validation or parsing; <em>only change it if you really know
+      what you are doing</em>.</strong></p>
+
+<form action="{% url CssHandler %}" method="post">
+  <textarea name="css" rows="20" cols="80">{{ css|escape }}</textarea>
+  <input type="submit" value="update custom css" />
+</form>
+
+{% endblock content %}

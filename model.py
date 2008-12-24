@@ -188,3 +188,40 @@ class Banner(db.Model):
   def put(self):
     super(Banner, self).put()
     memcache.flush_all()
+
+
+# Don't manipulate elements of this class directly: just use
+# get_custom_css and set_custom_css.
+class Css(db.Model):
+  contents = db.TextProperty()
+
+  SINGLETON_DB_KEY = 'singleton'
+  MEMCACHE_KEY = 'rendered:css'
+
+  @classmethod
+  def get_custom_css(cls):
+    rendered = memcache.get(cls.MEMCACHE_KEY)
+    if rendered is not None:
+      return rendered
+
+    css_obj = cls.get_by_key_name(cls.SINGLETON_DB_KEY)
+    rendered = ''
+    if css_obj is not None:
+      rendered = css_obj.contents
+
+    memcache.set(cls.MEMCACHE_KEY, rendered)
+    return rendered
+
+  @classmethod
+  def set_custom_css(cls, rendered):
+    # Similar to get_or_insert, but sets the contents either way.
+    def txn():
+      entity = cls.get_by_key_name(cls.SINGLETON_DB_KEY)
+      if entity is None:
+        entity = cls(key_name=cls.SINGLETON_DB_KEY,
+                     contents=rendered)
+      else:
+        entity.contents = rendered
+      entity.put()
+    db.run_in_transaction(txn)
+    memcache.set(cls.MEMCACHE_KEY, rendered)

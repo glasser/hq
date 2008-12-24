@@ -14,7 +14,9 @@ INSTANCE_NAME = 'Primal Funk'
 class RequestHandler(webapp.RequestHandler):
   RENDERED_BANNERS_KEY = 'rendered:banners'
 
-  def render_template(self, template_name, params):
+  def render_template(self, template_name, params, include_custom_css=True):
+    if include_custom_css:
+      params['custom_css'] = model.Css.get_custom_css()
     self.response.out.write(self.render_template_to_string(template_name,
                                                            params))
 

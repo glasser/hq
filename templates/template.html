@@ -1,6 +1,9 @@
 <html>
   <head>
     <title>{{ instance_name|escape }} HQ: {% block title %}some page{% endblock %}</title>
+    <style type="text/css">
+      {{ custom_css }}
+    </style>
   </head>
   <body>
     <div id="current-user-info">You are: {{ current_user.nickname }}.
@@ -8,7 +11,10 @@
     </div>
     <div id="header-links">
       <a href="{% url PuzzleListHandler %}">Puzzles</a>
-      <a href="{% url FamilyListHandler %}">Admin</a>
+      [ Admin:
+        <a href="{% url FamilyListHandler %}">Tags</a>
+        <a href="{% url CssHandler %}">CSS</a>
+      ]
     </div>
     <div id="banners">
       {{ rendered_banners }}
