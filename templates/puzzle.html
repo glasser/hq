@@ -58,6 +58,14 @@
   </ul>
 </div>
 
+<div id="spreadsheets">
+  <h4>Spreadsheets</h4>
+  <form action="{% url SpreadsheetAddHandler puzzle.key.id %}" method="post">
+    <input type="text" name="title" />
+    <input type="submit" value="add spreadsheet" />
+  </form>
+</div>
+
 <div id="comments">
   <h4>Comments</h4>
   <ul>

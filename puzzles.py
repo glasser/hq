@@ -170,6 +170,11 @@ class CommentPrioritizeHandler(handler.RequestHandler):
     self.redirect(PuzzleHandler.get_url(puzzle.key().id()))
 
 
+class SpreadsheetAddHandler(handler.RequestHandler):
+  def post(self, puzzle_id):
+    puzzle_id = long(puzzle_id)
+
+
 HANDLERS = [
     ('/puzzles/?', PuzzleListHandler),
     # TODO(glasser): Support multiple tags (intersection).
@@ -184,4 +189,5 @@ HANDLERS = [
     ('/puzzles/add-comment/(\\d+)/?', CommentAddHandler),
     ('/puzzles/edit-comment/(\\d+)/(\\d+)/?', CommentEditHandler),
     ('/puzzles/set-comment-priority/(\\d+)/(\\d+)/?', CommentPrioritizeHandler),
+    ('/puzzles/add-spreadsheet/(\\d+)/?', SpreadsheetAddHandler),
 ]
