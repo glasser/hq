@@ -60,7 +60,8 @@
 
 <div id="spreadsheets">
   <h4>Spreadsheets</h4>
-  <form action="{% url SpreadsheetAddHandler puzzle.key.id %}" method="post">
+
+  <form action="{% url SpreadsheetAddHandler puzzle.key.id %}" method="get">
     <input type="text" name="title" />
     <input type="submit" value="add spreadsheet" />
   </form>

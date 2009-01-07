@@ -9,6 +9,13 @@ import my_template
 import model
 
 INSTANCE_NAME = 'Optimus Funk'
+APPS_DOMAIN = 'optimusfunk.org'  # For spreadsheets, etc
+
+port = os.environ['SERVER_PORT']
+if port and port != '80':
+  HOST_NAME = '%s:%s' % (os.environ['SERVER_NAME'], port)
+else:
+  HOST_NAME = os.environ['SERVER_NAME']
 
 class RequestHandler(webapp.RequestHandler):
 

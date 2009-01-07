@@ -1,11 +1,18 @@
 #!/usr/bin/env python2.5
+import StringIO
+
 import model
 import handler
 
-import bzrlib.merge3
-
 from google.appengine.api import users
 from google.appengine.ext import db
+
+import bzrlib.merge3
+import gdata
+import gdata.auth
+import gdata.alt.appengine
+import gdata.docs.service
+import gdata.service
 
 class PuzzleListHandler(handler.RequestHandler):
   def get(self, tags=None):
@@ -171,8 +178,41 @@ class CommentPrioritizeHandler(handler.RequestHandler):
 
 
 class SpreadsheetAddHandler(handler.RequestHandler):
-  def post(self, puzzle_id):
+  def get(self, puzzle_id):
     puzzle_id = long(puzzle_id)
+
+    client = gdata.docs.service.DocsService()
+    gdata.alt.appengine.run_on_appengine(client)
+    auth_token = gdata.auth.extract_auth_sub_token_from_url(self.request.uri)
+    if auth_token:
+      client.UpgradeToSessionToken(auth_token)
+
+    virtual_csv_file = StringIO.StringIO(',,,')
+    virtual_media_source = gdata.MediaSource(file_handle=virtual_csv_file,
+                                             content_type='text/csv',
+                                             content_length=3)
+    try:
+      media_entry = client.UploadSpreadsheet(virtual_media_source,
+                                             self.request.get('title'))
+    except gdata.service.RequestError, request_error:
+      # If fetching fails, then tell the user that they need to login to
+      # authorize this app by logging in at the following URL.
+      if request_error[0]['status'] == 401:
+        # Get the URL of the current page so that our AuthSub request will
+        # send the user back to here.
+        next = self.request.uri
+        auth_sub_url = client.GenerateAuthSubURL(
+            next,
+            gdata.service.lookup_scopes(client.service),
+            domain=handler.APPS_DOMAIN)
+        self.redirect(str(auth_sub_url))
+      else:
+        self.response.out.write(
+            'Something else went wrong, here is the error object: %s ' % (
+                str(request_error[0])))
+      return
+
+    self.response.out.write(str(media_entry))
 
 
 HANDLERS = [
