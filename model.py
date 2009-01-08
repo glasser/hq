@@ -185,6 +185,15 @@ class Puzzle(db.Model):
       return 'tag_' + tag.replace(':', '_')
     return ' '.join(map(as_css_class, self.tags))
 
+
+class Comment(db.Model):
+  puzzle = db.ReferenceProperty(reference_class=Puzzle)
+  replaced_by = db.SelfReferenceProperty()
+  created = db.DateTimeProperty(auto_now_add=True)
+  author = db.UserProperty()
+  text = db.TextProperty()
+
+
 class Banner(db.Model):
   contents = db.TextProperty()
 

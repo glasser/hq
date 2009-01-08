@@ -2,6 +2,8 @@
 import model
 import handler
 
+from google.appengine.api import users
+
 class PuzzleListHandler(handler.RequestHandler):
   def get(self, tag=None):
     puzzles = model.Puzzle.all()
@@ -21,8 +23,12 @@ class PuzzleHandler(handler.RequestHandler):
     puzzle = model.Puzzle.get_by_id(long(key_id))
     # TODO(glasser): Better error handling.
     assert puzzle is not None
+    comments = puzzle.comment_set
+    comments.filter("replaced_by =", None)
+    comments.order('-created')
     self.render_template("puzzle", {
       "puzzle": puzzle,
+      "comments": comments,
     })
 
 
@@ -65,6 +71,18 @@ class PuzzleTagAddHandler(handler.RequestHandler):
     model.Puzzle.add_tag(puzzle_id, tag)
     self.redirect(PuzzleHandler.get_url(puzzle_id))
 
+
+class CommentAddHandler(handler.RequestHandler):
+  def post(self, puzzle_id):
+    puzzle = model.Puzzle.get_by_id(long(puzzle_id))
+    # TODO(glasser): Better error handling.
+    assert puzzle is not None
+    comment = model.Comment(puzzle=puzzle,
+                            author=users.get_current_user(),
+                            text=self.request.get('text'))
+    comment.put()
+    self.redirect(PuzzleHandler.get_url(puzzle_id))
+
 HANDLERS = [
     ('/puzzles/?', PuzzleListHandler),
     # TODO(glasser): Support multiple tags (intersection).
@@ -74,4 +92,5 @@ HANDLERS = [
     ('/puzzles/add-tag/(\\d+)/?', PuzzleTagAddHandler),
     ('/puzzles/delete-tag/(\\d+)/(%s)/?' % model.TAG_NAME,
      PuzzleTagDeleteHandler),
+    ('/puzzles/add-comment/(\\d+)/?', CommentAddHandler),
 ]
