@@ -50,9 +50,8 @@ class PuzzleCreateHandler(handler.RequestHandler):
     puzzle.title = title
     # TODO(glasser): Better error handling.
     puzzle.tags = tag_list
-    puzzle.put()
-    # TODO(glasser): Redirect to individual puzzle page.
-    self.redirect(PuzzleListHandler.get_url())
+    puzzle_key = puzzle.put()
+    self.redirect(PuzzleHandler.get_url(puzzle_key.id()))
 
 
 class PuzzleTagDeleteHandler(handler.RequestHandler):
