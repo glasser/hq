@@ -1,0 +1,31 @@
+{% extends "template.html" %}
+
+{% block title %}Comment Conflict: Puzzle: {{ puzzle.title|escape }}{% endblock %}
+
+{% block bodyattrs %} class="puzzle {{ puzzle.tags_as_css_classes }}" {% endblock bodyattrs %}
+
+{% block content %}
+<h3>Comment Conflict:
+  <a href="{% url PuzzleHandler puzzle.key.id %}">Puzzle {{ puzzle.title|escape }}</a></h3>
+
+<p>
+  Oh no!  You tried to edit a comment written by
+  {{ base_comment.author.nickname|escape }} at {{ base_comment.created.ctime|escape }}:
+  <pre>{{ base_comment.text|escape }}</pre>
+</p>
+
+<p>
+  But in the meantime, it was updated by
+  {{ newest_comment.author.nickname|escape }} at {{ newest_comment.created.ctime|escape }}:
+  <pre>{{ newest_comment.text|escape }}</pre>
+</p>
+
+<p>
+  Here's what you tried to change it to:
+  <form action="{% url CommentEditHandler newest_comment.key.id %}" method="post">
+    <textarea name="text" rows="10" cols="80">{{ your_text|escape }}</textarea>
+    <input type="submit" value="save comment" />
+  </form>
+</p>
+
+{% endblock content %}

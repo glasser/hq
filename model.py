@@ -194,6 +194,13 @@ class Comment(db.Model):
   author = db.UserProperty()
   text = db.TextProperty()
 
+  def newest_version(self):
+    current = self
+    next = self.replaced_by
+    while next is not None:
+      current = next
+      next = current.replaced_by
+    return current
 
 class Banner(db.Model):
   contents = db.TextProperty()

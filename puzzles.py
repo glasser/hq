@@ -86,6 +86,11 @@ class CommentAddHandler(handler.RequestHandler):
     self.redirect(PuzzleHandler.get_url(puzzle_id))
 
 
+class CommentConflictError(Exception):
+  def __init__(self, base_comment):
+    self.base_comment = base_comment
+
+
 class CommentEditHandler(handler.RequestHandler):
   def post(self, puzzle_id, comment_id):
     puzzle = model.Puzzle.get_by_id(long(puzzle_id))
@@ -97,8 +102,8 @@ class CommentEditHandler(handler.RequestHandler):
       # TODO(glasser): Better error handling.
       assert old_comment is not None
 
-      # TODO(glasser): Support merging.
-      assert old_comment.replaced_by is None
+      if old_comment.replaced_by is not None:
+        raise CommentConflictError(old_comment)
       new_comment = model.Comment(puzzle=puzzle,
                                   author=users.get_current_user(),
                                   text=self.request.get('text'),
@@ -106,8 +111,20 @@ class CommentEditHandler(handler.RequestHandler):
       new_comment.put()
       old_comment.replaced_by = new_comment
       old_comment.put()
-    db.run_in_transaction(txn)
+    try:
+      db.run_in_transaction(txn)
+    except CommentConflictError, e:
+      return self.conflict_resolution(puzzle, e.base_comment)
     self.redirect(PuzzleHandler.get_url(puzzle.key().id()))
+
+  def conflict_resolution(self, puzzle, base_comment):
+    newest_comment = base_comment.newest_version()
+    self.render_template("resolve-conflict", {
+      "puzzle": puzzle,
+      "base_comment": base_comment,
+      "newest_comment": newest_comment,
+      "your_text": self.request.get("text"),
+    })
 
 
 HANDLERS = [

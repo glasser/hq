@@ -52,7 +52,7 @@
         <pre>{{ comment.text|escape }}</pre>
         <form action="{% url CommentEditHandler comment.key.id %}" method="post">
           <textarea name="text" rows="10" cols="80">{{ comment.text|escape }}</textarea>
-          <input type="submit" value="edit comment" />
+          <input type="submit" value="save comment" />
         </form>
       </li>
     {% endfor %}
