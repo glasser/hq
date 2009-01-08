@@ -24,7 +24,8 @@ class PuzzleHandler(handler.RequestHandler):
     puzzle = model.Puzzle.get_by_id(long(key_id))
     # TODO(glasser): Better error handling.
     assert puzzle is not None
-    comments = puzzle.comment_set
+    comments = model.Comment.all()
+    comments.ancestor(puzzle)
     comments.filter("replaced_by =", None)
     comments.order('-created')
     self.render_template("puzzle", {

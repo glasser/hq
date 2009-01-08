@@ -10,10 +10,10 @@ indexes:
 # automatically uploaded to the admin console when you next deploy
 # your application using appcfg.py.
 
-# Used 22 times in query history.
+# Used once in query history.
 - kind: Comment
+  ancestor: yes
   properties:
-  - name: puzzle
   - name: replaced_by
   - name: created
     direction: desc

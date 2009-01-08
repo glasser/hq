@@ -187,7 +187,8 @@ class Puzzle(db.Model):
 
 
 class Comment(db.Model):
-  puzzle = db.ReferenceProperty(reference_class=Puzzle)
+  # A comment's parent is the puzzle it is on (this allows
+  # transactions to modify two comments at once).
   replaced_by = db.SelfReferenceProperty()
   created = db.DateTimeProperty(auto_now_add=True)
   author = db.UserProperty()
