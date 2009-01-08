@@ -49,11 +49,15 @@
       <li>
         {{ comment.author.nickname|escape }} at {{ comment.created.ctime|escape }}:
         <pre>{{ comment.text|escape }}</pre>
+        <form action="{% url CommentEditHandler comment.key.id %}" method="post">
+          <textarea name="text" rows="10" cols="80">{{ comment.text|escape }}</textarea>
+          <input type="submit" value="edit comment" />
+        </form>
       </li>
     {% endfor %}
     <li>
       <form action="{% url CommentAddHandler puzzle.key.id %}" method="post">
-        <textarea name="text" rows="20" cols="80"></textarea>
+        <textarea name="text" rows="10" cols="80"></textarea>
         <input type="submit" value="add comment" />
       </form>
     </li>

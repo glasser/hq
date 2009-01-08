@@ -3,6 +3,7 @@ import model
 import handler
 
 from google.appengine.api import users
+from google.appengine.ext import db
 
 class PuzzleListHandler(handler.RequestHandler):
   def get(self, tag=None):
@@ -79,9 +80,35 @@ class CommentAddHandler(handler.RequestHandler):
     assert puzzle is not None
     comment = model.Comment(puzzle=puzzle,
                             author=users.get_current_user(),
-                            text=self.request.get('text'))
+                            text=self.request.get('text'),
+                            parent=puzzle)
     comment.put()
     self.redirect(PuzzleHandler.get_url(puzzle_id))
+
+
+class CommentEditHandler(handler.RequestHandler):
+  def post(self, puzzle_id, comment_id):
+    puzzle = model.Puzzle.get_by_id(long(puzzle_id))
+    # TODO(glasser): Better error handling.
+    assert puzzle is not None
+
+    def txn():
+      old_comment = model.Comment.get_by_id(long(comment_id), parent=puzzle)
+      # TODO(glasser): Better error handling.
+      assert old_comment is not None
+
+      # TODO(glasser): Support merging.
+      assert old_comment.replaced_by is None
+      new_comment = model.Comment(puzzle=puzzle,
+                                  author=users.get_current_user(),
+                                  text=self.request.get('text'),
+                                  parent=puzzle)
+      new_comment.put()
+      old_comment.replaced_by = new_comment
+      old_comment.put()
+    db.run_in_transaction(txn)
+    self.redirect(PuzzleHandler.get_url(puzzle.key().id()))
+
 
 HANDLERS = [
     ('/puzzles/?', PuzzleListHandler),
@@ -93,4 +120,5 @@ HANDLERS = [
     ('/puzzles/delete-tag/(\\d+)/(%s)/?' % model.TAG_NAME,
      PuzzleTagDeleteHandler),
     ('/puzzles/add-comment/(\\d+)/?', CommentAddHandler),
+    ('/puzzles/edit-comment/(\\d+)/(\\d+)/?', CommentEditHandler),
 ]
