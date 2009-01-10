@@ -82,7 +82,8 @@ class CommentAddHandler(handler.RequestHandler):
     assert puzzle is not None
     comment = model.Comment(puzzle=puzzle,
                             author=users.get_current_user(),
-                            text=self.request.get('text'),
+                            text=model.Comment.canonicalize(
+                                self.request.get('text')),
                             parent=puzzle)
     comment.put()
     self.redirect(PuzzleHandler.get_url(puzzle_id))
@@ -108,7 +109,8 @@ class CommentEditHandler(handler.RequestHandler):
         raise CommentConflictError(old_comment)
       new_comment = model.Comment(puzzle=puzzle,
                                   author=users.get_current_user(),
-                                  text=self.request.get('text'),
+                                  text=model.Comment.canonicalize(
+                                      self.request.get('text')),
                                   parent=puzzle)
       new_comment.put()
       old_comment.replaced_by = new_comment
@@ -121,12 +123,20 @@ class CommentEditHandler(handler.RequestHandler):
 
   def conflict_resolution(self, puzzle, base_comment):
     newest_comment = base_comment.newest_version()
-    your_text = self.request.get('text')
+    your_text = model.Comment.canonicalize(self.request.get('text'))
+
+    base_lines = base_comment.text.splitlines(True)
+    newest_lines = newest_comment.text.splitlines(True)
+    your_lines = your_text.splitlines(True)
+    m3 = bzrlib.merge3.Merge3(base_lines, newest_lines, your_lines)
+    merged_text = "".join(m3.merge_lines(reprocess=True))
+
     self.render_template("resolve-conflict", {
       "puzzle": puzzle,
       "base_comment": base_comment,
       "newest_comment": newest_comment,
       "your_text": your_text,
+      "merged_text": merged_text,
     })
 
 

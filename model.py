@@ -235,6 +235,12 @@ class Comment(db.Model):
     is enough to differentiate days."""
     return datetime_display(self.created)
 
+  @staticmethod
+  def canonicalize(some_text):
+    if some_text.endswith('\n'):
+      return some_text
+    return some_text + '\n'
+
 
 class Banner(db.Model):
   contents = db.TextProperty()

@@ -21,9 +21,14 @@
 </p>
 
 <p>
-  Here's what you tried to change it to:
+  You tried to change it to:
+  <pre>{{ your_text|escape }}</pre>
+</p>
+
+<p>
+  Let's try to resolve this!
   <form action="{% url CommentEditHandler newest_comment.key.id %}" method="post">
-    <textarea name="text" rows="10" cols="80">{{ your_text|escape }}</textarea>
+    <textarea name="text" rows="10" cols="80">{{ merged_text|escape }}</textarea>
     <input type="submit" value="save comment" />
   </form>
 </p>
