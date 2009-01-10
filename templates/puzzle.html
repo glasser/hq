@@ -74,7 +74,7 @@
           </select>
           <input type="submit" value="set" />
         </form>
-        <pre>{{ comment.text|escape }}</pre>
+        <pre>{{ comment.text|escape|urlize }}</pre>
         <form action="{% url CommentEditHandler comment.key.id %}" method="post">
           <textarea name="text" rows="10" cols="80">{{ comment.text|escape }}</textarea>
           <input type="submit" value="save comment" />
