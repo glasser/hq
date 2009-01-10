@@ -58,7 +58,7 @@
     {% endfor %}
     <li>
       <form action="{% url CommentAddHandler puzzle.key.id %}" method="post">
-        <textarea name="text" rows="10" cols="80"></textarea>
+        <textarea name="text" rows="30" cols="80"></textarea>
         <input type="submit" value="add comment" />
       </form>
     </li>
