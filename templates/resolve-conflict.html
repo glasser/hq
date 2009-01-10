@@ -10,13 +10,13 @@
 
 <p>
   Oh no!  You tried to edit a comment written by
-  {{ base_comment.author.nickname|escape }} at {{ base_comment.created.ctime|escape }}:
+  {{ base_comment.author.nickname|escape }} at {{ base_comment.created_display }}:
   <pre>{{ base_comment.text|escape }}</pre>
 </p>
 
 <p>
   But in the meantime, it was updated by
-  {{ newest_comment.author.nickname|escape }} at {{ newest_comment.created.ctime|escape }}:
+  {{ newest_comment.author.nickname|escape }} at {{ newest_comment.created_display }}:
   <pre>{{ newest_comment.text|escape }}</pre>
 </p>
 

@@ -1,5 +1,6 @@
 #!/usr/bin/env python2.5
 
+import datetime
 import re
 
 from google.appengine.api import memcache
@@ -186,6 +187,23 @@ class Puzzle(db.Model):
     return ' '.join(map(as_css_class, self.tags))
 
 
+# Borrowed from ryanb@google.com's timezones demo.
+class UtcTzinfo(datetime.tzinfo):
+  def utcoffset(self, dt): return datetime.timedelta(0)
+  def dst(self, dt): return datetime.timedelta(0)
+  def tzname(self, dt): return 'UTC'
+  def olsen_name(self): return 'UTC'
+
+UTC = UtcTzinfo()
+
+class EstTzinfo(datetime.tzinfo):
+  def utcoffset(self, dt): return datetime.timedelta(hours=-5)
+  def dst(self, dt): return datetime.timedelta(0)
+  def tzname(self, dt): return 'EST+05EDT'
+  def olsen_name(self): return 'US/Eastern'
+
+EST = EstTzinfo()
+
 class Comment(db.Model):
   # A comment's parent is the puzzle it is on (this allows
   # transactions to modify two comments at once).
@@ -201,6 +219,16 @@ class Comment(db.Model):
       current = next
       next = current.replaced_by
     return current
+
+  def created_eastern(self):
+    return self.created.replace(tzinfo=UTC).astimezone(EST)
+
+  def created_display(self):
+    """The date as a displayable string; doesn't need to be escaped.  This
+    is Mystery Hunt, so we can assume Eastern time, and the weekday name
+    is enough to differentiate days."""
+    return self.created_eastern().strftime("%r on %A")
+
 
 class Banner(db.Model):
   contents = db.TextProperty()

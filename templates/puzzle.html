@@ -48,7 +48,7 @@
   <ul>
     {% for comment in comments %}
       <li>
-        {{ comment.author.nickname|escape }} at {{ comment.created.ctime|escape }}:
+        {{ comment.author.nickname|escape }} at {{ comment.created_display }}:
         <pre>{{ comment.text|escape }}</pre>
         <form action="{% url CommentEditHandler comment.key.id %}" method="post">
           <textarea name="text" rows="10" cols="80">{{ comment.text|escape }}</textarea>
