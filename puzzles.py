@@ -2,6 +2,8 @@
 import model
 import handler
 
+import bzrlib.merge3
+
 from google.appengine.api import users
 from google.appengine.ext import db
 
@@ -119,11 +121,12 @@ class CommentEditHandler(handler.RequestHandler):
 
   def conflict_resolution(self, puzzle, base_comment):
     newest_comment = base_comment.newest_version()
+    your_text = self.request.get('text')
     self.render_template("resolve-conflict", {
       "puzzle": puzzle,
       "base_comment": base_comment,
       "newest_comment": newest_comment,
-      "your_text": self.request.get("text"),
+      "your_text": your_text,
     })
 
 

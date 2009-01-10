@@ -16,13 +16,13 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 
-from bzrlib.lazy_import import lazy_import
-lazy_import(globals(), """
+# from bzrlib.lazy_import import lazy_import
+# lazy_import(globals(), """
 import os
 import sys
 import time
 import difflib
-""")
+# """)
 
 
 __all__ = ['PatienceSequenceMatcher', 'unified_diff', 'unified_diff_files']
@@ -123,18 +123,23 @@ def unified_diff_files(a, b, sequencematcher=None):
                         sequencematcher=sequencematcher)
 
 
-try:
-    from bzrlib._patiencediff_c import (
-        unique_lcs_c as unique_lcs,
-        recurse_matches_c as recurse_matches,
-        PatienceSequenceMatcher_c as PatienceSequenceMatcher
-        )
-except ImportError:
-    from bzrlib._patiencediff_py import (
-        unique_lcs_py as unique_lcs,
-        recurse_matches_py as recurse_matches,
-        PatienceSequenceMatcher_py as PatienceSequenceMatcher
-        )
+# try:
+#     from bzrlib._patiencediff_c import (
+#         unique_lcs_c as unique_lcs,
+#         recurse_matches_c as recurse_matches,
+#         PatienceSequenceMatcher_c as PatienceSequenceMatcher
+#         )
+# except ImportError:
+#     from bzrlib._patiencediff_py import (
+#         unique_lcs_py as unique_lcs,
+#         recurse_matches_py as recurse_matches,
+#         PatienceSequenceMatcher_py as PatienceSequenceMatcher
+#         )
+from bzrlib._patiencediff_py import (
+    unique_lcs_py as unique_lcs,
+    recurse_matches_py as recurse_matches,
+    PatienceSequenceMatcher_py as PatienceSequenceMatcher
+    )
 
 
 def main(args):

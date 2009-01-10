@@ -19,9 +19,9 @@
 # s: "i hate that."
 
 
-from bzrlib.errors import CantReprocessAndShowBase
+# from bzrlib.errors import CantReprocessAndShowBase
 import bzrlib.patiencediff
-from bzrlib.textfile import check_text_lines
+# from bzrlib.textfile import check_text_lines
 
 
 def intersect(ra, rb):
@@ -67,9 +67,9 @@ class Merge3(object):
     incorporating the changes from both BASE->OTHER and BASE->THIS.
     All three will typically be sequences of lines."""
     def __init__(self, base, a, b, is_cherrypick=False):
-        check_text_lines(base)
-        check_text_lines(a)
-        check_text_lines(b)
+#         check_text_lines(base)
+#         check_text_lines(a)
+#         check_text_lines(b)
         self.base = base
         self.a = a
         self.b = b
@@ -93,7 +93,7 @@ class Merge3(object):
             elif self.a[0].endswith('\r'):
                 newline = '\r'
         if base_marker and reprocess:
-            raise CantReprocessAndShowBase()
+            raise "CantReprocessAndShowBase"
         if name_a:
             start_marker = start_marker + ' ' + name_a
         if name_b:

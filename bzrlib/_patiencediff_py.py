@@ -19,7 +19,7 @@
 from bisect import bisect
 import difflib
 
-from bzrlib.trace import mutter
+# from bzrlib.trace import mutter
 
 
 __all__ = ['PatienceSequenceMatcher', 'unified_diff', 'unified_diff_files']
@@ -121,7 +121,7 @@ def recurse_matches_py(a, b, alo, blo, ahi, bhi, answer, maxrecursion):
 
     """
     if maxrecursion < 0:
-        mutter('max recursion depth reached')
+#        mutter('max recursion depth reached')
         # this will never happen normally, this check is to prevent DOS attacks
         return
     oldlength = len(answer)
