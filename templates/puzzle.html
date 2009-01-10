@@ -49,7 +49,8 @@
       <li>
         {{ metadatum.0 }}: {{ metadatum.1|escape }}
         <form action="{% url PuzzleMetadataSetHandler metadatum.0 %}" method="post">
-          <input type="text" name="value" value="{{ metadatum.1|escape }}"/>
+          <input type="text" name="value"
+                 {% if metadatum.1 %} value="{{ metadatum.1|escape }}" {% endif %}/>
           <input type="submit" value="set {{ metadatum.0 }}" />
         </form>
       </li>
