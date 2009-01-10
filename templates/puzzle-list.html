@@ -1,9 +1,11 @@
 {% extends "template.html" %}
 
-{% block title %}Puzzles{% if searchtag %} [{{searchtag}}]{% endif %}{% endblock %}
+{% block title %}Puzzles{% if searchtags %} [{% for tag in searchtags %} 
+  {{tag}} {% endfor %}]{% endif %}{% endblock %}
 
 {% block content %}
-<h3>Puzzles{% if searchtag %} [{{searchtag}}]{% endif %}</h3>
+<h3>Puzzles{% if searchtags %}
+  [{% for tag in searchtags %} {{tag}} {% endfor %}]{% endif %}</h3>
 
 <ul>
   {% for puzzle in puzzles %}
