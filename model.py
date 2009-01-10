@@ -204,6 +204,15 @@ class EstTzinfo(datetime.tzinfo):
 
 EST = EstTzinfo()
 
+def to_eastern(dt):
+  return dt.replace(tzinfo=UTC).astimezone(EST)
+
+def datetime_display(dt):
+  """The date as a displayable string; doesn't need to be escaped.  This
+  is Mystery Hunt, so we can assume Eastern time, and the weekday name
+  is enough to differentiate days."""
+  return to_eastern(dt).strftime("%r on %A")
+
 class Comment(db.Model):
   # A comment's parent is the puzzle it is on (this allows
   # transactions to modify two comments at once).
@@ -220,14 +229,11 @@ class Comment(db.Model):
       next = current.replaced_by
     return current
 
-  def created_eastern(self):
-    return self.created.replace(tzinfo=UTC).astimezone(EST)
-
   def created_display(self):
     """The date as a displayable string; doesn't need to be escaped.  This
     is Mystery Hunt, so we can assume Eastern time, and the weekday name
     is enough to differentiate days."""
-    return self.created_eastern().strftime("%r on %A")
+    return datetime_display(self.created)
 
 
 class Banner(db.Model):
