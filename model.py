@@ -27,7 +27,7 @@ class ValidatingStringListProperty(db.StringListProperty):
 # because TAG_NAME uses |).  Note that TAG_NAME can't use (?:) because
 # reverse_helper does not support that.  Also, you need to pass tag
 # names through CanonicalizeTagNameFromQuery.
-TAG_PIECE = '[a-zA-Z0-9-]+'
+TAG_PIECE = METADATA_NAME = '[a-zA-Z0-9-]+'
 _VALID_TAG_PIECE_RE = re.compile('^%s$' % TAG_PIECE)
 TAG_NAME = '%s|%s%%3[Aa]%s' % (TAG_PIECE, TAG_PIECE, TAG_PIECE)
 def ValidateTagPiece(name):
@@ -113,8 +113,12 @@ class PuzzleMetadata(db.Model):
       ValidateTagPiece(kwds['key_name'])
     super(PuzzleMetadata, self).__init__(*args, **kwds)
 
+  @staticmethod
+  def puzzle_field_name(name):
+    return 'metadata_%s' % name.replace('-', '_')
 
-class Puzzle(db.Model):
+
+class Puzzle(db.Expando):
   # TODO(glasser): Maximum length is 500 for StringProperty (unindexed
   # TextProperty is unlimited); is this OK?
   # TODO(glasser): Test that unicode titles work properly.
@@ -190,6 +194,17 @@ class Puzzle(db.Model):
       puzzle_options.insert(0, ('', not found_any, ''))
       ret[family.key().name()] = puzzle_options
     return ret
+
+  def metadata(self):
+    metadata = []
+    for metadatum in PuzzleMetadata.all():
+      field_name = PuzzleMetadata.puzzle_field_name(metadatum.key().name())
+      try:
+        value = getattr(self, field_name)
+      except AttributeError, e:
+        value = None
+      metadata.append((metadatum.key().name(), value))
+    return metadata
 
   def tags_as_css_classes(self):
     def as_css_class(tag):

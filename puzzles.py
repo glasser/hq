@@ -79,6 +79,20 @@ class PuzzleTagAddHandler(handler.RequestHandler):
     self.redirect(PuzzleHandler.get_url(puzzle_id))
 
 
+class PuzzleMetadataSetHandler(handler.RequestHandler):
+  def post(self, puzzle_id, metadata_name):
+    puzzle_id = long(puzzle_id)
+    model.ValidateTagPiece(metadata_name)
+    field_name = model.PuzzleMetadata.puzzle_field_name(metadata_name)
+    value = self.request.get('value')
+    def txn():
+      puzzle = model.Puzzle.get_by_id(puzzle_id)
+      setattr(puzzle, field_name, value)
+      puzzle.put()
+    db.run_in_transaction(txn)
+    self.redirect(PuzzleHandler.get_url(puzzle_id))
+
+
 class CommentAddHandler(handler.RequestHandler):
   def post(self, puzzle_id):
     puzzle = model.Puzzle.get_by_id(long(puzzle_id))
@@ -174,6 +188,8 @@ HANDLERS = [
     ('/puzzles/add-tag/(\\d+)/?', PuzzleTagAddHandler),
     ('/puzzles/delete-tag/(\\d+)/(%s)/?' % model.TAG_NAME,
      PuzzleTagDeleteHandler),
+    ('/puzzles/set-metadata/(\\d+)/(%s)/?' % model.METADATA_NAME,
+     PuzzleMetadataSetHandler),
     ('/puzzles/add-comment/(\\d+)/?', CommentAddHandler),
     ('/puzzles/edit-comment/(\\d+)/(\\d+)/?', CommentEditHandler),
     ('/puzzles/set-comment-priority/(\\d+)/(\\d+)/?', CommentPrioritizeHandler),

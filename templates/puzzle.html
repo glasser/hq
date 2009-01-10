@@ -43,6 +43,20 @@
   </ul>
 </div>
 
+<div id="metadata-list">
+  <ul>
+    {% for metadatum in puzzle.metadata %}
+      <li>
+        {{ metadatum.0 }}: {{ metadatum.1|escape }}
+        <form action="{% url PuzzleMetadataSetHandler metadatum.0 %}" method="post">
+          <input type="text" name="value" value="{{ metadatum.1|escape }}"/>
+          <input type="submit" value="set {{ metadatum.0 }}" />
+        </form>
+      </li>
+    {% endfor %}
+  </ul>
+</div>
+
 <div id="comments">
   <h4>Comments</h4>
   <ul>
