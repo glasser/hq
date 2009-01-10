@@ -86,7 +86,7 @@ def TagIsGeneric(name):
 
 def CanonicalizeTagName(name):
   return name.lower()
-
+CanonicalizeTagPiece = CanonicalizeTagName
 
 def CanonicalizeTagNameFromQuery(name):
   return name.replace('%3a', ':').replace('%3A', ':').lower()
@@ -102,6 +102,16 @@ class TagFamily(db.Model):
     super(TagFamily, self).__init__(*args, **kwds)
 
   options = ValidatingStringListProperty(validator=ValidateUniqueTagPieces)
+
+
+class PuzzleMetadata(db.Model):
+  # Its key_name is the metadata's name.
+  def __init__(self, *args, **kwds):
+    if 'key_name' in kwds:
+      assert kwds['key_name'] is not None
+      # TODO(glasser): Better error handling.
+      ValidateTagPiece(kwds['key_name'])
+    super(PuzzleMetadata, self).__init__(*args, **kwds)
 
 
 class Puzzle(db.Model):

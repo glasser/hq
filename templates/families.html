@@ -1,6 +1,6 @@
 {% extends "template.html" %}
 
-{% block title %}Tag Families{% endblock %}
+{% block title %}Tag Families and Puzzle Metadata{% endblock %}
 
 {% block content %}
 <h3>Tag Families</h3>
@@ -30,6 +30,23 @@
       <form action="{% url FamilyCreateHandler %}" method="post">
         <input type="text" name="name" />
         <input type="submit" value="add family" />
+      </form>
+    </li>
+</ul>
+
+
+<h3>Puzzle Metadata</h3>
+
+<ul>
+  {% for metadatum in metadata %}
+    <li>{{ metadatum.key.name }}
+        <a href="{% url AdminMetadataDeleteHandler metadatum.key.name %}">[delete]</a>
+    </li>
+  {% endfor %}
+    <li>
+      <form action="{% url AdminMetadataCreateHandler %}" method="post">
+        <input type="text" name="name" />
+        <input type="submit" value="add puzzle metadata" />
       </form>
     </li>
 </ul>

@@ -5,8 +5,10 @@ import handler
 class FamilyListHandler(handler.RequestHandler):
   def get(self):
     families = model.TagFamily.all()
+    metadata = model.PuzzleMetadata.all()
     self.render_template("families", {
-      "families": families
+      "families": families,
+      "metadata": metadata,
     })
 
 
@@ -63,6 +65,24 @@ class FamilyDeleteHandler(handler.RequestHandler):
     self.redirect(FamilyListHandler.get_url())
 
 
+class AdminMetadataCreateHandler(handler.RequestHandler):
+  def post(self):
+    name = model.CanonicalizeTagPiece(self.request.get('name'))
+    # TODO(glasser): Better error handling.
+    model.PuzzleMetadata.get_or_insert(name)
+    self.redirect(FamilyListHandler.get_url())
+
+
+class AdminMetadataDeleteHandler(handler.RequestHandler):
+  def get(self, metadata_name):
+    metadata_name = model.CanonicalizeTagPiece(metadata_name)
+    metadatum = model.PuzzleMetadata.get_by_key_name(metadata_name)
+    # TODO(glasser): Better error handling.
+    assert metadatum is not None
+    metadatum.delete()
+    self.redirect(FamilyListHandler.get_url())
+
+
 class BannerListHandler(handler.RequestHandler):
   def get(self):
     banners = model.Banner.all()
@@ -109,6 +129,9 @@ HANDLERS = [
      % (model.TAG_PIECE, model.TAG_PIECE), FamilyOptionDeleteHandler),
     ('/admin/tags/add/?', FamilyCreateHandler),
     ('/admin/tags/delete/(%s)/?' % model.TAG_PIECE, FamilyDeleteHandler),
+    ('/admin/tags/add-metadata/?', AdminMetadataCreateHandler),
+    ('/admin/tags/delete-metadata/(%s)/?' % model.TAG_PIECE,
+     AdminMetadataDeleteHandler),
     ('/admin/banners/?', BannerListHandler),
     ('/admin/banners/add/?', BannerAddHandler),
     ('/admin/banners/delete/(\\d+)/?', BannerDeleteHandler),
