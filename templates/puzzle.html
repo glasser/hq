@@ -47,8 +47,18 @@
   <h4>Comments</h4>
   <ul>
     {% for comment in comments %}
-      <li>
-        {{ comment.author.nickname|escape }} at {{ comment.created_display }}:
+      <li class="comment-priority-{{ comment.priority }}">
+        {{ comment.author.nickname|escape }} at {{ comment.created_display }}
+        [{{ comment.priority }}]:
+        <form action="{% url CommentPrioritizeHandler comment.key.id %}" method="post">
+          <select name="priority">
+            {% for priority in comment.PRIORITIES %}
+            <option {% ifequal comment.priority priority %} selected {% endifequal %}
+                    >{{ priority }}</option>
+            {% endfor %}
+          </select>
+          <input type="submit" value="set" />
+        </form>
         <pre>{{ comment.text|escape }}</pre>
         <form action="{% url CommentEditHandler comment.key.id %}" method="post">
           <textarea name="text" rows="10" cols="80">{{ comment.text|escape }}</textarea>

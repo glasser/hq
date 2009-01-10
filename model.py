@@ -220,6 +220,10 @@ class Comment(db.Model):
   created = db.DateTimeProperty(auto_now_add=True)
   author = db.UserProperty()
   text = db.TextProperty()
+  # Note: the choices here are intentionally sorted from most
+  # important to least important.
+  PRIORITIES = ('important', 'normal', 'useless')
+  priority = db.StringProperty(choices=PRIORITIES, default='normal')
 
   def newest_version(self):
     current = self

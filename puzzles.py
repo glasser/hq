@@ -29,6 +29,7 @@ class PuzzleHandler(handler.RequestHandler):
     comments = model.Comment.all()
     comments.ancestor(puzzle)
     comments.filter("replaced_by =", None)
+    comments.order('priority')
     comments.order('-created')
     self.render_template("puzzle", {
       "puzzle": puzzle,
@@ -140,6 +141,27 @@ class CommentEditHandler(handler.RequestHandler):
     })
 
 
+class CommentPrioritizeHandler(handler.RequestHandler):
+  def post(self, puzzle_id, comment_id):
+    priority = self.request.get('priority')
+    # TODO(glasser): Better error handling.
+    assert priority in model.Comment.PRIORITIES
+
+    puzzle = model.Puzzle.get_by_id(long(puzzle_id))
+    # TODO(glasser): Better error handling.
+    assert puzzle is not None
+
+    def txn():
+      old_comment = model.Comment.get_by_id(long(comment_id), parent=puzzle)
+      # TODO(glasser): Better error handling.
+      assert old_comment is not None
+      comment = old_comment.newest_version()
+      comment.priority = priority
+      comment.put()
+    db.run_in_transaction(txn)
+    self.redirect(PuzzleHandler.get_url(puzzle.key().id()))
+
+
 HANDLERS = [
     ('/puzzles/?', PuzzleListHandler),
     # TODO(glasser): Support multiple tags (intersection).
@@ -151,4 +173,5 @@ HANDLERS = [
      PuzzleTagDeleteHandler),
     ('/puzzles/add-comment/(\\d+)/?', CommentAddHandler),
     ('/puzzles/edit-comment/(\\d+)/(\\d+)/?', CommentEditHandler),
+    ('/puzzles/set-comment-priority/(\\d+)/(\\d+)/?', CommentPrioritizeHandler),
 ]

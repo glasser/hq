@@ -3,6 +3,8 @@
     <title>{{ instance_name|escape }} HQ: {% block title %}some page{% endblock %}</title>
     <style type="text/css">
       {{ custom_css }}
+      .comment-priority-important { background-color: yellow; }
+      .comment-priority-useless { background-color: grey; }
     </style>
   </head>
   <body {% block bodyattrs %}{% endblock bodyattrs %}>
