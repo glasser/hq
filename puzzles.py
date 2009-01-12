@@ -252,12 +252,7 @@ class SpreadsheetAddHandler(handler.RequestHandler):
     # TODO(glasser): Better error handling.
     assert doc_key is not None
     acl_url = ('/feeds/acl/private/full/spreadsheet%3A'
-               + doc_key)
-    acl_feed = client.Get(acl_url,
-                          converter=gdata.calendar.CalendarAclFeedFromString)
-    assert acl_feed.total_results.text == '1', "Got one ACL entry"
-    acl_edit_link = acl_feed.entry[0].GetEditLink()
-    assert acl_edit_link is not None
+               + doc_key + '/user%3Aeveryone')
     scope_everyone = gdata.calendar.Scope(scope_type='user',
                                           value='everyone')
     role_writer = gdata.calendar.Role(value='writer')
@@ -268,7 +263,7 @@ class SpreadsheetAddHandler(handler.RequestHandler):
         role=role_writer,
         scope=scope_everyone,
         category=category_access_rule)
-    new_entry = client.Post(acl_entry, acl_edit_link.href,
+    new_entry = client.Post(acl_entry, acl_url,
                             converter=gdata.calendar.CalendarAclEntryFromString)
     sheet = model.Spreadsheet(puzzle=puzzle, spreadsheet_key=doc_key)
     sheet.put()
