@@ -1,4 +1,5 @@
 #!/usr/bin/env python2.5
+import random
 import StringIO
 
 import model
@@ -180,6 +181,9 @@ class CommentPrioritizeHandler(handler.RequestHandler):
 class SpreadsheetAddHandler(handler.RequestHandler):
   def get(self, puzzle_id):
     puzzle_id = long(puzzle_id)
+    puzzle = model.Puzzle.get_by_id(puzzle_id)
+    # TODO(glasser): Better error handling.
+    assert puzzle is not None
 
     client = gdata.docs.service.DocsService()
     gdata.alt.appengine.run_on_appengine(client)
@@ -191,9 +195,13 @@ class SpreadsheetAddHandler(handler.RequestHandler):
     virtual_media_source = gdata.MediaSource(file_handle=virtual_csv_file,
                                              content_type='text/csv',
                                              content_length=3)
+    random_junk = ''.join([random.choice('abcdefghijklmnopqrstuvwxyz')
+                           for i in xrange(25)])
+    title = '%s [%s]' % (self.request.get('title'), random_junk)
+    doc_key = None
     try:
       media_entry = client.UploadSpreadsheet(virtual_media_source,
-                                             self.request.get('title'))
+                                             title)
     except gdata.service.RequestError, request_error:
       # If fetching fails, then tell the user that they need to login to
       # authorize this app by logging in at the following URL.
@@ -206,13 +214,40 @@ class SpreadsheetAddHandler(handler.RequestHandler):
             gdata.service.lookup_scopes(client.service),
             domain=handler.APPS_DOMAIN)
         self.redirect(str(auth_sub_url))
+        return
+      elif (request_error[0]['status'] == 503 and
+            request_error[0]['body'] == 'An unknown error has occurred.'):
+        # Ugh.  This is a bug in spreadsheets, but I guess it's one we
+        # can work around.
+        query = gdata.docs.service.DocumentQuery(params={
+            'title': title,
+            'title-exact': 'true',
+            })
+        docfeed = client.QueryDocumentListFeed(query.ToUri())
+        # TODO(glasser): Better error handling.
+        assert docfeed.total_results.text == '1', "Made one spreadsheet"
+        entry = docfeed.entry[0]
+        doc_url = entry.id.text
+        doc_url_prefix = ('http://docs.google.com/' +
+                          'feeds/documents/private/full/spreadsheet%3A')
+        assert doc_url.startswith(doc_url_prefix)
+        doc_key = doc_url[len(doc_url_prefix):]
       else:
         self.response.out.write(
             'Something else went wrong, here is the error object: %s ' % (
                 str(request_error[0])))
+        return
+    else:
+      # Hmm, I've never actually gotten this to work without the 503,
+      # so I don't know how to write the code for the correct case!
+      self.response.out.write("""
+        Sorry, the spreadsheet code was developed when the Spreadsheets API
+        had a bug I had to work around.  Apparently the bug is fixed, so I
+        can now write code for the non-buggy case... but I haven't yet.""")
       return
-
-    self.response.out.write(str(media_entry))
+    sheet = model.Spreadsheet(puzzle=puzzle, spreadsheet_key=doc_key)
+    sheet.put()
+    self.redirect(PuzzleHandler.get_url(puzzle_id))
 
 
 HANDLERS = [

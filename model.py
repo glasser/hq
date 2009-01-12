@@ -337,6 +337,12 @@ def datetime_display(dt):
   is enough to differentiate days."""
   return to_eastern(dt).strftime("%r on %A")
 
+
+class Spreadsheet(db.Model):
+  puzzle = db.ReferenceProperty(reference_class=Puzzle, required=True)
+  spreadsheet_key = db.StringProperty(required=True)
+
+
 class Comment(db.Model):
   # A comment's parent is the puzzle it is on (this allows
   # transactions to modify two comments at once).
