@@ -8,7 +8,7 @@ from google.appengine.ext import webapp
 import my_template
 import model
 
-INSTANCE_NAME = 'Primal Funk'
+INSTANCE_NAME = 'Optimus Funk'
 
 class RequestHandler(webapp.RequestHandler):
 
