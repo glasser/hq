@@ -34,8 +34,8 @@ def ValidateTagPiece(name):
   """Checks to see if NAME is a valid name for a tag family, a family option,
   or a non-family tag; raises db.BadValueError if not."""
   if not _VALID_TAG_PIECE_RE.match(name):
-    raise db.BadValueError("Invalid tag piece '%s'" % name)
-
+    raise db.BadValueError("Invalid piece '%s'" % name)
+ValidateMetadataName = ValidateTagPiece
 
 def ValidateTagPieces(names):
   for name in names:
@@ -89,7 +89,8 @@ def CanonicalizeTagName(name):
 CanonicalizeTagPiece = CanonicalizeTagName
 
 def CanonicalizeTagNameFromQuery(name):
-  return name.replace('%3a', ':').replace('%3A', ':').lower()
+  return name.replace('%3a', ':').replace('%3A', ':').replace(
+    '%3d', '=').replace('%3D', '=').lower()
 
 
 class TagFamily(db.Model):
@@ -105,12 +106,13 @@ class TagFamily(db.Model):
 
 
 class PuzzleMetadata(db.Model):
-  # Its key_name is the metadata's name.
+  # Its key_name is the metadata's name, and follows the same rule as
+  # tag pieces.
   def __init__(self, *args, **kwds):
     if 'key_name' in kwds:
       assert kwds['key_name'] is not None
       # TODO(glasser): Better error handling.
-      ValidateTagPiece(kwds['key_name'])
+      ValidateMetadataName(kwds['key_name'])
     super(PuzzleMetadata, self).__init__(*args, **kwds)
 
   @staticmethod
@@ -210,6 +212,64 @@ class Puzzle(db.Expando):
     def as_css_class(tag):
       return 'tag_' + tag.replace(':', '_')
     return ' '.join(map(as_css_class, self.tags))
+
+
+class PuzzleQuery(object):
+  def __init__(self, db_query, negative_tags):
+    self.__db_query = db_query
+    # The way that list properties work, there's no real way to filter
+    # on "doesn't contain a tag", so we do it in this class.
+    self.__negative_tags = negative_tags
+
+  @classmethod
+  def parse(cls, path):
+    if path is None:
+      path = ''
+    pieces = [CanonicalizeTagNameFromQuery(t)
+              for t in path.split('/')
+              if t]
+    db_query = Puzzle.all()
+    negative_tags = set()
+    for piece in pieces:
+      if '=' not in piece:
+        piece = 'tag=' + piece
+      command, arg = piece.split('=', 1)
+
+      if command == 'tag':
+        # TODO(glasser): better error handling.
+        assert arg
+        if arg[0] == '-':
+          arg = arg[1:]
+          ValidateTagName(arg)
+          negative_tags.add(arg)
+        else:
+          ValidateTagName(arg)
+          db_query.filter('tags = ', arg)
+      elif command == 'ascmeta' or command == 'descmeta':
+        ValidateMetadataName(arg)
+        field_name = PuzzleMetadata.puzzle_field_name(arg)
+        if command == 'descmeta':
+          field_name = '-' + field_name
+        db_query.order(field_name)
+      else:
+        assert False, "error in tag query: unknown '%s'" % command
+    return cls(db_query, negative_tags)
+
+  def run(self):
+    for puzzle in self.__db_query:
+      valid = True
+      for tag in puzzle.tags:
+        if tag in self.__negative_tags:
+          valid = False
+          break
+      if valid:
+        yield puzzle
+
+  def __iter__(self):
+    return self.run()
+
+  def display_query(self):
+    return "TODO display query"
 
 
 # Borrowed from ryanb@google.com's timezones demo.

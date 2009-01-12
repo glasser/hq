@@ -9,18 +9,9 @@ from google.appengine.ext import db
 
 class PuzzleListHandler(handler.RequestHandler):
   def get(self, tags=None):
-    puzzles = model.Puzzle.all()
-    if tags is not None:
-      tags = [model.CanonicalizeTagNameFromQuery(t)
-              for t in tags.split('/')
-              if t]
-      for tag in tags:
-        # TODO(glasser): Better error handling.
-        model.ValidateTagName(tag)
-        puzzles.filter("tags =", tag)
+    puzzles = model.PuzzleQuery.parse(tags)
     self.render_template("puzzle-list", {
       "puzzles": puzzles,
-      "searchtags": tags,
     })
 
 
@@ -182,7 +173,7 @@ class CommentPrioritizeHandler(handler.RequestHandler):
 HANDLERS = [
     ('/puzzles/?', PuzzleListHandler),
     # TODO(glasser): Support multiple tags (intersection).
-    ('/puzzles/tags/(.+)/?', PuzzleListHandler),
+    ('/puzzles/search/(.+)/?', PuzzleListHandler),
     ('/puzzles/create/?', PuzzleCreateHandler),
     ('/puzzles/show/(\\d+)/?', PuzzleHandler),
     ('/puzzles/add-tag/(\\d+)/?', PuzzleTagAddHandler),
