@@ -1,0 +1,14 @@
+hq is copyright (c) 2009 David Glasser.
+
+The files under bzrlib/ are copyright Bram Cohen and Canonical Ltd
+(see individual files for precise copyrights) with minor tweaks from
+David Glasser, distributed under the GPLv2+.
+
+my_template.py is mostly copyright Google Inc and Lawrence
+Journal-World (see it for precise copyrights) with some changes from
+David Glasser.
+
+hq is GPLv2+.  (But mostly because I don't want to think hard about
+the use of bzrlib; if somebody really wants this under an
+Apache/BSD-style license, I'd be happy to tear out bzrlib and
+relicense the resulting software.)
