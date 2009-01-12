@@ -216,7 +216,7 @@ class Puzzle(db.Expando):
 
 
 class PuzzleQuery(object):
-  def __init__(self, db_query, orders, negative_tags):
+  def __init__(self, db_query, orders, negative_tags, show_metas):
     self.__db_query = db_query
     # We want to be able to sort on custom fields, but we can't create
     # new indexes after deploying, so we need to sort ourselves.
@@ -228,6 +228,9 @@ class PuzzleQuery(object):
     # The way that list properties work, there's no real way to filter
     # on "doesn't contain a tag", so we do it in this class.
     self.__negative_tags = negative_tags
+    # Just a list of metadata names that should be shown in any
+    # displayed list.  (You may access this directly.)
+    self.show_metas = show_metas
 
   @classmethod
   def parse(cls, path):
@@ -239,6 +242,7 @@ class PuzzleQuery(object):
     db_query = Puzzle.all()
     orders = []
     negative_tags = set()
+    show_metas = []
     for piece in pieces:
       if '=' not in piece:
         piece = 'tag=' + piece
@@ -261,9 +265,12 @@ class PuzzleQuery(object):
         if command == 'descmeta':
           direction = datastore.Query.DESCENDING
         orders.append((field_name, direction))
+      elif command == 'showmeta':
+        ValidateMetadataName(arg)
+        show_metas.append(arg)
       else:
-        assert False, "error in tag query: unknown '%s'" % command
-    return cls(db_query, orders, negative_tags)
+        assert False, "error in search query: unknown command '%s'" % command
+    return cls(db_query, orders, negative_tags, show_metas)
 
   def __iter__(self):
     puzzles = []
@@ -299,6 +306,9 @@ class PuzzleQuery(object):
 
   def display_query(self):
     return "TODO display query"
+
+  def show_meta_fields(self):
+    return map(PuzzleMetadata.puzzle_field_name, self.show_metas)
 
 
 # Borrowed from ryanb@google.com's timezones demo.

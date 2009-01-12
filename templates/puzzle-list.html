@@ -5,28 +5,48 @@
 {% block content %}
 <h3>Puzzles {{ puzzles.display_query }}</h3>
 
-<ul>
-  {% for puzzle in puzzles %}
-    <li class="puzzle-listing">
-      <span class="{{ puzzle.tags_as_css_classes }}">
-        <a href="{% url PuzzleHandler puzzle.key.id %}">{{ puzzle.title|escape }}</a>
-        {% if puzzle.tags %}
-          [
-            {% for tag in puzzle.tags %}
-              <a href="{% url PuzzleListHandler tag %}">{{ tag }}</a>
-            {% endfor %}
-          ]
-        {% endif %}
-      </span>
-    </li>
-  {% endfor %}
-    <li>
-      <form action="{% url PuzzleCreateHandler %}" method="post">
+<form action="{% url PuzzleCreateHandler %}" method="post">
+  <table border='1'>
+    <tr>
+      <th>Puzzle</th>
+      <th>Tags</th>
+      {% for meta in puzzles.show_metas %}
+        <th>{{ meta }}</th>
+      {% endfor %}
+    </tr>
+    {% for puzzle in puzzles %}
+      <tr class="puzzle-listing {{ puzzle.tags_as_css_classes }}">
+        <td>
+          <a href="{% url PuzzleHandler puzzle.key.id %}">{{ puzzle.title|escape }}</a>
+        </td>
+        <td>
+          {% for tag in puzzle.tags %}
+            <a href="{% url PuzzleListHandler tag %}">{{ tag }}</a>
+          {% endfor %}
+        </td>
+        {% for meta in puzzles.show_meta_fields %}
+          <td>
+            {{ puzzle..meta|escape|urlize }}
+          </td>
+        {% endfor %}
+      </tr>
+    {% endfor %}
+    <tr>
+      <td>
         <input type="text" name="title" />
-        [<input type="text" name="tags" />]
-        <input type="submit" value="add puzzle" />
-      </form>
-    </li>
-</ul>
+      </td>
+      <td>
+        <input type="text" name="tags" />
+      </td>
+      {% for meta in puzzles.show_meta_fields %}
+        <td>
+          <input type="text" name="{{ meta }}" />
+        </td>
+      {% endfor %}
+    </tr>
+  </table>
+
+  <input type="submit" value="add puzzle" />
+</form>
 
 {% endblock content %}

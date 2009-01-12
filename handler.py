@@ -4,8 +4,8 @@ import os
 
 from google.appengine.api import users
 from google.appengine.ext import webapp
-from google.appengine.ext.webapp import template
 
+import my_template
 import model
 
 INSTANCE_NAME = 'Primal Funk'
@@ -28,4 +28,4 @@ class RequestHandler(webapp.RequestHandler):
       params['custom_css'] = model.Css.get_custom_css()
     if include_rendered_banners:
       params['rendered_banners'] = model.Banner.get_rendered()
-    return template.render(path, params)
+    return my_template.render(path, params)
