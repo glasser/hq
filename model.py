@@ -3,6 +3,7 @@
 import datetime
 import re
 
+from google.appengine.api import datastore
 from google.appengine.api import memcache
 from google.appengine.ext import db
 
@@ -215,8 +216,15 @@ class Puzzle(db.Expando):
 
 
 class PuzzleQuery(object):
-  def __init__(self, db_query, negative_tags):
+  def __init__(self, db_query, orders, negative_tags):
     self.__db_query = db_query
+    # We want to be able to sort on custom fields, but we can't create
+    # new indexes after deploying, so we need to sort ourselves.
+    # (Plus, we want to be able to include puzzles that lack the field
+    # that we're sorting on, which we can't with datastore's sort.)
+    # __orders is a list of tuples (field_name,
+    # datastore.Query.ASCENDING/DESCENDING).
+    self.__orders = orders
     # The way that list properties work, there's no real way to filter
     # on "doesn't contain a tag", so we do it in this class.
     self.__negative_tags = negative_tags
@@ -229,6 +237,7 @@ class PuzzleQuery(object):
               for t in path.split('/')
               if t]
     db_query = Puzzle.all()
+    orders = []
     negative_tags = set()
     for piece in pieces:
       if '=' not in piece:
@@ -248,14 +257,16 @@ class PuzzleQuery(object):
       elif command == 'ascmeta' or command == 'descmeta':
         ValidateMetadataName(arg)
         field_name = PuzzleMetadata.puzzle_field_name(arg)
+        direction = datastore.Query.ASCENDING
         if command == 'descmeta':
-          field_name = '-' + field_name
-        db_query.order(field_name)
+          direction = datastore.Query.DESCENDING
+        orders.append((field_name, direction))
       else:
         assert False, "error in tag query: unknown '%s'" % command
-    return cls(db_query, negative_tags)
+    return cls(db_query, orders, negative_tags)
 
-  def run(self):
+  def __iter__(self):
+    puzzles = []
     for puzzle in self.__db_query:
       valid = True
       for tag in puzzle.tags:
@@ -263,10 +274,28 @@ class PuzzleQuery(object):
           valid = False
           break
       if valid:
-        yield puzzle
+        puzzles.append(puzzle)
 
-  def __iter__(self):
-    return self.run()
+    def compare_by_orders(a, b):
+      # Based loosely on order_compare_entities in datastore_file_stub.
+      for o in self.__orders:
+        try:
+          a_val = getattr(a, o[0])
+        except AttributeError:
+          a_val = None
+        try:
+          b_val = getattr(b, o[0])
+        except AttributeError:
+          b_val = None
+        cmped = cmp(a_val, b_val)
+        if o[1] == datastore.Query.DESCENDING:
+          cmped = -cmped
+        if cmped != 0:
+          return cmped
+      return cmp(a.key(), b.key())
+
+    puzzles.sort(compare_by_orders)
+    return iter(puzzles)
 
   def display_query(self):
     return "TODO display query"
