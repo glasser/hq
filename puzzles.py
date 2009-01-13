@@ -201,7 +201,6 @@ class SpreadsheetAddHandler(handler.RequestHandler):
                            for i in xrange(25)])
     title = '%s [%s]' % (self.request.get('title'), random_junk)
     doc_key = None
-    acl_link = None
     try:
       media_entry = client.UploadSpreadsheet(virtual_media_source,
                                              title)
