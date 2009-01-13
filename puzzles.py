@@ -251,20 +251,6 @@ class SpreadsheetAddHandler(handler.RequestHandler):
       return
     # TODO(glasser): Better error handling.
     assert doc_key is not None
-    acl_url = ('/feeds/acl/private/full/spreadsheet%3A'
-               + doc_key + '/user%3Aeveryone')
-    scope_everyone = gdata.calendar.Scope(scope_type='user',
-                                          value='everyone')
-    role_writer = gdata.calendar.Role(value='writer')
-    category_access_rule = atom.Category(
-        scheme='http://schemas.google.com/g/2005#kind',
-        term='http://schemas.google.com/acl/2007#accessRule')
-    acl_entry = gdata.calendar.CalendarAclEntry(
-        role=role_writer,
-        scope=scope_everyone,
-        category=category_access_rule)
-    new_entry = client.Post(acl_entry, acl_url,
-                            converter=gdata.calendar.CalendarAclEntryFromString)
     sheet = model.Spreadsheet(puzzle=puzzle, spreadsheet_key=doc_key)
     sheet.put()
     self.redirect(PuzzleHandler.get_url(puzzle_id))
