@@ -2,7 +2,6 @@
 
 import os
 
-from google.appengine.api import users
 from google.appengine.ext import webapp
 
 import my_template
@@ -31,10 +30,11 @@ class RequestHandler(webapp.RequestHandler):
     self.username = username
     self.response.headers.add_header(
         'Set-Cookie',
-        '%s=%s; expires=Fri, 31-Dec-2020 23:59:59 GMT' \
+        '%s=%s; path=/; expires=Fri, 31-Dec-2020 23:59:59 GMT' \
           % (self.COOKIE_NAME, username.encode()))
 
   def render_template(self, template_name, params, **kwds):
+    params['usernames'] = model.Username.all()
     params['current_user'] = self.username
     self.response.out.write(self.render_template_to_string(template_name,
                                                            params, **kwds))

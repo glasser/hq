@@ -12,11 +12,11 @@
   <tr>
     <td>
       Oh no!  You tried to edit a comment written by
-      {{ base_comment.author.nickname|escape }} at {{ base_comment.created_display }}:
+      {{ base_comment.author|escape }} at {{ base_comment.created_display }}:
     </td>
     <td>
       But in the meantime, it was updated by
-      {{ newest_comment.author.nickname|escape }} at {{ newest_comment.created_display }}:
+      {{ newest_comment.author|escape }} at {{ newest_comment.created_display }}:
     </td>
     <td>
       You tried to change it to:

@@ -77,7 +77,7 @@
   <ul>
     {% for comment in comments %}
       <li class="comment-priority-{{ comment.priority }}">
-        {{ comment.author.nickname|escape }} at {{ comment.created_display }}
+        {{ comment.author|escape }} at {{ comment.created_display }}
         [{{ comment.priority }}]:
         <form action="{% url CommentPrioritizeHandler comment.key.id %}" method="post">
           <select name="priority">

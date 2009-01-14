@@ -437,3 +437,8 @@ class Css(db.Model):
       entity.put()
     db.run_in_transaction(txn)
     memcache.set(cls.MEMCACHE_KEY, rendered)
+
+
+class Username(db.Model):
+  # Its key_name is the username.
+  pass

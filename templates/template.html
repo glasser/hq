@@ -9,6 +9,17 @@
   </head>
   <body {% block bodyattrs %}{% endblock bodyattrs %}>
     <div id="current-user-info">You are: {{ current_user|escape }}.
+      <form action="{% url UserChangeHandler %}" method="post">
+        <select name="username">
+          {% for username in usernames %}
+            <option {% ifequal current_user username.key.name %} selected {% endifequal %}
+                    >{{ username.key.name|escape }}</option>
+          {% endfor %}
+        </select>
+        or other:
+        <input type="text" name="other" />
+        <input type="submit" value="set name" />
+      </form>
     </div>
     <div id="header-links">
       <a href="{% url PuzzleListHandler %}">Puzzles</a>

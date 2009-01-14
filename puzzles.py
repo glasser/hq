@@ -1,5 +1,6 @@
 #!/usr/bin/env python2.5
 import random
+import re
 import StringIO
 
 import model
@@ -254,6 +255,21 @@ class SpreadsheetAddHandler(handler.RequestHandler):
     self.redirect(PuzzleHandler.get_url(puzzle_id))
 
 
+_USERNAME_RE = re.compile('^[a-zA-Z0-9._-]+$')
+class UserChangeHandler(handler.RequestHandler):
+  def post(self):
+    name = self.request.get('other')
+    if not name:
+      name = self.request.get('username')
+    if name:
+      assert _USERNAME_RE.match(name), (
+        "Bad username: usernames may only contain letters, numbers, periods, " +
+        "dashes, and underscores")
+      self.set_username(name)
+      model.Username.get_or_insert(name)
+    self.redirect(PuzzleListHandler.get_url())
+
+
 HANDLERS = [
     ('/puzzles/?', PuzzleListHandler),
     # TODO(glasser): Support multiple tags (intersection).
@@ -269,4 +285,5 @@ HANDLERS = [
     ('/puzzles/edit-comment/(\\d+)/(\\d+)/?', CommentEditHandler),
     ('/puzzles/set-comment-priority/(\\d+)/(\\d+)/?', CommentPrioritizeHandler),
     ('/puzzles/add-spreadsheet/(\\d+)/?', SpreadsheetAddHandler),
+    ('/change-user/?', UserChangeHandler),
 ]
