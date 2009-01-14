@@ -348,7 +348,7 @@ class Comment(db.Model):
   # transactions to modify two comments at once).
   replaced_by = db.SelfReferenceProperty()
   created = db.DateTimeProperty(auto_now_add=True)
-  author = db.UserProperty()
+  author = db.StringProperty()
   text = db.TextProperty()
   # Note: the choices here are intentionally sorted from most
   # important to least important.

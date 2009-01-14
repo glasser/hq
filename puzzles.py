@@ -5,7 +5,6 @@ import StringIO
 import model
 import handler
 
-from google.appengine.api import users
 from google.appengine.ext import db
 
 import bzrlib.merge3
@@ -100,7 +99,7 @@ class CommentAddHandler(handler.RequestHandler):
     # TODO(glasser): Better error handling.
     assert puzzle is not None
     comment = model.Comment(puzzle=puzzle,
-                            author=users.get_current_user(),
+                            author=self.username,
                             text=model.Comment.canonicalize(
                                 self.request.get('text')),
                             parent=puzzle)
@@ -127,7 +126,7 @@ class CommentEditHandler(handler.RequestHandler):
       if old_comment.replaced_by is not None:
         raise CommentConflictError(old_comment)
       new_comment = model.Comment(puzzle=puzzle,
-                                  author=users.get_current_user(),
+                                  author=self.username,
                                   text=model.Comment.canonicalize(
                                       self.request.get('text')),
                                   parent=puzzle)

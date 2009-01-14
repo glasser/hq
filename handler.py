@@ -18,9 +18,26 @@ else:
   HOST_NAME = os.environ['SERVER_NAME']
 
 class RequestHandler(webapp.RequestHandler):
+  COOKIE_NAME = 'hq_username'
+  NOBODY = 'nobody'
 
-  def render_template(self, *args, **kwds):
-    self.response.out.write(self.render_template_to_string(*args, **kwds))
+  def initialize(self, *args, **kwds):
+    super(RequestHandler, self).initialize(*args, **kwds)
+
+    # Deal with username cookie.
+    self.username = self.request.cookies.get(self.COOKIE_NAME, self.NOBODY)
+
+  def set_username(self, username):
+    self.username = username
+    self.response.headers.add_header(
+        'Set-Cookie',
+        '%s=%s; expires=Fri, 31-Dec-2020 23:59:59 GMT' \
+          % (self.COOKIE_NAME, username.encode()))
+
+  def render_template(self, template_name, params, **kwds):
+    params['current_user'] = self.username
+    self.response.out.write(self.render_template_to_string(template_name,
+                                                           params, **kwds))
 
   @classmethod
   def render_template_to_string(cls, template_name, params,
@@ -28,8 +45,6 @@ class RequestHandler(webapp.RequestHandler):
                                 include_rendered_banners=True):
     path = os.path.join(os.path.dirname(__file__), 'templates',
                         '%s.html' % template_name)
-    params['current_user'] = users.get_current_user()
-    params['log_out_url'] = users.create_logout_url('/')
     params['instance_name'] = INSTANCE_NAME
     if include_custom_css:
       params['custom_css'] = model.Css.get_custom_css()
