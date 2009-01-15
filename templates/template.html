@@ -34,7 +34,7 @@
     </style>
   </head>
   <body {% block bodyattrs %}{% endblock bodyattrs %}>
-    <div id="current-user-info">You are: {{ current_user|escape }}.
+    <div id="current-user-info">You are: <span class="username">{{ current_user|escape }}</span>.
       {% ifequal current_user "nobody" %}
         <span class="blatant">Please log in: </span>
       {% else %}

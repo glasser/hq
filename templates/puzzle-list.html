@@ -6,20 +6,20 @@
 <h3>Puzzles {{ puzzles.describe_query }}</h3>
 
 <form action="{% url PuzzleCreateHandler %}" method="post">
-  <table>
-    <tr>
-      <th>Puzzle</th>
+  <table class="puzzle_table">
+    <tr class="legend">
+      <th class="puzzle_name">Puzzle</th>
       {% for family in families %}
-        <th>{{ family.key.name }}</th>
+        <th class="family_{{family.key.name}}">{{ family.key.name }}</th>
       {% endfor %}
-      <th>Tags</th>
+      <th class="tags">Tags</th>
       {% for meta in puzzles.show_metas %}
-        <th>{{ meta }}</th>
+        <th class="meta_{{meta}}">{{ meta }}</th>
       {% endfor %}
     </tr>
     {% for puzzle in puzzles %}
       <tr class="{{ puzzle.tags_as_css_classes }} {% cycle puzzle_display_0,puzzle_display_1 %}"> 
-        <td>
+        <td class="puzzle_name">
           <a href="{% url PuzzleHandler puzzle.key.id %}">{{ puzzle.title|escape }}</a>
         </td>
         {% for family__option in puzzle.ordered_families %}
@@ -28,26 +28,31 @@
               <a href="{% url PuzzleListHandler family__option.2 %}"
                  >{{ family__option.1 }}</a>
             {% endif %}
+            &nbsp;
           </td>
         {% endfor %}
-        <td>
+        <td class="generic_tags">
           {% for tag in puzzle.generic_tags %}
-            <a href="{% url PuzzleListHandler tag %}">{{ tag }}</a>
+            <span class="tag_{{tag}}">
+              <a href="{% url PuzzleListHandler tag %}">{{ tag }}</a>
+            </span>
           {% endfor %}
+          &nbsp;
         </td>
         {% for meta in puzzles.show_meta_fields %}
-          <td>
+          <td class="meta_{{meta}}">
             {{ puzzle..meta|escape|urlize }}
+            &nbsp;
           </td>
         {% endfor %}
       </tr>
     {% endfor %}
-    <tr>
-      <td>
+    <tr class="add_puzzle_row">
+      <td class="puzzle_name">
         <input type="text" name="title" />
       </td>
       {% for family in families %}
-        <td>
+        <td class="tag_{{ family.key.name }}">
           <select name="tag_{{ family.key.name }}">
             <option></option>
             {% for option in family.options %}
@@ -56,18 +61,18 @@
           </select>
         </td>
       {% endfor %}
-      <td>
+      <td class="generic_tags">
         <input type="text" name="tags" />
       </td>
       {% for meta in puzzles.show_meta_fields %}
-        <td>
+        <td class="meta_{{ meta }}">
           <input type="text" name="{{ meta }}" />
         </td>
       {% endfor %}
     </tr>
   </table>
 
-  <input type="submit" value="add puzzle" />
+  <input type="submit" value="add puzzle" class="add_puzzle" />
 </form>
 
 {% endblock content %}
