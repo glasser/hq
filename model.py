@@ -369,6 +369,12 @@ def datetime_display(dt):
   is enough to differentiate days."""
   return to_eastern(dt).strftime("%r on %A")
 
+def datetime_display_short(dt):
+  """The date as a displayable string; doesn't need to be escaped.  This
+  is Mystery Hunt, so we can assume Eastern time, and the weekday name
+  is enough to differentiate days."""
+  return to_eastern(dt).strftime("%a %H:%M")
+
 
 class Spreadsheet(db.Model):
   puzzle = db.ReferenceProperty(reference_class=Puzzle, required=True)
@@ -459,7 +465,7 @@ class Newsfeed(db.Model):
     """The date as a displayable string; doesn't need to be escaped.  This
     is Mystery Hunt, so we can assume Eastern time, and the weekday name
     is enough to differentiate days."""
-    return datetime_display(self.created)
+    return datetime_display_short(self.created)
 
   @classmethod
   def get_rendered(cls):
