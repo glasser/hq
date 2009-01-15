@@ -95,7 +95,7 @@
   <ul>
     {% for comment in comments %}
       <li class="comment-priority-{{ comment.priority }}">
-        {{ comment.author|escape }} at {{ comment.created_display }}
+        last updated by {{ comment.author|escape }} at {{ comment.created_display }}
         [{{ comment.priority }}]
         <a href="#" id="edit-priority-{{ comment.key.id }}">[edit priority]</a>
         <span class="priority-{{ comment.key.id }}">
