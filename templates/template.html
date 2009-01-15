@@ -5,17 +5,19 @@
     <script type="text/javascript">
        $(document).ready(function() {
          $("a[id^=edit-]").each(function() {
-           var target_name = "#" + this.id.substring(5);
-           $(target_name).hide();
-           $(this).text("[edit]");
+           var target_name = "." + this.id.substring(5);
+           var original_text = $(this).text();
+           $(target_name).hide().animate({opacity: 0});
            $(this).toggle(
              function() {
-               $(target_name).show("fast");
+               $(target_name).show().animate({opacity: 1});
                $(this).text("[hide]");
              },
              function() {
-               $(target_name).hide("fast");
-               $(this).text("[edit]");
+               $(target_name).animate(
+                 {opacity: 0},
+                 function() { $(this).hide(); });
+               $(this).text(original_text);
              }
            );
          });
@@ -30,8 +32,8 @@
   </head>
   <body {% block bodyattrs %}{% endblock bodyattrs %}>
     <div id="current-user-info">You are: {{ current_user|escape }}.
-      <a href="#" id="edit-username-selector"></a>
-      <div id="username-selector">
+      <a href="#" id="edit-username-selector">[edit]</a>
+      <div class="username-selector">
         <form action="{% url UserChangeHandler %}" method="post">
           <select name="username">
             {% for username in usernames %}

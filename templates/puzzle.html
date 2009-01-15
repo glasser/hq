@@ -10,12 +10,17 @@
 <div id="tag-list">
   {% for tag in puzzle.generic_tags %}
     <a href="{% url PuzzleListHandler tag %}">{{ tag }}</a>
-    <a href="{% url PuzzleTagDeleteHandler puzzle.key.id,tag %}">[delete]</a>
+    <span class="tag-editor">
+      <a href="{% url PuzzleTagDeleteHandler puzzle.key.id,tag %}">[delete]</a>
+    </span>
   {% endfor %}
-  <form action="{% url PuzzleTagAddHandler puzzle.key.id %}" method="post">
-    <input type="text" name="tag" />
-    <input type="submit" value="add tag" />
-  </form>
+  <div class="tag-editor">
+    <form action="{% url PuzzleTagAddHandler puzzle.key.id %}" method="post">
+      <input type="text" name="tag" />
+      <input type="submit" value="add tag" />
+    </form>
+  </div>
+  <a href="#" id="edit-tag-editor">[edit tags]</a>
   <ul>
     {% for family__options in puzzle.families.iteritems %}
       <li>
