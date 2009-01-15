@@ -30,11 +30,16 @@
       .toggle-edit-link { font-size: x-small; }
       .comment-priority-important { background-color: yellow; }
       .comment-priority-useless { background-color: grey; }
+      .blatant { font-size: x-large; }
     </style>
   </head>
   <body {% block bodyattrs %}{% endblock bodyattrs %}>
     <div id="current-user-info">You are: {{ current_user|escape }}.
-      <a href="#" id="edit-username-selector">[edit]</a>
+      {% ifequal current_user "nobody" %}
+        <span class="blatant">Please log in: </span>
+      {% else %}
+        <a href="#" id="edit-username-selector">[edit]</a>
+      {% endifequal %}
       <div class="username-selector">
         <form action="{% url UserChangeHandler %}" method="post">
           <select name="username">
