@@ -1,4 +1,7 @@
 #!/usr/bin/env python2.5
+
+#test comment
+
 import random
 import re
 import StringIO
