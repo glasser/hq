@@ -6,7 +6,7 @@
 <h3>Puzzles {{ puzzles.describe_query }}</h3>
 
 <form action="{% url PuzzleCreateHandler %}" method="post">
-  <table border='1'>
+  <table>
     <tr>
       <th>Puzzle</th>
       {% for family in families %}
@@ -18,12 +18,12 @@
       {% endfor %}
     </tr>
     {% for puzzle in puzzles %}
-      <tr class="puzzle-listing {{ puzzle.tags_as_css_classes }}">
+      <tr class="{{ puzzle.tags_as_css_classes }} {% cycle puzzle_display_0,puzzle_display_1 %}"> 
         <td>
           <a href="{% url PuzzleHandler puzzle.key.id %}">{{ puzzle.title|escape }}</a>
         </td>
         {% for family__option in puzzle.ordered_families %}
-          <td>
+          <td class="tag_{{ family__option.0.key.name }}_{{ family__option.1}}">
             {% if family__option.1 %}
               <a href="{% url PuzzleListHandler family__option.2 %}"
                  >{{ family__option.1 }}</a>
