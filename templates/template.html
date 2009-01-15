@@ -38,7 +38,7 @@
       {% ifequal current_user "nobody" %}
         <span class="blatant">Please log in: </span>
       {% else %}
-        <a href="#" id="edit-username-selector">[edit]</a>
+        <a href="#" id="edit-username-selector">[change]</a>
       {% endifequal %}
       <div class="username-selector">
         <form action="{% url UserChangeHandler %}" method="post">
