@@ -33,7 +33,7 @@
                    >{{ option__selected.0 }}</a>
               {% endif %}
             {% endfor %}
-            <a href="#" id="edit-family-{{ family__options.0 }}">[edit]</a>
+            <a href="#" id="edit-family-{{ family__options.0 }}" class="family-editor">[edit]</a>
             <span class="family-{{ family__options.0 }}">
               <select name="tag">
                 {% for option__selected in family__options.1 %}

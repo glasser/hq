@@ -1,0 +1,12 @@
+/* This stuff we'll probably do in the runtime CSS block. */
+
+td.tag_status_new    { background-color: #FF0000; }
+td.tag_status_new a  { color: #FFFFFF; }
+td.tag_status_solved a { color: #000000; }
+tr.tag_status_solved { background-color: #6B6B6B;}  /* #999900;}*/
+td.tag_status_needs-insight   { background-color: #FFD700; }
+td.tag_status_needs-research  { background-color: #FFD700; }
+
+td.tag_priority_high     { background-color: #FF0000; }
+td.tag_priority_high a   { color: #FFFFFF; }
+td.tag_priority_solved a { color: #000000; }
