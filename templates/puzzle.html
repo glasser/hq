@@ -7,66 +7,68 @@
 {% block content %}
 <h3>Puzzle: {{ puzzle.title|escape }}</h3>
 
-<div id="tag-list">
-  {% for tag in puzzle.generic_tags %}
-    <a href="{% url PuzzleListHandler tag %}">{{ tag }}</a>
-    <span class="tag-editor">
-      <a href="{% url PuzzleTagDeleteHandler puzzle.key.id,tag %}">[delete]</a>
-    </span>
-  {% endfor %}
-  <div class="tag-editor">
-    <form action="{% url PuzzleTagAddHandler puzzle.key.id %}" method="post">
-      <input type="text" name="tag" />
-      <input type="submit" value="add tag" />
-    </form>
+<div id="tags_and_meta">
+  <div id="tag-list">
+    {% for tag in puzzle.generic_tags %}
+      <a href="{% url PuzzleListHandler tag %}">{{ tag }}</a>
+      <span class="tag-editor">
+        <a href="{% url PuzzleTagDeleteHandler puzzle.key.id,tag %}">[delete]</a>
+      </span>
+    {% endfor %}
+    <div class="tag-editor">
+      <form action="{% url PuzzleTagAddHandler puzzle.key.id %}" method="post">
+        <input type="text" name="tag" />
+        <input type="submit" value="add tag" />
+      </form>
+    </div>
+    <a href="#" id="edit-tag-editor">[edit tags]</a>
+    <ul>
+      {% for family__options in puzzle.families.iteritems %}
+        <li>
+          <form action="{% url PuzzleTagAddHandler puzzle.key.id %}" method="post">
+            {{ family__options.0 }}:
+            {% for option__selected in family__options.1 %}
+              {% if option__selected.0 and option__selected.1 %}
+                <a href="{% url PuzzleListHandler option__selected.2 %}"
+                   >{{ option__selected.0 }}</a>
+              {% endif %}
+            {% endfor %}
+            <a href="#" id="edit-family-{{ family__options.0 }}">[edit]</a>
+            <span class="family-{{ family__options.0 }}">
+              <select name="tag">
+                {% for option__selected in family__options.1 %}
+                  <option value="{{ family__options.0 }}:{{ option__selected.0 }}"
+                          {% if option__selected.1 %}
+                            selected
+                          {% endif %}
+                          >{{option__selected.0}}</option>
+               {% endfor %}
+              </select>
+              <input type="submit" value="set" />
+            </span>
+          </form>
+        </li>
+      {% endfor %}
+    </ul>
   </div>
-  <a href="#" id="edit-tag-editor">[edit tags]</a>
-  <ul>
-    {% for family__options in puzzle.families.iteritems %}
-      <li>
-        <form action="{% url PuzzleTagAddHandler puzzle.key.id %}" method="post">
-          {{ family__options.0 }}:
-          {% for option__selected in family__options.1 %}
-            {% if option__selected.0 and option__selected.1 %}
-              <a href="{% url PuzzleListHandler option__selected.2 %}"
-                 >{{ option__selected.0 }}</a>
-            {% endif %}
-          {% endfor %}
-          <a href="#" id="edit-family-{{ family__options.0 }}">[edit]</a>
-          <span class="family-{{ family__options.0 }}">
-            <select name="tag">
-              {% for option__selected in family__options.1 %}
-                <option value="{{ family__options.0 }}:{{ option__selected.0 }}"
-                        {% if option__selected.1 %}
-                          selected
-                        {% endif %}
-                        >{{option__selected.0}}</option>
-             {% endfor %}
-            </select>
-            <input type="submit" value="set" />
-          </span>
-        </form>
-      </li>
-    {% endfor %}
-  </ul>
-</div>
-
-<div id="metadata-list">
-  <ul>
-    {% for metadatum in puzzle.metadata %}
-      <li>
-        <form action="{% url PuzzleMetadataSetHandler metadatum.0 %}" method="post">
-          {{ metadatum.0 }}: {%if metadatum.1 %}{{ metadatum.1|escape|urlize }}{% endif %}
-          <a href="#" id="edit-metadatum-{{ metadatum.0 }}">[edit]</a>
-          <span class="metadatum-{{ metadatum.0 }}">
-            <input type="text" name="value"
-                   {% if metadatum.1 %} value="{{ metadatum.1|escape }}" {% endif %}/>
-            <input type="submit" value="set {{ metadatum.0 }}" />
-          </span>
-        </form>
-      </li>
-    {% endfor %}
-  </ul>
+  
+  <div id="metadata-list">
+    <ul>
+      {% for metadatum in puzzle.metadata %}
+        <li>
+          <form action="{% url PuzzleMetadataSetHandler metadatum.0 %}" method="post">
+            {{ metadatum.0 }}: {%if metadatum.1 %}{{ metadatum.1|escape|urlize }}{% endif %}
+            <a href="#" id="edit-metadatum-{{ metadatum.0 }}">[edit]</a>
+            <span class="metadatum-{{ metadatum.0 }}">
+              <input type="text" name="value"
+                     {% if metadatum.1 %} value="{{ metadatum.1|escape }}" {% endif %}/>
+              <input type="submit" value="set {{ metadatum.0 }}" />
+            </span>
+          </form>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
 </div>
 
 <div id="spreadsheets">
