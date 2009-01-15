@@ -8,6 +8,7 @@
            var target_name = "." + this.id.substring(5);
            var original_text = $(this).text();
            $(target_name).hide().animate({opacity: 0});
+           $(this).addClass("toggle-edit-link");
            $(this).toggle(
              function() {
                $(target_name).show().animate({opacity: 1});
@@ -26,6 +27,7 @@
     </script>
     <style type="text/css">
       {{ custom_css }}
+      .toggle-edit-link { font-size: x-small; }
       .comment-priority-important { background-color: yellow; }
       .comment-priority-useless { background-color: grey; }
     </style>
