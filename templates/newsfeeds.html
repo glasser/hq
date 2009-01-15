@@ -2,6 +2,6 @@
 
 <ul class="newsfeed_list">
   {% for newsfeed in newsfeeds %}
-    <li class="newsfeed">[{{newsfeed.created_display}}] - {{ newsfeed.contents|escape }}</li>
+    <li class="newsfeed">[{{newsfeed.created_display}}] - {{ newsfeed.contents }}</li>
   {% endfor %}
 </ul>
