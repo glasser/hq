@@ -266,6 +266,8 @@ class PuzzleQuery(object):
     tags = set()
     negative_tags = set()
     show_metas = []
+    show_deleted = False
+
     for piece in pieces:
       if '=' not in piece:
         piece = 'tag=' + piece
@@ -279,6 +281,8 @@ class PuzzleQuery(object):
           ValidateTagName(arg)
           negative_tags.add(arg)
         else:
+          if arg == 'deleted':
+            show_deleted = True
           ValidateTagName(arg)
           tags.add(arg)  # This is just for describe purposes.
           db_query.filter('tags = ', arg)
@@ -294,6 +298,9 @@ class PuzzleQuery(object):
         show_metas.append(arg)
       else:
         assert False, "error in search query: unknown command '%s'" % command
+
+    if not show_deleted:
+        negative_tags.add('deleted')
     return cls(db_query, orders, tags, negative_tags, show_metas)
 
   def __iter__(self):
