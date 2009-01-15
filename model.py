@@ -403,7 +403,8 @@ class Comment(db.Model):
 
 class Banner(db.Model):
   contents = db.TextProperty()
-
+  created = db.DateTimeProperty(auto_now_add=True)
+  
   MEMCACHE_KEY = 'rendered:banners'
 
   # Warning: using db.put or db.delete won't trigger these memcache flushes!

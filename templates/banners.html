@@ -1,6 +1,8 @@
-<ul>
+<h3 class="banner_header">Banners</h3>
+
+<ul class="banner_list">
   {% for banner in banners %}
-    <li>{{ banner.contents|escape }}</li>
+    <li class="banner">[{{banner.created|date:"D H:i"}}] - {{ banner.contents|escape }}</li>
   {% endfor %}
 </ul>
 
