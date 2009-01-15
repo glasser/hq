@@ -9,10 +9,10 @@
   <table border='1'>
     <tr>
       <th>Puzzle</th>
-      <th>Tags</th>
       {% for family in families %}
         <th>{{ family.key.name }}</th>
       {% endfor %}
+      <th>Tags</th>
       {% for meta in puzzles.show_metas %}
         <th>{{ meta }}</th>
       {% endfor %}
@@ -22,10 +22,11 @@
         <td>
           <a href="{% url PuzzleHandler puzzle.key.id %}">{{ puzzle.title|escape }}</a>
         </td>
-        {% for family_option in puzzle.ordered_families %}
+        {% for family__option in puzzle.ordered_families %}
           <td>
-            {% if family_option.1 %}
-              {{ family_option.1 }}
+            {% if family__option.1 %}
+              <a href="{% url PuzzleListHandler family__option.2 %}"
+                 >{{ family__option.1 }}</a>
             {% endif %}
           </td>
         {% endfor %}

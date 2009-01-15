@@ -202,8 +202,9 @@ class Puzzle(db.Expando):
     ret = []
     for family in TagFamily.all():
       for option in family.options:
-        if '%s:%s' % (family.key().name(), option) in self.tags:
-          ret.append((family, option))
+        tag_name = '%s:%s' % (family.key().name(), option)
+        if tag_name in self.tags:
+          ret.append((family, option, tag_name))
           break
       else:
         ret.append((family, None))
