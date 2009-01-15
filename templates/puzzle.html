@@ -32,16 +32,19 @@
                  >{{ option__selected.0 }}</a>
             {% endif %}
           {% endfor %}
-          <select name="tag">
-            {% for option__selected in family__options.1 %}
-              <option value="{{ family__options.0 }}:{{ option__selected.0 }}"
-                 {% if option__selected.1 %}
-                    selected
-                 {% endif %}
-              >{{option__selected.0}}</option>
-            {% endfor %}
-          </select>
-          <input type="submit" value="set" />
+          <a href="#" id="edit-family-{{ family__options.0 }}">[edit]</a>
+          <span class="family-{{ family__options.0 }}">
+            <select name="tag">
+              {% for option__selected in family__options.1 %}
+                <option value="{{ family__options.0 }}:{{ option__selected.0 }}"
+                        {% if option__selected.1 %}
+                          selected
+                        {% endif %}
+                        >{{option__selected.0}}</option>
+             {% endfor %}
+            </select>
+            <input type="submit" value="set" />
+          </span>
         </form>
       </li>
     {% endfor %}
@@ -53,7 +56,9 @@
     {% for metadatum in puzzle.metadata %}
       <li>
         {{ metadatum.0 }}: {{ metadatum.1|escape|urlize }}
-        <form action="{% url PuzzleMetadataSetHandler metadatum.0 %}" method="post">
+        <a href="#" id="edit-metadatum-{{ metadatum.0 }}">[edit]</a>
+        <form class="metadatum-{{ metadatum.0 }}"
+              action="{% url PuzzleMetadataSetHandler metadatum.0 %}" method="post">
           <input type="text" name="value"
                  {% if metadatum.1 %} value="{{ metadatum.1|escape }}" {% endif %}/>
           <input type="submit" value="set {{ metadatum.0 }}" />
