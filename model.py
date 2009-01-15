@@ -337,7 +337,7 @@ class PuzzleQuery(object):
 
   def describe_query(self):
     return " ".join(["[%s]" % tag for tag in self.__tags]
-                    + ["[-%s]" % tag for tag in self.__negative_tags])
+                    + ["[not %s]" % tag for tag in self.__negative_tags])
 
   def show_meta_fields(self):
     return map(PuzzleMetadata.puzzle_field_name, self.show_metas)
