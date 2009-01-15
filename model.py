@@ -216,7 +216,7 @@ class Puzzle(db.Expando):
 
 
 class PuzzleQuery(object):
-  def __init__(self, db_query, orders, negative_tags, show_metas):
+  def __init__(self, db_query, orders, tags, negative_tags, show_metas):
     self.__db_query = db_query
     # We want to be able to sort on custom fields, but we can't create
     # new indexes after deploying, so we need to sort ourselves.
@@ -225,6 +225,9 @@ class PuzzleQuery(object):
     # __orders is a list of tuples (field_name,
     # datastore.Query.ASCENDING/DESCENDING).
     self.__orders = orders
+    # The query already is filtered on these tags; this is just for
+    # description.
+    self.__tags = tags
     # The way that list properties work, there's no real way to filter
     # on "doesn't contain a tag", so we do it in this class.
     self.__negative_tags = negative_tags
@@ -241,6 +244,7 @@ class PuzzleQuery(object):
               if t]
     db_query = Puzzle.all()
     orders = []
+    tags = set()
     negative_tags = set()
     show_metas = []
     for piece in pieces:
@@ -257,6 +261,7 @@ class PuzzleQuery(object):
           negative_tags.add(arg)
         else:
           ValidateTagName(arg)
+          tags.add(arg)  # This is just for describe purposes.
           db_query.filter('tags = ', arg)
       elif command == 'ascmeta' or command == 'descmeta':
         ValidateMetadataName(arg)
@@ -270,7 +275,7 @@ class PuzzleQuery(object):
         show_metas.append(arg)
       else:
         assert False, "error in search query: unknown command '%s'" % command
-    return cls(db_query, orders, negative_tags, show_metas)
+    return cls(db_query, orders, tags, negative_tags, show_metas)
 
   def __iter__(self):
     puzzles = []
@@ -304,8 +309,9 @@ class PuzzleQuery(object):
     puzzles.sort(compare_by_orders)
     return iter(puzzles)
 
-  def display_query(self):
-    return "TODO display query"
+  def describe_query(self):
+    return " ".join(["[%s]" % tag for tag in self.__tags]
+                    + ["[-%s]" % tag for tag in self.__negative_tags])
 
   def show_meta_fields(self):
     return map(PuzzleMetadata.puzzle_field_name, self.show_metas)
