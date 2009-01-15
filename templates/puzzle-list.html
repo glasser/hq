@@ -3,7 +3,7 @@
 {% block title %}Puzzles {{ puzzles.display_query }}{% endblock %}
 
 {% block content %}
-<h3>Puzzles {{ puzzles.describe_query }}</h3>
+<h3 class="puzzles_header">Puzzles {{ puzzles.describe_query }}</h3>
 
 <form action="{% url PuzzleCreateHandler %}" method="post">
   <table class="puzzle_table">
