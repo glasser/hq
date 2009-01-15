@@ -198,6 +198,24 @@ class Puzzle(db.Expando):
       ret[family.key().name()] = puzzle_options
     return ret
 
+  def ordered_families(self):
+    ret = []
+    for family in TagFamily.all():
+      for option in family.options:
+        if '%s:%s' % (family.key().name(), option) in self.tags:
+          ret.append((family, option))
+          break
+      else:
+        ret.append((family, None))
+    return ret
+
+  def option_for_family(self, family_name):
+    prefix = '%s:' % family_name
+    for tag in self.tags:
+      if tag.startswith(prefix):
+        return tag[len(prefix):]
+    return None
+
   def metadata(self):
     metadata = []
     for metadatum in PuzzleMetadata.all():

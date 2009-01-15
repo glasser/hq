@@ -20,8 +20,11 @@ import gdata.service
 class PuzzleListHandler(handler.RequestHandler):
   def get(self, tags=None):
     puzzles = model.PuzzleQuery.parse(tags)
+    # Convert to list so we can iterate multiple times.
+    families = list(model.TagFamily.all())
     self.render_template("puzzle-list", {
       "puzzles": puzzles,
+      "families": families,
     })
 
 
