@@ -436,9 +436,43 @@ class Banner(db.Model):
     banners = cls.all()
     rendered = handler.RequestHandler.render_template_to_string('banners', {
       'banners': banners,
-    }, include_rendered_banners=False)
+    }, include_rendered_banners=False, include_rendered_newsfeeds=False)
     memcache.set(cls.MEMCACHE_KEY, rendered)
     return rendered
+
+
+class Newsfeed(db.Model):
+  contents = db.TextProperty()
+  created  = db.DateTimeProperty(auto_now_add=True)
+
+  MEMCACHE_KEY = 'rendered:newsfeeds'
+
+  # Warning: using db.put or db.delete won't trigger these memcache flushes!
+  def delete(self):
+    super(Banner, self).delete()
+    memcache.flush_all()
+  def put(self):
+    super(Newsfeed, self).put()
+    memcache.flush_all()
+
+  def created_display(self):
+    """The date as a displayable string; doesn't need to be escaped.  This
+    is Mystery Hunt, so we can assume Eastern time, and the weekday name
+    is enough to differentiate days."""
+    return datetime_display(self.created)
+
+  @classmethod
+  def get_rendered(cls):
+    rendered = memcache.get(cls.MEMCACHE_KEY)
+    if rendered is not None:
+      return rendered
+    newsfeeds = cls.all().order("-created")
+    rendered = handler.RequestHandler.render_template_to_string('newsfeeds', {
+      'newsfeeds': newsfeeds.fetch(5),
+    }, include_rendered_banners=False, include_rendered_newsfeeds=False)
+    memcache.set(cls.MEMCACHE_KEY, rendered)
+    return rendered
+
 
 
 # Don't manipulate elements of this class directly: just use

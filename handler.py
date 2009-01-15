@@ -42,7 +42,8 @@ class RequestHandler(webapp.RequestHandler):
   @classmethod
   def render_template_to_string(cls, template_name, params,
                                 include_custom_css=True,
-                                include_rendered_banners=True):
+                                include_rendered_banners=True,
+                                include_rendered_newsfeeds=True):
     path = os.path.join(os.path.dirname(__file__), 'templates',
                         '%s.html' % template_name)
     params['instance_name'] = INSTANCE_NAME
@@ -50,4 +51,6 @@ class RequestHandler(webapp.RequestHandler):
       params['custom_css'] = model.Css.get_custom_css()
     if include_rendered_banners:
       params['rendered_banners'] = model.Banner.get_rendered()
+    if include_rendered_newsfeeds:
+      params['rendered_newsfeeds'] = model.Newsfeed.get_rendered()
     return my_template.render(path, params)

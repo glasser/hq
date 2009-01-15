@@ -71,6 +71,11 @@ class PuzzleCreateHandler(handler.RequestHandler):
       if field_value:
         setattr(puzzle, field_name, field_value)
     puzzle_key = puzzle.put()
+
+    # we've just created a puzzle, add that to the newsfeeds
+    newsfeed = model.Newsfeed(contents = '%s added' % title)
+    newsfeed.put()
+    
     self.redirect(PuzzleHandler.get_url(puzzle_key.id()))
 
 
@@ -90,6 +95,13 @@ class PuzzleTagAddHandler(handler.RequestHandler):
     tag = model.CanonicalizeTagName(self.request.get('tag'))
     # TODO(glasser): Better error handling.
     model.Puzzle.add_tag(puzzle_id, tag)
+
+    # if we've just solved a puzzle, add that to the newsfeeds
+    if tag == 'status:solved':
+      contents = "%s solved!" % model.Puzzle.get_by_id(puzzle_id).title
+      newsfeed = model.Newsfeed(contents=contents)
+      newsfeed.put()
+    
     self.redirect(PuzzleHandler.get_url(puzzle_id))
 
 

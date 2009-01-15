@@ -1,0 +1,7 @@
+<h3 class="newsfeed_header">Recent Puzzle Activity</h3>
+
+<ul class="newsfeed_list">
+  {% for newsfeed in newsfeeds %}
+    <li class="newsfeed">[{{newsfeed.created_display}}] - {{ newsfeed.contents|escape }}</li>
+  {% endfor %}
+</ul>
