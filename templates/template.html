@@ -1,6 +1,27 @@
 <html>
   <head>
     <title>{{ instance_name|escape }} HQ: {% block title %}some page{% endblock %}</title>
+    <script type="text/javascript" src="/static/jquery-1.3.min.js"></script>
+    <script type="text/javascript">
+       $(document).ready(function() {
+         $("a[id^=edit-]").each(function() {
+           var target_name = "#" + this.id.substring(5);
+           $(target_name).hide();
+           $(this).text("[edit]");
+           $(this).toggle(
+             function() {
+               $(target_name).show("fast");
+               $(this).text("[hide]");
+             },
+             function() {
+               $(target_name).hide("fast");
+               $(this).text("[edit]");
+             }
+           );
+         });
+         {% block jqueryready %}{%endblock jqueryready %}
+       });
+    </script>
     <style type="text/css">
       {{ custom_css }}
       .comment-priority-important { background-color: yellow; }
@@ -9,17 +30,20 @@
   </head>
   <body {% block bodyattrs %}{% endblock bodyattrs %}>
     <div id="current-user-info">You are: {{ current_user|escape }}.
-      <form action="{% url UserChangeHandler %}" method="post">
-        <select name="username">
-          {% for username in usernames %}
-            <option {% ifequal current_user username.key.name %} selected {% endifequal %}
-                    >{{ username.key.name|escape }}</option>
-          {% endfor %}
-        </select>
-        or other:
-        <input type="text" name="other" />
-        <input type="submit" value="set name" />
-      </form>
+      <a href="#" id="edit-username-selector"></a>
+      <div id="username-selector">
+        <form action="{% url UserChangeHandler %}" method="post">
+          <select name="username">
+            {% for username in usernames %}
+              <option {% ifequal current_user username.key.name %} selected {% endifequal %}
+                      >{{ username.key.name|escape }}</option>
+            {% endfor %}
+          </select>
+          or other:
+          <input type="text" name="other" />
+          <input type="submit" value="set name" />
+        </form>
+      </div>
     </div>
     <div id="header-links">
       <a href="{% url PuzzleListHandler %}">Puzzles</a>
