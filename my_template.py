@@ -86,6 +86,12 @@ def render(template_path, template_dict, debug=False):
 
 
 template_cache = {}
+
+# HACK!  Let _ClearTemplateCache in the dev_appserver clear our cache
+# too.
+import google.appengine.ext.webapp.template
+google.appengine.ext.webapp.template.template_cache = template_cache
+
 def load(path, debug=False):
   """Loads the Django template from the given path.
 
