@@ -88,26 +88,33 @@
     {% for comment in comments %}
       <li class="comment-priority-{{ comment.priority }}">
         {{ comment.author|escape }} at {{ comment.created_display }}
-        [{{ comment.priority }}]:
-        <form action="{% url CommentPrioritizeHandler comment.key.id %}" method="post">
-          <select name="priority">
-            {% for priority in comment.PRIORITIES %}
-            <option {% ifequal comment.priority priority %} selected {% endifequal %}
-                    >{{ priority }}</option>
-            {% endfor %}
-          </select>
-          <input type="submit" value="set" />
-        </form>
+        [{{ comment.priority }}]
+        <a href="#" id="edit-priority-{{ comment.key.id }}">[edit priority]</a>
+        <span class="priority-{{ comment.key.id }}">
+          <form action="{% url CommentPrioritizeHandler comment.key.id %}" method="post">
+            <select name="priority">
+              {% for priority in comment.PRIORITIES %}
+              <option {% ifequal comment.priority priority %} selected {% endifequal %}
+                      >{{ priority }}</option>
+              {% endfor %}
+            </select>
+            <input type="submit" value="set" />
+          </form>
+        </span>
         <pre>{{ comment.text|escape|urlize }}</pre>
-        <form action="{% url CommentEditHandler comment.key.id %}" method="post">
-          <textarea name="text" rows="10" cols="80">{{ comment.text|escape }}</textarea>
-          <input type="submit" value="save comment" />
-        </form>
+        <a href="#" id="edit-comment-{{ comment.key.id }}">[edit comment]</a>
+        <div class="comment-{{ comment.key.id }}">
+          <form action="{% url CommentEditHandler comment.key.id %}" method="post">
+            <textarea name="text" rows="20" cols="80">{{ comment.text|escape }}</textarea>
+            <input type="submit" value="save comment" />
+          </form>
+        </div>
       </li>
     {% endfor %}
     <li>
+      Post a new comment:
       <form action="{% url CommentAddHandler puzzle.key.id %}" method="post">
-        <textarea name="text" rows="30" cols="80"></textarea>
+        <textarea name="text" rows="20" cols="80"></textarea>
         <input type="submit" value="add comment" />
       </form>
     </li>
