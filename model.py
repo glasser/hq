@@ -474,7 +474,7 @@ class Newsfeed(db.Model):
       return rendered
     newsfeeds = cls.all().order("-created")
     rendered = handler.RequestHandler.render_template_to_string('newsfeeds', {
-      'newsfeeds': newsfeeds.fetch(5),
+      'newsfeeds': newsfeeds.fetch(15),
     }, include_rendered_banners=False, include_rendered_newsfeeds=False)
     memcache.set(cls.MEMCACHE_KEY, rendered)
     return rendered
