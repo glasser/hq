@@ -55,13 +55,14 @@
   <ul>
     {% for metadatum in puzzle.metadata %}
       <li>
-        {{ metadatum.0 }}: {{ metadatum.1|escape|urlize }}
-        <a href="#" id="edit-metadatum-{{ metadatum.0 }}">[edit]</a>
-        <form class="metadatum-{{ metadatum.0 }}"
-              action="{% url PuzzleMetadataSetHandler metadatum.0 %}" method="post">
-          <input type="text" name="value"
-                 {% if metadatum.1 %} value="{{ metadatum.1|escape }}" {% endif %}/>
-          <input type="submit" value="set {{ metadatum.0 }}" />
+        <form action="{% url PuzzleMetadataSetHandler metadatum.0 %}" method="post">
+          {{ metadatum.0 }}: {%if metadatum.1 %}{{ metadatum.1|escape|urlize }}{% endif %}
+          <a href="#" id="edit-metadatum-{{ metadatum.0 }}">[edit]</a>
+          <span class="metadatum-{{ metadatum.0 }}">
+            <input type="text" name="value"
+                   {% if metadatum.1 %} value="{{ metadatum.1|escape }}" {% endif %}/>
+            <input type="submit" value="set {{ metadatum.0 }}" />
+          </span>
         </form>
       </li>
     {% endfor %}

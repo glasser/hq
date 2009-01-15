@@ -50,16 +50,26 @@ class PuzzleCreateHandler(handler.RequestHandler):
     # TODO(glasser): Better error handling.
     assert len(title)
     tags = self.request.get('tags')
-    tag_list = list(set(map(model.CanonicalizeTagName, tags.split())))
-    for tag in tag_list:
+    tag_set = set(map(model.CanonicalizeTagName, tags.split()))
+    for tag in tag_set:
       if model.TagIsFamilial(tag):
         # TODO(glasser): Check that familial tags actually exist.
         # (Or ban familial tags from the free-form tag box.)
         pass
     puzzle = model.Puzzle()
     puzzle.title = title
+    for family in model.TagFamily.all():
+      family_value = self.request.get('tag_' + family.key().name())
+      if family_value:
+        tag_set.add('%s:%s' % (family.key().name(), family_value))
     # TODO(glasser): Better error handling.
-    puzzle.tags = tag_list
+    puzzle.tags = list(tag_set)
+    for metadatum in model.PuzzleMetadata.all():
+      field_name = model.PuzzleMetadata.puzzle_field_name(
+          metadatum.key().name())
+      field_value = self.request.get(field_name)
+      if field_value:
+        setattr(puzzle, field_name, field_value)
     puzzle_key = puzzle.put()
     self.redirect(PuzzleHandler.get_url(puzzle_key.id()))
 
