@@ -283,6 +283,11 @@ class UserChangeHandler(handler.RequestHandler):
     self.redirect(PuzzleListHandler.get_url())
 
 
+class TopPageHandler(handler.RequestHandler):
+  def get(self):
+    self.redirect(PuzzleListHandler.get_url('showmeta=answer'))
+
+
 HANDLERS = [
     ('/puzzles/?', PuzzleListHandler),
     # TODO(glasser): Support multiple tags (intersection).
@@ -299,4 +304,5 @@ HANDLERS = [
     ('/puzzles/set-comment-priority/(\\d+)/(\\d+)/?', CommentPrioritizeHandler),
     ('/puzzles/add-spreadsheet/(\\d+)/?', SpreadsheetAddHandler),
     ('/change-user/?', UserChangeHandler),
+    ('/?', TopPageHandler),
 ]
