@@ -10,6 +10,7 @@ from google.appengine.ext import db
 
 import bzrlib.merge3
 import atom
+from django.utils import html
 import gdata
 import gdata.auth
 import gdata.alt.appengine
@@ -73,10 +74,12 @@ class PuzzleCreateHandler(handler.RequestHandler):
     puzzle_key = puzzle.put()
 
     # we've just created a puzzle, add that to the newsfeeds
-    newsfeed = model.Newsfeed(contents = '<a href="/puzzles/show/%d">%s</a> added' % (puzzle_key.id(), title))
+    puzzle_url = PuzzleHandler.get_url(puzzle_key.id())
+    newsfeed = model.Newsfeed(
+        contents='<a href="%s">%s</a> added' % (puzzle_url, html.escape(title)))
     newsfeed.put()
 
-    self.redirect(PuzzleHandler.get_url(puzzle_key.id()))
+    self.redirect(puzzle_url)
 
 
 class PuzzleTagDeleteHandler(handler.RequestHandler):
@@ -96,12 +99,15 @@ class PuzzleTagAddHandler(handler.RequestHandler):
     # TODO(glasser): Better error handling.
     model.Puzzle.add_tag(puzzle_id, tag)
 
+    puzzle_url = PuzzleHandler.get_url(puzzle_id)
     # if we've just solved a puzzle, add that to the newsfeeds
     if tag == 'status:solved':
-      newsfeed = model.Newsfeed(contents = '<a href="/puzzles/show/%d">%s</a> solved!' % (puzzle_id, model.Puzzle.get_by_id(puzzle_id).title))
+      title = html.escape(model.Puzzle.get_by_id(puzzle_id).title)
+      newsfeed = model.Newsfeed(
+          contents='<a href="%s">%s</a> solved!' % (puzzle_url, title))
       newsfeed.put()
-    
-    self.redirect(PuzzleHandler.get_url(puzzle_id))
+
+    self.redirect(puzzle_url)
 
 
 class PuzzleMetadataSetHandler(handler.RequestHandler):
