@@ -381,6 +381,20 @@ class Spreadsheet(db.Model):
   spreadsheet_key = db.StringProperty(required=True)
 
 
+class Related(db.Model):
+  puzzle = db.ReferenceProperty(reference_class=Puzzle, required=True)
+  query = db.StringProperty(required=True)
+
+  def __init__(self, *args, **kwds):
+    super(Related, self).__init__(*args, **kwds)
+    self.__puzzle_query = None
+
+  def puzzle_query(self):
+    if self.__puzzle_query is None:
+      self.__puzzle_query = PuzzleQuery.parse(self.query)
+    return self.__puzzle_query
+
+
 class Comment(db.Model):
   # A comment's parent is the puzzle it is on (this allows
   # transactions to modify two comments at once).

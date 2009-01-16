@@ -39,9 +39,12 @@ class PuzzleHandler(handler.RequestHandler):
     comments.filter("replaced_by =", None)
     comments.order('priority')
     comments.order('-created')
+    # Convert to list so we can iterate multiple times.
+    families = list(model.TagFamily.all())
     self.render_template("puzzle", {
       "puzzle": puzzle,
       "comments": comments,
+      "families": families,
     })
 
 
@@ -313,6 +316,31 @@ class SpreadsheetAddHandler(handler.RequestHandler):
     sheet.put()
     self.redirect(PuzzleHandler.get_url(puzzle_id))
 
+class RelatedAddHandler(handler.RequestHandler):
+  def post(self, puzzle_id):
+    puzzle_id = long(puzzle_id)
+    puzzle = model.Puzzle.get_by_id(puzzle_id)
+    # TODO(glasser): Better error handling.
+    assert puzzle is not None
+
+    query = self.request.get('query')
+    # For validation.
+    # TODO(glasser): Better error handling.
+    model.PuzzleQuery.parse(query)
+
+    related = model.Related(puzzle=puzzle, query=query)
+    related.put()
+    self.redirect(PuzzleHandler.get_url(puzzle_id))
+
+class RelatedDeleteHandler(handler.RequestHandler):
+  def get(self, related_id):
+    related_id = long(related_id)
+    related = model.Related.get_by_id(related_id)
+    # TODO(glasser): Better error handling.
+    puzzle_id = related.puzzle.key().id()
+    related.delete()
+    self.redirect(PuzzleHandler.get_url(puzzle_id))
+
 
 _USERNAME_RE = re.compile('^[a-zA-Z0-9._-]+$')
 class UserChangeHandler(handler.RequestHandler):
@@ -349,6 +377,8 @@ HANDLERS = [
     ('/puzzles/edit-comment/(\\d+)/(\\d+)/?', CommentEditHandler),
     ('/puzzles/set-comment-priority/(\\d+)/(\\d+)/?', CommentPrioritizeHandler),
     ('/puzzles/add-spreadsheet/(\\d+)/?', SpreadsheetAddHandler),
+    ('/puzzles/add-related/(\\d+)/?', RelatedAddHandler),
+    ('/puzzles/delete-related/(\\d+)/?', RelatedDeleteHandler),
     ('/change-user/?', UserChangeHandler),
     ('/?', TopPageHandler),
 ]

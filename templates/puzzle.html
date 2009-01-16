@@ -93,6 +93,66 @@
   </form>
 </div>
 
+<div id="related-puzzles">
+  <h4>Related Puzzles</h4>
+
+  {% for related in puzzle.related_set %}
+    <div>Puzzles: {{ related.puzzle_query.describe_query }}
+      <a href="{% url RelatedDeleteHandler related.key.id %}">[remove]</a>
+    </div>
+    <table class="puzzle_table">
+      <tr class="legend">
+        <th class="puzzle_name">Puzzle</th>
+        {% for family in families %}
+          <th class="family_{{family.key.name}}">{{ family.key.name }}</th>
+        {% endfor %}
+        <th class="tags">Tags</th>
+        {% for meta in related.puzzle_query.show_metas %}
+          <th class="meta_{{meta}}">{{ meta }}</th>
+        {% endfor %}
+      </tr>
+      {% for puzzle in related.puzzle_query %}
+        <tr class="{{ puzzle.tags_as_css_classes }} {% cycle puzzle_display_0,puzzle_display_1 %}"> 
+          <td class="puzzle_name">
+            <a href="{% url PuzzleHandler puzzle.key.id %}">{{ puzzle.title|escape }}</a>
+          </td>
+          {% for family__option in puzzle.ordered_families %}
+            <td class="tag_{{ family__option.0.key.name }}_{{ family__option.1}}">
+              {% if family__option.1 %}
+              <a href="{% url PuzzleListHandler family__option.2 %}"
+                 >{{ family__option.1 }}</a>
+              {% endif %}
+              &nbsp;
+            </td>
+          {% endfor %}
+          <td class="generic_tags">
+            {% for tag in puzzle.generic_tags %}
+              <span class="tag_{{tag}}">
+                <a href="{% url PuzzleListHandler tag %}">{{ tag }}</a>
+              </span>
+            {% endfor %}
+            &nbsp;
+          </td>
+          {% for meta in related.puzzle_query.show_meta_fields %}
+            <td class="meta_{{meta}}">
+              {{ puzzle..meta|escape|urlize }}
+            &nbsp;
+            </td>
+          {% endfor %}
+        </tr>
+      {% endfor %}
+    </table>
+  {% endfor %}
+
+  <a href="#" id="edit-add-related">[add related puzzles list]</a>
+  <div class="add-related">
+    <form action="{% url RelatedAddHandler puzzle.key.id %}" method="post">
+      <input type="text" name="query" />
+      <input type="submit" value="add related puzzles list" />
+    </form>
+  </div>
+</div>
+
 <div id="comments">
   <h4>Comments</h4>
   <ul>
