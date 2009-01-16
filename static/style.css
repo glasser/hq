@@ -147,3 +147,4 @@ body.puzzle #newsfeeds { display: none; }
 .comment-priority-important { background-color: yellow; }
 .comment-priority-useless { background-color: grey; }
 .blatant { font-size: x-large; }
+.query-instructions { width: 72%; }

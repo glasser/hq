@@ -146,6 +146,30 @@
 
   <a href="#" id="edit-add-related">[add related puzzles list]</a>
   <div class="add-related">
+    <p class="query-instructions">
+      Enter a puzzle search query here.  A search query is a series of
+      terms separated by slashes.  A term can be a tag name
+      (eg: <code>round:5</code>, <code>meta</code>, etc) or a negated
+      tag name (eg: <code>-status:solved</code>, <code>-meta</code>);
+      the puzzles returned must have all of the positive tags and none
+      of the negatives.  Unless <code>deleted</code> is explicitly
+      entered as a positive tag, it will be a negative tag.  A term of
+      the form <code>showmeta=<em>metadata</em></code> includes the
+      metadata field named <em>metadata</em> in the table.  A term of
+      the form <code>ascmeta=<em>metadata</em></code>
+      or <code>descmeta=<em>metadata</em></code> sorts by the value of
+      the metadata field <em>metadata</em> (though it does not show
+      it).  (Note that <q>metadata fields</q> here are the free-form
+      entry fields; pop-up selectors like <code>round</code>
+      are <q>tag families</q>, not metadata.)
+    </p>
+    <p class="query-instructions">
+      For example,
+      <code>round:3/-status:solved/showmeta=answer/showmeta=wrong-answers/ascmeta=ordinal</code>
+      shows unsolved puzzles from round 3, sorted by their ordinal, showing the answer
+      and wrong answers.
+    </p>
+
     <form action="{% url RelatedAddHandler puzzle.key.id %}" method="post">
       <input type="text" name="query" />
       <input type="submit" value="add related puzzles list" />
