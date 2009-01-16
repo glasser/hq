@@ -101,7 +101,7 @@
   <h4>Related Puzzles</h4>
 
   {% for related in puzzle.related_set %}
-    <div>Puzzles: {{ related.puzzle_query.describe_query }}
+    <div>Puzzles: {{ related.puzzle_query.describe_query }} { {{ related_puzzle.query|escape }} }
       <a href="{% url RelatedDeleteHandler related.key.id %}">[remove]</a>
     </div>
     <table class="puzzle_table">
