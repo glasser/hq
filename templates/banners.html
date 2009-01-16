@@ -1,9 +1,7 @@
-<h3 class="banner_header">Banners</h3>
+<a class="banner_edit_link" href="{% url BannerListHandler %}">[edit banners]</a>
 
 <ul class="banner_list">
   {% for banner in banners %}
     <li class="banner">[{{banner.created_display}}] - {{ banner.contents|escape }}</li>
   {% endfor %}
 </ul>
-
-<a href="{% url BannerListHandler %}">[edit banners]</a>
