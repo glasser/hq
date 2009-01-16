@@ -540,3 +540,4 @@ class Username(db.Model):
 class HeaderLink(db.Model):
   title = db.StringProperty(required=True)
   href = db.StringProperty(required=True)
+  created  = db.DateTimeProperty(auto_now_add=True)
