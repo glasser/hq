@@ -62,6 +62,9 @@
             <span class="metadatum-{{ metadatum.0 }}">
               <input type="text" name="value"
                      {% if metadatum.1 %} value="{{ metadatum.1|escape }}" {% endif %}/>
+              {% if metadatum.1 %}
+                <input type="hidden" name="base_value" value="{{ metadatum.1|escape }}" />
+              {% endif %}
               <input type="submit" value="set {{ metadatum.0 }}" />
             </span>
           </form>

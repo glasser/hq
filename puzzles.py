@@ -110,18 +110,47 @@ class PuzzleTagAddHandler(handler.RequestHandler):
     self.redirect(puzzle_url)
 
 
+class MetadataConflictError(Exception):
+  def __init__(self, newest):
+    self.newest = newest
+
+
 class PuzzleMetadataSetHandler(handler.RequestHandler):
   def post(self, puzzle_id, metadata_name):
     puzzle_id = long(puzzle_id)
     model.ValidateTagPiece(metadata_name)
     field_name = model.PuzzleMetadata.puzzle_field_name(metadata_name)
-    value = self.request.get('value')
+    value = self.request.get('value', '')
+    base_value = self.request.get('base_value', '')
     def txn():
       puzzle = model.Puzzle.get_by_id(puzzle_id)
+      newest_value = ''
+      try:
+        newest_value = getattr(puzzle, field_name)
+      except AttributeError:
+        pass
+      if base_value != newest_value:
+        raise MetadataConflictError(newest_value)
       setattr(puzzle, field_name, value)
       puzzle.put()
-    db.run_in_transaction(txn)
+    try:
+      db.run_in_transaction(txn)
+    except MetadataConflictError, e:
+      return self.conflict_resolution(puzzle_id, metadata_name,
+                                      base_value, e.newest)
     self.redirect(PuzzleHandler.get_url(puzzle_id))
+
+  def conflict_resolution(self, puzzle_id, metadata_name,
+                          base_value, newest_value):
+    puzzle = model.Puzzle.get_by_id(puzzle_id)
+    your_value = self.request.get('value', '')
+    self.render_template("resolve-metadata-conflict", {
+      "puzzle": puzzle,
+      "metadata_name": metadata_name,
+      "base_value": base_value,
+      "newest_value": newest_value,
+      "your_value": your_value,
+    })
 
 
 class CommentAddHandler(handler.RequestHandler):

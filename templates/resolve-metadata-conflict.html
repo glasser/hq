@@ -1,0 +1,26 @@
+{% extends "template.html" %}
+
+{% block title %}Metadata Conflict: Puzzle: {{ puzzle.title|escape }}{% endblock %}
+
+{% block bodyattrs %} class="puzzle {{ puzzle.tags_as_css_classes }}" {% endblock bodyattrs %}
+
+{% block content %}
+<h3>Metadata Conflict:
+  <a href="{% url PuzzleHandler puzzle.key.id %}">Puzzle: {{ puzzle.title|escape }}</a></h3>
+
+<p>
+  Oh no!  You tried to edit the {{ metadata_name }} field, changing it from
+  <q>{{ base_value|escape }}</q> to <q>{{ your_value|escape }}</q>.
+  But in the meantime, somebody changed it to <q>{{ newest_value|escape }}</q>!
+</p>
+
+<p>
+  Let's try to resolve this!
+  <form action="{% url PuzzleMetadataSetHandler puzzle.key.id,metadata_name %}" method="post">
+    <input type="text" name="value" value="{{ your_value|escape }}" />
+    <input type="hidden" name="base_value" value="{{ newest_value|escape }}" />
+    <input type="submit" value="update {{ metadata_name }}" />
+  </form>
+</p>
+
+{% endblock content %}
