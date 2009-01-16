@@ -453,7 +453,7 @@ class Banner(db.Model):
     rendered = memcache.get(cls.MEMCACHE_KEY)
     if rendered is not None:
       return rendered
-    banners = cls.all()
+    banners = cls.all().order('-created')
     rendered = handler.RequestHandler.render_template_to_string('banners', {
       'banners': banners,
     }, include_rendered_banners=False, include_rendered_newsfeeds=False)

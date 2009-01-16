@@ -29,7 +29,7 @@ h3.newsfeed_header     {text-align: center;}
          padding: 5px;
          border: 1px #000 solid;
          background-color: #9EC5A9;
-         overflow: hidden;
+         overflow-y: scroll;
         }
 
 .banner_edit_link   {margin: 5px;
