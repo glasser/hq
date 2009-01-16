@@ -84,7 +84,7 @@
 
   {% for spreadsheet in puzzle.spreadsheet_set %}
     <iframe width='80%' height='250' frameborder='1'
-            src='http://spreadsheets.google.com/a/optimusfunk.org/ccc?key={{ spreadsheet.spreadsheet_key|urlencode }}&amp;output=html&amp;widget=false&amp;chrome=true'></iframe>
+            src='http://spreadsheets.google.com/a/optimusfunk.org/ccc?key={{ spreadsheet.spreadsheet_key|urlencode }}&amp;output=html'></iframe>
   {% endfor %}
 
   <form action="{% url SpreadsheetAddHandler puzzle.key.id %}" method="get">
