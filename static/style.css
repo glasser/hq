@@ -3,7 +3,7 @@ body   {width: 100%;
          background-position: 95% 5%;
        background-color: #DCDCDC;}
 a      { text-decoration: none; }
-h3     {text-align: center;}
+h3.newsfeed_header     {text-align: center;}
 .username  {color: #FF3030}
 
 /************ Header ********/
