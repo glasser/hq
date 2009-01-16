@@ -362,6 +362,42 @@ class TopPageHandler(handler.RequestHandler):
     self.redirect(PuzzleListHandler.get_url('showmeta=answer'))
 
 
+class ImageUploadHandler(handler.RequestHandler):
+  def post(self, puzzle_id):
+    puzzle_id = long(puzzle_id)
+    puzzle = model.Puzzle.get_by_id(puzzle_id)
+    # TODO(glasser): Better error handling.
+    assert puzzle
+    data = db.Blob(self.request.get('data'))
+    image = model.Image(data=data, puzzle=puzzle,
+                        content_type=self.request.get('content_type'))
+    image.put()
+    self.redirect(PuzzleHandler.get_url(puzzle_id))
+
+
+class ImageViewHandler(handler.RequestHandler):
+  def get(self, image_id):
+    image_id = long(image_id)
+    image = model.Image.get_by_id(image_id)
+    # TODO(glasser): Better error handling.
+    assert image
+    self.response.headers['Content-Type'] = str(image.content_type)
+    self.response.out.write(image.data)
+
+
+class ImageDeleteHandler(handler.RequestHandler):
+  def get(self, image_id):
+    image_id = long(image_id)
+    image = model.Image.get_by_id(image_id)
+    # TODO(glasser): Better error handling.
+    assert image
+    # Don't actually delete; just "un-link"
+    puzzle_id = image.puzzle.key().id()
+    image.puzzle = None
+    image.put()
+    self.redirect(PuzzleHandler.get_url(puzzle_id))
+
+
 HANDLERS = [
     ('/puzzles/?', PuzzleListHandler),
     # TODO(glasser): Support multiple tags (intersection).
@@ -379,6 +415,9 @@ HANDLERS = [
     ('/puzzles/add-spreadsheet/(\\d+)/?', SpreadsheetAddHandler),
     ('/puzzles/add-related/(\\d+)/?', RelatedAddHandler),
     ('/puzzles/delete-related/(\\d+)/?', RelatedDeleteHandler),
+    ('/image/(\\d+)/?', ImageViewHandler),
+    ('/puzzles/add-image/(\\d+)/?', ImageUploadHandler),
+    ('/puzzles/delete-image/(\\d+)/?', ImageDeleteHandler),
     ('/change-user/?', UserChangeHandler),
     ('/?', TopPageHandler),
 ]

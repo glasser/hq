@@ -394,6 +394,11 @@ class Related(db.Model):
       self.__puzzle_query = PuzzleQuery.parse(self.query)
     return self.__puzzle_query
 
+class Image(db.Model):
+  puzzle = db.ReferenceProperty(reference_class=Puzzle)
+  content_type = db.StringProperty(required=True, choices=('image/png',
+                                                           'image/jpeg'))
+  data = db.BlobProperty(required=True)
 
 class Comment(db.Model):
   # A comment's parent is the puzzle it is on (this allows

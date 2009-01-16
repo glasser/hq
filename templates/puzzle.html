@@ -216,4 +216,30 @@
   </ul>
 </div>
 
+<div id="images">
+  <h4>Images</h4>
+  <ul>
+    {% for image in puzzle.image_set %}
+      <li>
+        <img src="{% url ImageViewHandler image.key.id %}" />
+        <a href="{% url ImageDeleteHandler image.key.id %}">[delete]</a>
+      </li>
+    {% endfor %}
+    <li>
+      Upload a PNG or JPEG image (max size 1MB):
+      <form action="{% url ImageUploadHandler puzzle.key.id %}"
+            enctype="multipart/form-data" method="post">
+        Image Type:
+        <select name="content_type">
+          <option>image/png</option>
+          <option>image/jpeg</option>
+        </select>
+        Image:
+        <input type="file" name="data" />
+        <input type="submit" value="upload image">
+      </form>
+    </li>
+  </ul>
+</div>
+
 {% endblock content %}
