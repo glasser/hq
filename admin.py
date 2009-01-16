@@ -109,6 +109,35 @@ class BannerDeleteHandler(handler.RequestHandler):
     self.redirect(BannerListHandler.get_url())
 
 
+class HeaderLinkListHandler(handler.RequestHandler):
+  def get(self):
+    links = model.HeaderLink.all()
+    self.render_template("admin-links", {
+      "links": links,
+    })
+
+
+class HeaderLinkAddHandler(handler.RequestHandler):
+  def post(self):
+    title = self.request.get('title')
+    href = self.request.get('href')
+    # TODO(glasser): Better error handling.
+    assert title
+    assert href
+    link = model.HeaderLink(title=title, href=href)
+    link.put()
+    self.redirect(HeaderLinkListHandler.get_url())
+
+
+class HeaderLinkDeleteHandler(handler.RequestHandler):
+  def get(self, link_id):
+    link = model.HeaderLink.get_by_id(long(link_id))
+    # TODO(glasser): Better error handling.
+    assert link is not None
+    link.delete()
+    self.redirect(HeaderLinkListHandler.get_url())
+
+
 class CssHandler(handler.RequestHandler):
   def get(self):
     css = model.Css.get_custom_css()
@@ -135,5 +164,8 @@ HANDLERS = [
     ('/admin/banners/?', BannerListHandler),
     ('/admin/banners/add/?', BannerAddHandler),
     ('/admin/banners/delete/(\\d+)/?', BannerDeleteHandler),
+    ('/admin/links/?', HeaderLinkListHandler),
+    ('/admin/links/add/?', HeaderLinkAddHandler),
+    ('/admin/links/delete/(\\d+)/?', HeaderLinkDeleteHandler),
     ('/admin/css/?', CssHandler),
 ]

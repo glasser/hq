@@ -52,10 +52,13 @@
       </div>
     </div>
     <div id="header-links">
-      <a href="/puzzles/search/showmeta=answer">Puzzles</a>
+      {% for link in header_links %}
+        <a href="{{ link.href|urlencode }}">{{ link.title|escape }}</a>
+      {% endfor %}
       [ Admin:
         <a href="{% url FamilyListHandler %}">Tags/Metadata</a>
         <a href="{% url CssHandler %}">CSS</a>
+        <a href="{% url HeaderLinkListHandler %}">Links</a>
       ]
     </div>
     <div id="banners">

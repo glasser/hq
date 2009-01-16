@@ -53,4 +53,5 @@ class RequestHandler(webapp.RequestHandler):
       params['rendered_banners'] = model.Banner.get_rendered()
     if include_rendered_newsfeeds:
       params['rendered_newsfeeds'] = model.Newsfeed.get_rendered()
+    params['header_links'] = model.HeaderLink.all()
     return my_template.render(path, params)

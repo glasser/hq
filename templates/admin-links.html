@@ -1,0 +1,25 @@
+{% extends "template.html" %}
+
+{% block title %}Header Links{% endblock %}
+
+{% block content %}
+<h3>Header Links</h3>
+
+<ul>
+  {% for link in header_links %}
+    <li>{{ link.title|escape }}: <code>{{ link.href|escape }}</code>
+      <a href="{% url HeaderLinkDeleteHandler link.key.id %}">[delete]</a>
+    </li>
+  {% endfor %}
+    <li>
+      <form action="{% url HeaderLinkAddHandler %}" method="post">
+        text:
+        <input type="text" name="title" />
+        link (eg, <code>/puzzles/search/round:4/-status:solved/showmeta=answer/</code>):
+        <input type="text" name="href" />
+        <input type="submit" value="add link" />
+      </form>
+    </li>
+</ul>
+
+{% endblock content %}

@@ -521,3 +521,8 @@ class Css(db.Model):
 class Username(db.Model):
   # Its key_name is the username.
   pass
+
+
+class HeaderLink(db.Model):
+  title = db.StringProperty(required=True)
+  href = db.StringProperty(required=True)
