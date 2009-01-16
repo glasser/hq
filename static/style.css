@@ -46,6 +46,10 @@ h3     {text-align: center;}
                 padding: 5px;
                 background-color: #C1FFC1}
 
+tr.add_puzzle_row td input {
+    width: 100%;
+}
+
 table tr,td  {border: 1px #000 solid;}
 
 table td  {padding: 3px 6px;
@@ -103,6 +107,12 @@ body.puzzle #newsfeeds { display: none; }
 #comments li  {margin: 10px;
               padding: 2px;
               border: 1px #000 dashed;}
+
+#comments textarea {
+    width: 100%;
+    display: block;
+}
+
 .comment-priority-important { background-color: yellow; }
 .comment-priority-useless { background-color: grey; }
 .blatant { font-size: x-large; }
