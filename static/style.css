@@ -1,27 +1,56 @@
 body   {width: 100%;
+         background: transparent url(/static/frobot-small.gif) no-repeat;
+         background-position: 95% 5%;
        background-color: #DCDCDC;}
 a      { text-decoration: none; }
 h3     {text-align: center;}
 .username  {color: #FF3030}
 
-#header-links {width: 25%;
-              border: 1px #000 solid;
-              margin: 2px 40px 2px 2px;
-              padding: 3px;
-              background-color: #7FFFD4;
-              float: right;}
+/************ Header ********/
 
-#banners {width: 95%;
-         margin: 10px 5px 5px 5px;
+#header-links {width: 78%;
+              border: 1px #000 solid;
+              margin: 2px 5px 0px 7px;
+              padding: 3px;
+              font-size: 12px;
+              background-color: #7FFFD4;}
+
+#header-links a:first-child {
+    color: #CD00CD;
+    font-weight: bold;
+}
+
+
+/********* Banner box ******/
+
+#banners {width: 78%;
+         height: 100px;
+         margin: 0px 5px 5px 5px;
          padding: 5px;
          border: 1px #000 solid;
-         background: transparent url(/static/frobot-small.gif) no-repeat;
-         background-position: 95% 50%;
          background-color: #9EC5A9;
+         overflow: hidden;
         }
 
+.banner_edit_link   {margin: 5px;
+                     padding: 2px;
+                     border: 1px #000 solid;
+                     background-color: #9EC5c1;
+                     float: right}
+
+.banner_header {margin: 0;
+                padding: 5;}
+
+.banner_list   {margin: 5 0 0 0;
+                padding: 0 0 0 15px;
+                font-size: 12px;}
+
+
+
+/************ Newsfeed ***********/
+
 #newsfeeds {width: 15%;
-           margin: 10px 40px 0 0;
+           margin: 15px 40px 0 0;
            padding: 5px;
            border: 1px #000 solid;
            background-color: #9EC5A9;
@@ -90,6 +119,8 @@ body.puzzle #newsfeeds { display: none; }
 .family-editor          {margin: 0 0 0 10px}
 
 .toggle-edit-link { font-size: x-small; }
+
+#spreadsheets {width: 72%;}
 
 #comments    {width: 72%;
                 border-spacing: 0;
