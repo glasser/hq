@@ -192,6 +192,7 @@ class CommentEditHandler(handler.RequestHandler):
                                   author=self.username,
                                   text=model.Comment.canonicalize(
                                       self.request.get('text')),
+                                  priority=old_comment.priority,
                                   parent=puzzle)
       new_comment.put()
       old_comment.replaced_by = new_comment
