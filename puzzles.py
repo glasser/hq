@@ -9,14 +9,12 @@ import handler
 from google.appengine.ext import db
 
 import bzrlib.merge3
-import atom
 from django.utils import html
-import gdata
 import gdata.gauth
-import gdata.alt.appengine
-import gdata.calendar  # Used for ACL stuff which isn't actually cal-specific
-import gdata.docs.service
-import gdata.service
+import gdata.client
+import gdata.docs.client
+import gdata.docs.data
+import gdata.spreadsheets.client
 
 class PuzzleListHandler(handler.RequestHandler):
   def get(self, tags=None):
