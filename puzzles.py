@@ -6,6 +6,7 @@ import StringIO
 import model
 import handler
 
+from google.appengine.api import users
 from google.appengine.ext import db
 
 import bzrlib.merge3
