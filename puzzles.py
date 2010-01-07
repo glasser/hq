@@ -12,7 +12,7 @@ import bzrlib.merge3
 import atom
 from django.utils import html
 import gdata
-import gdata.auth
+import gdata.gauth
 import gdata.alt.appengine
 import gdata.calendar  # Used for ACL stuff which isn't actually cal-specific
 import gdata.docs.service
@@ -243,6 +243,43 @@ class CommentPrioritizeHandler(handler.RequestHandler):
     self.redirect(PuzzleHandler.get_url(puzzle.key().id()))
 
 
+# From gdata/samples/blogger/app/blogapp.py
+def get_auth_token(request):
+  """Retrieves the AuthSub token for the current user.
+
+  Will first check the request URL for a token request parameter
+  indicating that the user has been sent to this page after 
+  authorizing the app. Auto-upgrades to a session token.
+
+  If the token was not in the URL, which will usually be the case,
+  looks for the token in the datastore.
+
+  Returns:
+    The token object if one was found for the current user. If there
+    is no current user, it returns False, if there is a current user
+    but no AuthSub token, it returns None.
+  """
+  current_user = users.get_current_user()
+  if current_user is None or current_user.user_id() is None:
+    return False
+  # Look for the token string in the current page's URL.
+  token_string, token_scopes = gdata.gauth.auth_sub_string_from_url(
+     request.url)
+  if token_string is None:
+    # Try to find a previously obtained session token.
+    return gdata.gauth.ae_load('hq-spread-' + current_user.user_id())
+  # If there was a new token in the current page's URL, convert it to
+  # to a long lived session token and persist it to be used in future
+  # requests.
+  single_use_token = gdata.gauth.AuthSubToken(token_string, token_scopes)
+  # Create a client to make the HTTP request to upgrade the single use token
+  # to a long lived session token.
+  client = gdata.client.GDClient()
+  session_token = client.upgrade_token(single_use_token)
+  gdata.gauth.ae_save(session_token, 'hq-spread-' + current_user.user_id())
+  return session_token
+
+
 class SpreadsheetAddHandler(handler.RequestHandler):
   def get(self, puzzle_id):
     puzzle_id = long(puzzle_id)
@@ -250,67 +287,24 @@ class SpreadsheetAddHandler(handler.RequestHandler):
     # TODO(glasser): Better error handling.
     assert puzzle is not None
 
-    client = gdata.docs.service.DocsService()
-    gdata.alt.appengine.run_on_appengine(client)
-    auth_token = gdata.auth.extract_auth_sub_token_from_url(self.request.uri)
-    if auth_token:
-      client.UpgradeToSessionToken(auth_token)
-
-    virtual_csv_file = StringIO.StringIO(',,,')
-    virtual_media_source = gdata.MediaSource(file_handle=virtual_csv_file,
-                                             content_type='text/csv',
-                                             content_length=3)
-    random_junk = ''.join([random.choice('abcdefghijklmnopqrstuvwxyz')
-                           for i in xrange(25)])
-    title = '%s [%s]' % (self.request.get('title'), random_junk)
-    doc_key = None
-    try:
-      media_entry = client.UploadSpreadsheet(virtual_media_source,
-                                             title)
-    except gdata.service.RequestError, request_error:
-      # If fetching fails, then tell the user that they need to login to
-      # authorize this app by logging in at the following URL.
-      if request_error[0]['status'] == 401:
-        # Get the URL of the current page so that our AuthSub request will
-        # send the user back to here.
-        next = self.request.uri
-        auth_sub_url = client.GenerateAuthSubURL(
-            next,
-            gdata.service.lookup_scopes('writely') +  # Doclist
-            gdata.service.lookup_scopes('wise'),  # Spreadsheets
-            domain=handler.APPS_DOMAIN)
-        self.redirect(str(auth_sub_url))
-        return
-      elif (request_error[0]['status'] == 503 and
-            request_error[0]['body'] == 'An unknown error has occurred.'):
-        # Ugh.  This is a bug in spreadsheets, but I guess it's one we
-        # can work around.
-        query = gdata.docs.service.DocumentQuery(params={
-            'title': title,
-            'title-exact': 'true',
-            })
-        docfeed = client.QueryDocumentListFeed(query.ToUri())
-        # TODO(glasser): Better error handling.
-        assert docfeed.total_results.text == '1', "Made one spreadsheet"
-        entry = docfeed.entry[0]
-        doc_url = entry.id.text
-        doc_url_prefix = ('http://docs.google.com/' +
-                          'feeds/documents/private/full/spreadsheet%3A')
-        assert doc_url.startswith(doc_url_prefix)
-        doc_key = doc_url[len(doc_url_prefix):]
-      else:
-        self.response.out.write(
-            'Something else went wrong, here is the error object: %s ' % (
-                str(request_error[0])))
-        return
-    else:
-      # Hmm, I've never actually gotten this to work without the 503,
-      # so I don't know how to write the code for the correct case!
-      self.response.out.write("""
-        Sorry, the spreadsheet code was developed when the Spreadsheets API
-        had a bug I had to work around.  Apparently the bug is fixed, so I
-        can now write code for the non-buggy case... but I haven't yet.""")
+    # See if we have an auth token for this user.
+    token = get_auth_token(self.request)
+    if token is None:
+      auth_url = gdata.gauth.generate_auth_sub_url(
+          self.request.url,
+          (gdata.docs.client.DocsClient.auth_scopes +
+           gdata.spreadsheets.client.SpreadsheetsClient.auth_scopes))
+      self.render_template("auth_required", {"auth_url": auth_url})
       return
+    assert token != False  # There must be a user to access the app at all
+
+    client = gdata.docs.client.DocsClient()
+    # TODO(glasser): Use puzzle name in spreadsheet name
+    doc = client.Create(gdata.docs.data.SPREADSHEET_LABEL,
+                        self.request.get('title'),
+                        writers_can_invite=True,
+                        auth_token=token)
+    assert False, doc.resource_id.text
     # TODO(glasser): Better error handling.
     assert doc_key is not None
     sheet = model.Spreadsheet(puzzle=puzzle, spreadsheet_key=doc_key)
