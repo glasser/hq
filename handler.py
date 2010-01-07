@@ -9,6 +9,7 @@ import model
 
 INSTANCE_NAME = 'R2-DISCO'
 APPS_DOMAIN = 'r2disco.org'  # For spreadsheets, etc
+GROUP_ACL = 'r2disco@googlegroups.com'
 
 port = os.environ['SERVER_PORT']
 if port and port != '80':

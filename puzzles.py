@@ -292,7 +292,8 @@ class SpreadsheetAddHandler(handler.RequestHandler):
       auth_url = gdata.gauth.generate_auth_sub_url(
           self.request.url,
           (gdata.docs.client.DocsClient.auth_scopes +
-           gdata.spreadsheets.client.SpreadsheetsClient.auth_scopes))
+           gdata.spreadsheets.client.SpreadsheetsClient.auth_scopes),
+          domain=handler.APPS_DOMAIN)
       self.render_template("auth_required", {"auth_url": auth_url})
       return
     assert token != False  # There must be a user to access the app at all
@@ -303,9 +304,15 @@ class SpreadsheetAddHandler(handler.RequestHandler):
                         self.request.get('title'),
                         writers_can_invite=True,
                         auth_token=token)
-    assert False, doc.resource_id.text
-    # TODO(glasser): Better error handling.
-    assert doc_key is not None
+    match = gdata.docs.data.RESOURCE_ID_PATTERN.match(doc.resource_id.text)
+    assert match
+    assert match.group(1) == gdata.docs.data.SPREADSHEET_LABEL
+    doc_key = match.group(3)
+    # acl_entry = gdata.docs.data.Acl(
+    #   role=gdata.acl.data.Role(value="writer"),
+    #   scope=
+    # permissions = client.get_acl_permissions(doc.resource_id.text,
+    #                                          auth_token=token)
     sheet = model.Spreadsheet(puzzle=puzzle, spreadsheet_key=doc_key)
     sheet.put()
     self.redirect(PuzzleHandler.get_url(puzzle_id))

@@ -2,6 +2,9 @@
 import model
 import handler
 
+from google.appengine.api import memcache
+from google.appengine.api import users
+
 class FamilyListHandler(handler.RequestHandler):
   def get(self):
     families = model.TagFamily.all()
@@ -150,6 +153,17 @@ class CssHandler(handler.RequestHandler):
     # Redirect so that CSS takes effect.
     self.redirect(CssHandler.get_url())
 
+
+class LogoutHandler(handler.RequestHandler):
+  def get(self):
+    self.redirect(users.create_logout_url('/'))
+
+
+class MemcacheFlushHandler(handler.RequestHandler):
+  def get(self):
+    memcache.flush_all()
+
+
 HANDLERS = [
     ('/admin/tags/?', FamilyListHandler),
     ('/admin/tags/add-option/(%s)/?' % model.TAG_PIECE,
@@ -168,4 +182,6 @@ HANDLERS = [
     ('/admin/links/add/?', HeaderLinkAddHandler),
     ('/admin/links/delete/(\\d+)/?', HeaderLinkDeleteHandler),
     ('/admin/css/?', CssHandler),
+    ('/logout/?', LogoutHandler),
+    ('/memcache-flush/?', MemcacheFlushHandler),
 ]
