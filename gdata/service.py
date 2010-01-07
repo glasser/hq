@@ -39,7 +39,7 @@
                  user is either not authenticated or is authenticated through
                  another authentication mechanism.
 
-  RequestError: Raised if a CRUD request returned a non-success code. 
+  RequestError: Raised if a CRUD request returned a non-success code.
 
   UnexpectedReturnType: Raised if the response from the server was not of the
                         desired type. For example, this would be raised if the
@@ -59,7 +59,6 @@
 
 
 __author__ = 'api.jscudder (Jeffrey Scudder)'
-
 
 import re
 import urllib
@@ -126,7 +125,7 @@ CLIENT_LOGIN_SCOPES = {
         'http://apps-apis.google.com/a/feeds/',
         'https://apps-apis.google.com/a/feeds/'],
     'weaver': [ # Health H9 Sandbox
-        'https://www.google.com/h9/'],
+        'https://www.google.com/h9/feeds/'],
     'wise': [ # Spreadsheets Data API
         'https://spreadsheets.google.com/feeds/',
         'http://spreadsheets.google.com/feeds/'],
@@ -135,19 +134,30 @@ CLIENT_LOGIN_SCOPES = {
     'youtube': [ # YouTube
         'http://gdata.youtube.com/feeds/api/',
         'http://uploads.gdata.youtube.com/feeds/api',
-        'http://gdata.youtube.com/action/GetUploadToken']}
+        'http://gdata.youtube.com/action/GetUploadToken'],
+    'books': [ # Google Books
+        'http://www.google.com/books/feeds/'],
+    'analytics': [ # Google Analytics
+        'https://www.google.com/analytics/feeds/'],
+    'jotspot': [ # Google Sites
+        'http://sites.google.com/feeds/',
+        'https://sites.google.com/feeds/']}
+# Default parameters for GDataService.GetWithRetries method
+DEFAULT_NUM_RETRIES = 3
+DEFAULT_DELAY = 1
+DEFAULT_BACKOFF = 2
 
 
 def lookup_scopes(service_name):
   """Finds the scope URLs for the desired service.
-  
+
   In some cases, an unknown service may be used, and in those cases this
   function will return None.
   """
   if service_name in CLIENT_LOGIN_SCOPES:
     return CLIENT_LOGIN_SCOPES[service_name]
   return None
-    
+
 
 # Module level variable specifies which module should be used by GDataService
 # objects to make HttpRequests. This setting can be overridden on each 
@@ -210,6 +220,10 @@ class AuthorizationRequired(Error):
 
 
 class TokenHadNoScope(Error):
+  pass
+
+
+class RanOutOfTries(Error):
   pass
 
 
@@ -280,6 +294,10 @@ class GDataService(atom.service.AtomService):
     if http_request_handler.__name__ == 'gdata.urlfetch':
       import gdata.alt.appengine
       self.http_client = gdata.alt.appengine.AppEngineHttpClient()
+
+  def _SetSessionId(self, session_id):
+    """Used in unit tests to simulate a 302 which sets a gsessionid."""
+    self.__gsessionid = session_id
  
   # Define properties for GDataService
   def _SetAuthSubToken(self, auth_token, scopes=None):
@@ -322,7 +340,7 @@ class GDataService(atom.service.AtomService):
 
   def _GetCaptchaURL(self):
     """Returns the URL of the captcha image if a login attempt generated one.
-     
+
     The captcha URL is only set if the Programmatic Login attempt failed
     because the Google service issued a captcha challenge.
 
@@ -337,14 +355,17 @@ class GDataService(atom.service.AtomService):
   captcha_url = property(__GetCaptchaURL,
       doc="""Get the captcha URL for a login request.""")
 
+  def GetOAuthInputParameters(self):
+    return self._oauth_input_params
+
   def SetOAuthInputParameters(self, signature_method, consumer_key,
                               consumer_secret=None, rsa_key=None,
-                              two_legged_oauth=False):
+                              two_legged_oauth=False, requestor_id=None):
     """Sets parameters required for using OAuth authentication mechanism.
-    
+
     NOTE: Though consumer_secret and rsa_key are optional, either of the two
     is required depending on the value of the signature_method.
-    
+
     Args:
       signature_method: class which provides implementation for strategy class
           oauth.oauth.OAuthSignatureMethod. Signature method to be used for
@@ -357,19 +378,24 @@ class GDataService(atom.service.AtomService):
           Required only for HMAC_SHA1 signature method.
       rsa_key: string (optional) Private key required for RSA_SHA1 signature
           method.
-      two_legged_oauth: string (default=False) Enables two-legged OAuth process.
+      two_legged_oauth: boolean (optional) Enables two-legged OAuth process.
+      requestor_id: string (optional) User email adress to make requests on
+          their behalf.  This parameter should only be set when two_legged_oauth
+          is True.
     """
     self._oauth_input_params = gdata.auth.OAuthInputParams(
         signature_method, consumer_key, consumer_secret=consumer_secret,
-        rsa_key=rsa_key)
+        rsa_key=rsa_key, requestor_id=requestor_id)
     if two_legged_oauth:
       oauth_token = gdata.auth.OAuthToken(
           oauth_input_params=self._oauth_input_params)
       self.SetOAuthToken(oauth_token)
-  
-  def FetchOAuthRequestToken(self, scopes=None, extra_parameters=None):
-    """Fetches OAuth request token and returns it.
-    
+
+  def FetchOAuthRequestToken(self, scopes=None, extra_parameters=None,
+                             request_url='%s/accounts/OAuthGetRequestToken' % \
+                             AUTH_SERVER_HOST, oauth_callback=None):
+    """Fetches and sets the OAuth request token and returns it.
+
     Args:
       scopes: string or list of string base URL(s) of the service(s) to be
           accessed. If None, then this method tries to determine the
@@ -381,10 +407,16 @@ class GDataService(atom.service.AtomService):
           default parameters will be overwritten. For e.g. a default parameter
           oauth_version 1.0 can be overwritten if
           extra_parameters = {'oauth_version': '2.0'}
-      
+      request_url: Request token URL. The default is
+          'https://www.google.com/accounts/OAuthGetRequestToken'.
+      oauth_callback: str (optional) If set, it is assume the client is using
+          the OAuth v1.0a protocol where the callback url is sent in the
+          request token step.  If the oauth_callback is also set in
+          extra_params, this value will override that one.
+
     Returns:
       The fetched request token as a gdata.auth.OAuthToken object.
-      
+
     Raises:
       FetchingOAuthRequestTokenFailed if the server responded to the request
       with an error.
@@ -393,9 +425,14 @@ class GDataService(atom.service.AtomService):
       scopes = lookup_scopes(self.service)
     if not isinstance(scopes, (list, tuple)):
       scopes = [scopes,]
+    if oauth_callback:
+      if extra_parameters is not None:
+        extra_parameters['oauth_callback'] = oauth_callback
+      else:
+        extra_parameters = {'oauth_callback': oauth_callback}
     request_token_url = gdata.auth.GenerateOAuthRequestTokenUrl(
         self._oauth_input_params, scopes,
-        request_token_url='%s/accounts/OAuthGetRequestToken' % AUTH_SERVER_HOST,
+        request_token_url=request_url,
         extra_parameters=extra_parameters)
     response = self.http_client.request('GET', str(request_token_url))
     if response.status == 200:
@@ -403,10 +440,11 @@ class GDataService(atom.service.AtomService):
       token.set_token_string(response.read())
       token.scopes = scopes
       token.oauth_input_params = self._oauth_input_params
+      self.SetOAuthToken(token)
       return token
     error = {
         'status': response.status,
-        'reason': 'Non 200 response on upgrade',
+        'reason': 'Non 200 response on fetch request token',
         'body': response.read()
         }
     raise FetchingOAuthRequestTokenFailed(error)    
@@ -432,7 +470,8 @@ class GDataService(atom.service.AtomService):
   def GenerateOAuthAuthorizationURL(
       self, request_token=None, callback_url=None, extra_params=None,
       include_scopes_in_callback=False,
-      scopes_param_prefix=OAUTH_SCOPE_URL_PARAM_NAME):
+      scopes_param_prefix=OAUTH_SCOPE_URL_PARAM_NAME,
+      request_url='%s/accounts/OAuthAuthorizeToken' % AUTH_SERVER_HOST):
     """Generates URL at which user will login to authorize the request token.
     
     Args:
@@ -455,7 +494,8 @@ class GDataService(atom.service.AtomService):
           parameter key which maps to the list of valid scopes for the token.
           This URL parameter will be included in the callback URL along with
           the scopes of the token as value if include_scopes_in_callback=True.
-          
+      request_url: Authorization URL. The default is
+          'https://www.google.com/accounts/OAuthAuthorizeToken'.
     Returns:
       A string URL at which the user is required to login.
     
@@ -478,23 +518,33 @@ class GDataService(atom.service.AtomService):
       raise NonOAuthToken
     return str(gdata.auth.GenerateOAuthAuthorizationUrl(
         request_token,
-        authorization_url='%s/accounts/OAuthAuthorizeToken' % AUTH_SERVER_HOST,
+        authorization_url=request_url,
         callback_url=callback_url, extra_params=extra_params,
         include_scopes_in_callback=include_scopes_in_callback,
         scopes_param_prefix=scopes_param_prefix))   
   
   def UpgradeToOAuthAccessToken(self, authorized_request_token=None,
-                                oauth_version='1.0'):
-    """Upgrades the authorized request token to an access token.
+                                request_url='%s/accounts/OAuthGetAccessToken' \
+                                % AUTH_SERVER_HOST, oauth_version='1.0',
+                                oauth_verifier=None):
+    """Upgrades the authorized request token to an access token and returns it
     
     Args:
       authorized_request_token: gdata.auth.OAuthToken (optional) OAuth request
           token. If not specified, then the current token will be used if it is
           of type <gdata.auth.OAuthToken>, else it is found by looking in the
           token_store by looking for a token for the current scope.
+      request_url: Access token URL. The default is
+          'https://www.google.com/accounts/OAuthGetAccessToken'.
       oauth_version: str (default='1.0') oauth_version parameter. All other
           'oauth_' parameters are added by default. This parameter too, is
           added by default but here you can override it's value.
+      oauth_verifier: str (optional) If present, it is assumed that the client
+        will use the OAuth v1.0a protocol which includes passing the
+        oauth_verifier (as returned by the SP) in the access token step.
+    
+    Returns:
+      Access token
           
     Raises:
       NonOAuthToken if the user's authorized request token is not an OAuth
@@ -519,22 +569,27 @@ class GDataService(atom.service.AtomService):
     access_token_url = gdata.auth.GenerateOAuthAccessTokenUrl(
         authorized_request_token,
         self._oauth_input_params,
-        access_token_url='%s/accounts/OAuthGetAccessToken' % AUTH_SERVER_HOST,
-        oauth_version=oauth_version)
+        access_token_url=request_url,
+        oauth_version=oauth_version,
+        oauth_verifier=oauth_verifier)
     response = self.http_client.request('GET', str(access_token_url))
     if response.status == 200:
       token = gdata.auth.OAuthTokenFromHttpBody(response.read())
       token.scopes = authorized_request_token.scopes
       token.oauth_input_params = authorized_request_token.oauth_input_params
       self.SetOAuthToken(token)
+      return token
     else:
       raise TokenUpgradeFailed({'status': response.status,
                                 'reason': 'Non 200 response on upgrade',
                                 'body': response.read()})      
   
-  def RevokeOAuthToken(self):
+  def RevokeOAuthToken(self, request_url='%s/accounts/AuthSubRevokeToken' % \
+                       AUTH_SERVER_HOST):
     """Revokes an existing OAuth token.
-    
+
+    request_url: Token revoke URL. The default is
+          'https://www.google.com/accounts/AuthSubRevokeToken'.
     Raises:
       NonOAuthToken if the user's auth token is not an OAuth token.
       RevokingOAuthTokenFailed if request for revoking an OAuth token failed.
@@ -544,8 +599,7 @@ class GDataService(atom.service.AtomService):
     if not isinstance(token, gdata.auth.OAuthToken):
       raise NonOAuthToken
 
-    response = token.perform_request(self.http_client, 'GET', 
-        AUTH_SERVER_HOST + '/accounts/AuthSubRevokeToken', 
+    response = token.perform_request(self.http_client, 'GET', request_url,
         headers={'Content-Type':'application/x-www-form-urlencoded'})
     if response.status == 200:
       self.token_store.remove_token(token)
@@ -916,6 +970,67 @@ class GDataService(atom.service.AtomService):
       raise RequestError, {'status': response.status,
           'body': result_body}
 
+  def GetWithRetries(self, uri, extra_headers=None, redirects_remaining=4, 
+      encoding='UTF-8', converter=None, num_retries=DEFAULT_NUM_RETRIES,
+      delay=DEFAULT_DELAY, backoff=DEFAULT_BACKOFF, logger=None):
+    """This is a wrapper method for Get with retring capability.
+
+    To avoid various errors while retrieving bulk entities by retring
+    specified times.
+
+    Note this method relies on the time module and so may not be usable
+    by default in Python2.2.
+
+    Args:
+      num_retries: integer The retry count.
+      delay: integer The initial delay for retring.
+      backoff: integer how much the delay should lengthen after each failure.
+      logger: an object which has a debug(str) method to receive logging
+              messages. Recommended that you pass in the logging module.
+    Raises:
+      ValueError if any of the parameters has an invalid value.
+      RanOutOfTries on failure after number of retries.
+    """
+    # Moved import for time module inside this method since time is not a
+    # default module in Python2.2. This method will not be usable in
+    # Python2.2.
+    import time
+    if backoff <= 1:
+      raise ValueError("backoff must be greater than 1")
+    num_retries = int(num_retries)
+
+    if num_retries < 0:
+      raise ValueError("num_retries must be 0 or greater")
+
+    if delay <= 0:
+      raise ValueError("delay must be greater than 0")
+
+    # Let's start
+    mtries, mdelay = num_retries, delay
+    while mtries > 0:
+      if mtries != num_retries:
+        if logger:
+          logger.debug("Retrying...")
+      try:
+        rv = self.Get(uri, extra_headers=extra_headers,
+                      redirects_remaining=redirects_remaining,
+                      encoding=encoding, converter=converter)
+      except (SystemExit, RequestError):
+        # Allow these errors
+        raise
+      except Exception, e:
+        if logger:
+          logger.debug(e)
+        mtries -= 1
+        time.sleep(mdelay)
+        mdelay *= backoff
+      else:
+        # This is the right path.
+        if logger:
+          logger.debug("Succeeeded...")
+        return rv
+    raise RanOutOfTries('Ran out of tries.')
+
   # CRUD operations
   def Get(self, uri, extra_headers=None, redirects_remaining=4, 
       encoding='UTF-8', converter=None):
@@ -988,7 +1103,8 @@ class GDataService(atom.service.AtomService):
       return feed
     elif server_response.status == 302:
       if redirects_remaining > 0:
-        location = server_response.getheader('Location')
+        location = (server_response.getheader('Location')
+                    or server_response.getheader('location'))
         if location is not None:
           m = re.compile('[\?\&]gsessionid=(\w*)').search(location)
           if m is not None:
@@ -1175,10 +1291,9 @@ class GDataService(atom.service.AtomService):
 
     if self.__gsessionid is not None:
       if uri.find('gsessionid=') < 0:
-        if uri.find('?') > -1:
-          uri += '&gsessionid=%s' % (self.__gsessionid,)
-        else:
-          uri += '?gsessionid=%s' % (self.__gsessionid,)
+        if url_params is None:
+          url_params = {}
+        url_params['gsessionid'] = self.__gsessionid
 
     if data and media_source:
       if ElementTree.iselement(data):
@@ -1201,7 +1316,7 @@ class GDataService(atom.service.AtomService):
       extra_headers['Content-Type'] = 'multipart/related; boundary=END_OF_PART'
       server_response = self.request(verb, uri, 
           data=[multipart[0], data_str, multipart[1], media_source.file_handle,
-              multipart[2]], headers=extra_headers)
+              multipart[2]], headers=extra_headers, url_params=url_params)
       result_body = server_response.read()
       
     elif media_source or isinstance(data, gdata.MediaSource):
@@ -1210,7 +1325,8 @@ class GDataService(atom.service.AtomService):
       extra_headers['Content-Length'] = str(media_source.content_length)
       extra_headers['Content-Type'] = media_source.content_type
       server_response = self.request(verb, uri, 
-          data=media_source.file_handle, headers=extra_headers)
+          data=media_source.file_handle, headers=extra_headers,
+          url_params=url_params)
       result_body = server_response.read()
 
     else:
@@ -1218,7 +1334,7 @@ class GDataService(atom.service.AtomService):
       content_type = 'application/atom+xml'
       extra_headers['Content-Type'] = content_type
       server_response = self.request(verb, uri, data=http_data,
-          headers=extra_headers)
+          headers=extra_headers, url_params=url_params)
       result_body = server_response.read()
 
     # Server returns 201 for most post requests, but when performing a batch
@@ -1235,7 +1351,8 @@ class GDataService(atom.service.AtomService):
       return feed
     elif server_response.status == 302:
       if redirects_remaining > 0:
-        location = server_response.getheader('Location')
+        location = (server_response.getheader('Location')
+                    or server_response.getheader('location'))
         if location is not None:
           m = re.compile('[\?\&]gsessionid=(\w*)').search(location)
           if m is not None:
@@ -1320,20 +1437,20 @@ class GDataService(atom.service.AtomService):
 
     if self.__gsessionid is not None:
       if uri.find('gsessionid=') < 0:
-        if uri.find('?') > -1:
-          uri += '&gsessionid=%s' % (self.__gsessionid,)
-        else:
-          uri += '?gsessionid=%s' % (self.__gsessionid,)
+        if url_params is None:
+          url_params = {}
+        url_params['gsessionid'] = self.__gsessionid
  
     server_response = self.request('DELETE', uri, 
-        headers=extra_headers)
+        headers=extra_headers, url_params=url_params)
     result_body = server_response.read()
 
     if server_response.status == 200:
       return True
     elif server_response.status == 302:
       if redirects_remaining > 0:
-        location = server_response.getheader('Location')
+        location = (server_response.getheader('Location')
+                    or server_response.getheader('location'))
         if location is not None:
           m = re.compile('[\?\&]gsessionid=(\w*)').search(location)
           if m is not None:
@@ -1384,7 +1501,7 @@ def ExtractToken(url, scopes_included_in_next=True):
 
 
 def GenerateAuthSubRequestUrl(next, scopes, hd='default', secure=False,
-    session=True, request_url='http://www.google.com/accounts/AuthSubRequest',
+    session=True, request_url='https://www.google.com/accounts/AuthSubRequest',
     include_scopes_in_next=True):
   """Creates a URL to request an AuthSub token to access Google services.
 
@@ -1409,7 +1526,7 @@ def GenerateAuthSubRequestUrl(next, scopes, hd='default', secure=False,
         token may only be used once and cannot be upgraded. Default is True.
     request_url: The base of the URL to which the user will be sent to
         authorize this application to access their data. The default is
-        'http://www.google.com/accounts/AuthSubRequest'.
+        'https://www.google.com/accounts/AuthSubRequest'.
     include_scopes_in_next: Boolean if set to true, the 'next' parameter will
         be modified to include the requested scope as a URL parameter. The
         key for the next's scope parameter will be SCOPE_URL_PARAM_NAME. The

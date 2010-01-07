@@ -1,6 +1,6 @@
 #!/usr/bin/python
 #
-# Copyright (C) 2007, 2008 Google Inc.
+# Copyright (C) 2007 - 2009 Google Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -29,6 +29,8 @@ import gdata.oauth as oauth
 import gdata.oauth.rsa as oauth_rsa
 import gdata.tlslite.utils.keyfactory as keyfactory
 import gdata.tlslite.utils.cryptomath as cryptomath
+
+import gdata.gauth
 
 __author__ = 'api.jscudder (Jeff Scudder)'
 
@@ -90,18 +92,8 @@ def generate_client_login_request_body(email, password, service, source,
   Returns:
     The HTTP body to send in a request for a client login token.
   """
-  # Create a POST body containing the user's credentials.
-  request_fields = {'Email': email,
-                    'Passwd': password,
-                    'accountType': account_type,
-                    'service': service,
-                    'source': source}
-  if captcha_token and captcha_response:
-    # Send the captcha token and response as part of the POST body if the
-    # user is responding to a captch challenge.
-    request_fields['logintoken'] = captcha_token
-    request_fields['logincaptcha'] = captcha_response
-  return urllib.urlencode(request_fields)
+  return gdata.gauth.generate_client_login_request_body(email, password,
+      service, source, account_type, captcha_token, captcha_response)
 
 
 GenerateClientLoginRequestBody = generate_client_login_request_body
@@ -139,11 +131,7 @@ def get_client_login_token(http_body):
   Returns:
     The token value string for a ClientLoginToken.
   """
-  for response_line in http_body.splitlines():
-    if response_line.startswith('Auth='):
-      # Strip off the leading Auth= and return the Authorization value.
-      return response_line[5:]
-  return None
+  return gdata.gauth.get_client_login_token_string(http_body)
 
 
 def extract_client_login_token(http_body, scopes):
@@ -189,21 +177,7 @@ def get_captcha_challenge(http_body,
      'url': string containing the URL of the image}
     Returns None if there was no CAPTCHA challenge in the response.
   """
-  contains_captcha_challenge = False
-  captcha_parameters = {}
-  for response_line in http_body.splitlines():
-    if response_line.startswith('Error=CaptchaRequired'):
-      contains_captcha_challenge = True
-    elif response_line.startswith('CaptchaToken='):
-      # Strip off the leading CaptchaToken=
-      captcha_parameters['token'] = response_line[13:]
-    elif response_line.startswith('CaptchaUrl='):
-      captcha_parameters['url'] = '%s%s' % (captcha_base_url,
-          response_line[11:])
-  if contains_captcha_challenge:
-    return captcha_parameters
-  else:
-    return None
+  return gdata.gauth.get_captcha_challenge(http_body, captcha_base_url)
 
 
 GetCaptchaChallenge = get_captcha_challenge
@@ -295,7 +269,8 @@ def GenerateOAuthAccessTokenUrl(
     authorized_request_token,
     oauth_input_params,
     access_token_url='https://www.google.com/accounts/OAuthGetAccessToken',
-    oauth_version='1.0'):
+    oauth_version='1.0',
+    oauth_verifier=None):
   """Generates URL at which user will login to authorize the request token.
   
   Args:
@@ -306,15 +281,21 @@ def GenerateOAuthAccessTokenUrl(
         normally 'https://www.google.com/accounts/OAuthGetAccessToken' or
         '/accounts/OAuthGetAccessToken'
     oauth_version: str (default='1.0') oauth_version parameter.
+    oauth_verifier: str (optional) If present, it is assumed that the client
+        will use the OAuth v1.0a protocol which includes passing the
+        oauth_verifier (as returned by the SP) in the access token step.
 
   Returns:
     atom.url.Url OAuth access token URL.
   """
   oauth_token = oauth.OAuthToken(authorized_request_token.key,
                                  authorized_request_token.secret)
+  parameters = {'oauth_version': oauth_version}
+  if oauth_verifier is not None:
+    parameters['oauth_verifier'] = oauth_verifier
   oauth_request = oauth.OAuthRequest.from_consumer_and_token(
       oauth_input_params.GetConsumer(), token=oauth_token,
-      http_url=access_token_url, parameters={'oauth_version': oauth_version})
+      http_url=access_token_url, parameters=parameters)
   oauth_request.sign_request(oauth_input_params.GetSignatureMethod(),
                              oauth_input_params.GetConsumer(), oauth_token)
   return atom.url.parse_url(oauth_request.to_url())
@@ -628,7 +609,7 @@ class OAuthInputParams(object):
   """
   
   def __init__(self, signature_method, consumer_key, consumer_secret=None,
-               rsa_key=None):
+               rsa_key=None, requestor_id=None):
     """Initializes object with parameters required for using OAuth mechanism.
     
     NOTE: Though consumer_secret and rsa_key are optional, either of the two
@@ -640,19 +621,59 @@ class OAuthInputParams(object):
           signing each request. Valid implementations are provided as the
           constants defined by gdata.auth.OAuthSignatureMethod. Currently
           they are gdata.auth.OAuthSignatureMethod.RSA_SHA1 and
-          gdata.auth.OAuthSignatureMethod.HMAC_SHA1
+          gdata.auth.OAuthSignatureMethod.HMAC_SHA1. Instead of passing in
+          the strategy class, you may pass in a string for 'RSA_SHA1' or 
+          'HMAC_SHA1'. If you plan to use OAuth on App Engine (or another
+          WSGI environment) I recommend specifying signature method using a
+          string (the only options are 'RSA_SHA1' and 'HMAC_SHA1'). In these
+          environments there are sometimes issues with pickling an object in 
+          which a member references a class or function. Storing a string to
+          refer to the signature method mitigates complications when
+          pickling.
       consumer_key: string Domain identifying third_party web application.
       consumer_secret: string (optional) Secret generated during registration.
           Required only for HMAC_SHA1 signature method.
       rsa_key: string (optional) Private key required for RSA_SHA1 signature
           method.
+      requestor_id: string (optional) User email adress to make requests on
+          their behalf.  This parameter should only be set when performing
+          2 legged OAuth requests.
     """
-    if signature_method == OAuthSignatureMethod.RSA_SHA1:
-      self._signature_method = signature_method(rsa_key, None)
+    if (signature_method == OAuthSignatureMethod.RSA_SHA1
+        or signature_method == 'RSA_SHA1'):
+      self.__signature_strategy = 'RSA_SHA1'
+    elif (signature_method == OAuthSignatureMethod.HMAC_SHA1
+        or signature_method == 'HMAC_SHA1'):
+      self.__signature_strategy = 'HMAC_SHA1'
     else:
-      self._signature_method = signature_method()
+      self.__signature_strategy = signature_method
+    self.rsa_key = rsa_key
     self._consumer = oauth.OAuthConsumer(consumer_key, consumer_secret)
-    
+    self.requestor_id = requestor_id
+
+  def __get_signature_method(self):
+    if self.__signature_strategy == 'RSA_SHA1':
+      return OAuthSignatureMethod.RSA_SHA1(self.rsa_key, None)
+    elif self.__signature_strategy == 'HMAC_SHA1':
+      return OAuthSignatureMethod.HMAC_SHA1()
+    else:
+      return self.__signature_strategy()
+
+  def __set_signature_method(self, signature_method):
+    if (signature_method == OAuthSignatureMethod.RSA_SHA1
+        or signature_method == 'RSA_SHA1'):
+      self.__signature_strategy = 'RSA_SHA1'
+    elif (signature_method == OAuthSignatureMethod.HMAC_SHA1
+        or signature_method == 'HMAC_SHA1'):
+      self.__signature_strategy = 'HMAC_SHA1'
+    else:
+      self.__signature_strategy = signature_method
+
+  _signature_method = property(__get_signature_method, __set_signature_method,
+      doc="""Returns object capable of signing the request using RSA of HMAC.
+      
+      Replaces the _signature_method member to avoid pickle errors.""")
+
   def GetSignatureMethod(self):
     """Gets the OAuth signature method.
 
@@ -660,10 +681,10 @@ class OAuthInputParams(object):
       object of supertype <oauth.oauth.OAuthSignatureMethod>
     """
     return self._signature_method
-  
+
   def GetConsumer(self):
     """Gets the OAuth consumer.
-    
+
     Returns:
       object of type <oauth.oauth.Consumer>
     """
@@ -836,11 +857,13 @@ class OAuthToken(atom.http_interface.GenericToken):
     header['Authorization'] = header['Authorization'].replace('+', '%2B')
     return header
   
-  def perform_request(self, http_client, operation, url, data=None, 
+  def perform_request(self, http_client, operation, url, data=None,
                       headers=None):
     """Sets the Authorization header and makes the HTTP request."""
     if not headers:
       headers = {}
+    if self.oauth_input_params.requestor_id:
+      url.params['xoauth_requestor_id'] = self.oauth_input_params.requestor_id
     headers.update(self.GetAuthHeader(operation, url))
     return http_client.request(operation, url, data=data, headers=headers)
     

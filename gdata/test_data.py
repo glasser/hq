@@ -1613,7 +1613,7 @@ ACL_ENTRY = """<?xml version='1.0' encoding='UTF-8'?>
   </entry>"""
 
 DOCUMENT_LIST_FEED = """<?xml version='1.0' encoding='UTF-8'?>
-<ns0:feed xmlns:ns0="http://www.w3.org/2005/Atom"><ns1:totalResults
+<ns0:feed xmlns:ns0="http://www.w3.org/2005/Atom" xmlns:ns2="http://schemas.google.com/g/2005" xmlns:ns3="http://schemas.google.com/docs/2007"><ns1:totalResults
 xmlns:ns1="http://a9.com/-/spec/opensearchrss/1.0/">2</ns1:totalResults><ns1:startIndex
 xmlns:ns1="http://a9.com/-/spec/opensearchrss/1.0/">1</ns1:startIndex><ns0:entry><ns0:content
 src="http://foo.com/fm?fmcmd=102&amp;key=supercalifragilisticexpeadocious"
@@ -1628,7 +1628,16 @@ href="http://foo.com/feeds/worksheets/supercalifragilisticexpeadocious/private/f
 rel="http://schemas.google.com/spreadsheets/2006#worksheetsfeed"
 type="application/atom+xml" /><ns0:link
 href="http://docs.google.com/feeds/documents/private/full/spreadsheet%3Asupercalifragilisticexpeadocious"
-rel="self" type="application/atom+xml" /><ns0:title type="text">Test Spreadsheet</ns0:title><ns0:updated>2007-07-03T18:03:32.045Z</ns0:updated></ns0:entry><ns0:entry><ns0:content
+rel="self" type="application/atom+xml" /><ns0:title type="text">Test Spreadsheet</ns0:title><ns0:updated>2007-07-03T18:03:32.045Z</ns0:updated>
+<ns2:feedLink href="http://docs.google.com/feeds/acl/private/full/spreadsheet%3Afoofoofoo" rel="http://schemas.google.com/acl/2007#accessControlList"/>
+<ns2:resourceId>document:dfrkj84g_3348jbxpxcd</ns2:resourceId>
+<ns2:lastModifiedBy>
+    <ns0:name>test.user</ns0:name>
+    <ns0:email>test.user@gmail.com</ns0:email>
+</ns2:lastModifiedBy>
+<ns2:lastViewed>2009-03-05T07:48:21.493Z</ns2:lastViewed>
+<ns3:writersCanInvite value='true'/>
+</ns0:entry><ns0:entry><ns0:content
 src="http://docs.google.com/RawDocContents?action=fetch&amp;docID=gr00vy"
 type="text/html"
 /><ns0:author><ns0:name>test.user</ns0:name><ns0:email>test.user@gmail.com</ns0:email></ns0:author><ns0:category
@@ -1638,7 +1647,15 @@ term="http://schemas.google.com/docs/2007#document"
 href="http://foobar.com/Doc?id=gr00vy" rel="alternate" type="text/html"
 /><ns0:link
 href="http://docs.google.com/feeds/documents/private/full/document%3Agr00vy"
-rel="self" type="application/atom+xml" /><ns0:title type="text">Test Document</ns0:title><ns0:updated>2007-07-03T18:02:50.338Z</ns0:updated></ns0:entry><ns0:id>http://docs.google.com/feeds/documents/private/full</ns0:id><ns0:link
+rel="self" type="application/atom+xml" /><ns0:title type="text">Test Document</ns0:title><ns0:updated>2007-07-03T18:02:50.338Z</ns0:updated>
+<ns2:feedLink href="http://docs.google.com/feeds/acl/private/full/document%3Afoofoofoo" rel="http://schemas.google.com/acl/2007#accessControlList"/>
+<ns2:lastModifiedBy>
+    <ns0:name>test.user</ns0:name>
+    <ns0:email>test.user@gmail.com</ns0:email>
+</ns2:lastModifiedBy>
+<ns3:writersCanInvite value='false'/>
+ <ns2:lastViewed>2009-03-05T07:48:21.493Z</ns2:lastViewed>
+</ns0:entry><ns0:id>http://docs.google.com/feeds/documents/private/full</ns0:id><ns0:link
 href="http://docs.google.com" rel="alternate" type="text/html" /><ns0:link
 href="http://docs.google.com/feeds/documents/private/full"
 rel="http://schemas.google.com/g/2005#feed" type="application/atom+xml"
@@ -1647,25 +1664,110 @@ rel="http://schemas.google.com/g/2005#post" type="application/atom+xml"
 /><ns0:link href="http://docs.google.com/feeds/documents/private/full"
 rel="self" type="application/atom+xml" /><ns0:title type="text">Available
 Documents -
-test.user@gmail.com</ns0:title><ns0:updated>2007-07-09T23:07:21.898Z</ns0:updated></ns0:feed>
+test.user@gmail.com</ns0:title><ns0:updated>2007-07-09T23:07:21.898Z</ns0:updated>
+</ns0:feed>
 """
 
 DOCUMENT_LIST_ENTRY = """<?xml version='1.0' encoding='UTF-8'?>
-<ns0:entry xmlns:ns0="http://www.w3.org/2005/Atom"><ns0:content
-src="http://foo.com/fm?fmcmd=102&amp;key=supercalifragilisticexpealidocious"
-type="text/html"
-/><ns0:author><ns0:name>test.user</ns0:name><ns0:email>test.user@gmail.com</ns0:email></ns0:author><ns0:category
-label="spreadsheet" scheme="http://schemas.google.com/g/2005#kind"
+<ns0:entry xmlns:ns0="http://www.w3.org/2005/Atom" xmlns:ns1="http://schemas.google.com/g/2005" xmlns:ns2="http://schemas.google.com/docs/2007"><ns0:content
+src="http://foo.com/fm?fmcmd=102&amp;key=supercalifragilisticexpealidocious" type="text/html"/>
+<ns0:author><ns0:name>test.user</ns0:name><ns0:email>test.user@gmail.com</ns0:email></ns0:author>
+<ns0:category label="spreadsheet" scheme="http://schemas.google.com/g/2005#kind"
 term="http://schemas.google.com/docs/2007#spreadsheet"
-/><ns0:id>http://docs.google.com/feeds/documents/private/full/spreadsheet%3Asupercalifragilisticexpealidocious</ns0:id><ns0:link
-href="http://foo.com/ccc?key=supercalifragilisticexpealidocious"
+/><ns0:id>http://docs.google.com/feeds/documents/private/full/spreadsheet%3Asupercalifragilisticexpealidocious</ns0:id>
+<ns0:link href="http://foo.com/ccc?key=supercalifragilisticexpealidocious"
 rel="alternate" type="text/html" /><ns0:link
 href="http://foo.com/feeds/worksheets/supercalifragilisticexpealidocious/private/full"
 rel="http://schemas.google.com/spreadsheets/2006#worksheetsfeed"
 type="application/atom+xml" /><ns0:link
 href="http://docs.google.com/feeds/documents/private/full/spreadsheet%3Asupercalifragilisticexpealidocious"
-rel="self" type="application/atom+xml" /><ns0:title type="text">Test Spreadsheet</ns0:title><ns0:updated>2007-07-03T18:03:32.045Z</ns0:updated></ns0:entry>
+rel="self" type="application/atom+xml" />
+<ns0:title type="text">Test Spreadsheet</ns0:title><ns0:updated>2007-07-03T18:03:32.045Z</ns0:updated>
+<ns1:resourceId>spreadsheet:supercalifragilisticexpealidocious</ns1:resourceId>
+<ns1:lastModifiedBy>
+    <ns0:name>test.user</ns0:name>
+    <ns0:email>test.user@gmail.com</ns0:email>
+</ns1:lastModifiedBy>
+<ns1:lastViewed>2009-03-05T07:48:21.493Z</ns1:lastViewed>
+<ns2:writersCanInvite value='true'/>
+</ns0:entry>
 """
+
+DOCUMENT_LIST_ENTRY_V3 = """<?xml version='1.0' encoding='UTF-8'?>
+<ns0:entry xmlns:ns0="http://www.w3.org/2005/Atom" xmlns:ns1="http://schemas.google.com/g/2005" xmlns:ns2="http://schemas.google.com/docs/2007"><ns0:content
+src="http://foo.com/fm?fmcmd=102&amp;key=supercalifragilisticexpealidocious" type="text/html"/>
+<ns0:author><ns0:name>test.user</ns0:name><ns0:email>test.user@gmail.com</ns0:email></ns0:author>
+<ns0:category label="spreadsheet" scheme="http://schemas.google.com/g/2005#kind"
+term="http://schemas.google.com/docs/2007#spreadsheet"
+/><ns0:id>http://docs.google.com/feeds/documents/private/full/spreadsheet%3Asupercalifragilisticexpealidocious</ns0:id>
+<ns0:link href="http://foo.com/ccc?key=supercalifragilisticexpealidocious"
+rel="alternate" type="text/html" /><ns0:link
+href="http://foo.com/feeds/worksheets/supercalifragilisticexpealidocious/private/full"
+rel="http://schemas.google.com/spreadsheets/2006#worksheetsfeed"
+type="application/atom+xml" /><ns0:link
+href="http://docs.google.com/feeds/documents/private/full/spreadsheet%3Asupercalifragilisticexpealidocious"
+rel="self" type="application/atom+xml" />
+<ns0:link rel="http://schemas.google.com/docs/2007#parent" type="application/atom+xml"
+href="http://docs.google.com/feeds/default/private/full/folder%3A12345" title="AFolderName" />
+<ns0:title type="text">Test Spreadsheet</ns0:title><ns0:updated>2007-07-03T18:03:32.045Z</ns0:updated>
+<ns1:resourceId>spreadsheet:supercalifragilisticexpealidocious</ns1:resourceId>
+<ns1:lastModifiedBy>
+    <ns0:name>test.user</ns0:name>
+    <ns0:email>test.user@gmail.com</ns0:email>
+</ns1:lastModifiedBy>
+<ns1:lastViewed>2009-03-05T07:48:21.493Z</ns1:lastViewed>
+<ns2:writersCanInvite value='true'/>
+<ns1:quotaBytesUsed>1000</ns1:quotaBytesUsed>
+<ns1:feedLink rel="http://schemas.google.com/acl/2007#accessControlList" href="http://docs.google.com/feeds/default/private/full/spreadsheet%3Asupercalifragilisticexpealidocious/acl" />
+<ns1:feedLink rel="http://schemas.google.com/docs/2007/revisions" href="http://docs.google.com/feeds/default/private/full/spreadsheet%3Asupercalifragilisticexpealidocious/revisions" />
+</ns0:entry>
+"""
+
+DOCUMENT_LIST_ACL_ENTRY = """<?xml version='1.0' encoding='UTF-8'?>
+<entry xmlns="http://www.w3.org/2005/Atom"
+       xmlns:gAcl='http://schemas.google.com/acl/2007'>
+  <category scheme='http://schemas.google.com/g/2005#kind'
+            term='http://schemas.google.com/acl/2007#accessRule'/>
+  <gAcl:role value='writer'/>
+  <gAcl:scope type='user' value='user@gmail.com'/>
+</entry>"""
+
+DOCUMENT_LIST_ACL_FEED = """<?xml version='1.0' encoding='UTF-8'?>
+<feed xmlns="http://www.w3.org/2005/Atom" xmlns:openSearch="http://a9.com/-/spec/opensearchrss/1.0/"
+         xmlns:gAcl="http://schemas.google.com/acl/2007" 
+	 xmlns:batch="http://schemas.google.com/gdata/batch">
+<id>http://docs.google.com/feeds/acl/private/full/spreadsheet%3ApFrmMi8feTQYCgZpwUQ</id>
+<updated>2009-02-22T03:48:25.895Z</updated>
+<category scheme="http://schemas.google.com/g/2005#kind" term="http://schemas.google.com/acl/2007#accessRule"/>
+<title type="text">Document Permissions</title>
+<link rel="http://schemas.google.com/g/2005#feed" type="application/atom+xml" href="http://docs.google.com/feeds/acl/private/full/spreadsheet%3ApFrmMi8feTQYCgZpwUQ"/>
+<link rel="http://schemas.google.com/g/2005#post" type="application/atom+xml" href="http://docs.google.com/feeds/acl/private/full/spreadsheet%3ApFrmMi8feTQYCgZpwUQ"/>
+<link rel="http://schemas.google.com/g/2005#batch" type="application/atom+xml" href="http://docs.google.com/feeds/acl/private/full/spreadsheet%3ApFrmMi8feTQYCgZpwUQ/batch"/>
+<link rel="self" type="application/atom+xml" href="http://docs.google.com/feeds/acl/private/full/spreadsheet%3ApFrmMi8feTQYCgZpwUQ"/>
+<openSearch:totalResults>2</openSearch:totalResults>
+<openSearch:startIndex>1</openSearch:startIndex>
+<entry>
+    <id>http://docs.google.com/feeds/acl/private/full/spreadsheet%3ApFrmMi8feTQp4pwUwUQ/user%3Auser%40gmail.com</id>
+    <updated>2009-02-22T03:48:25.896Z</updated>
+    <category scheme="http://schemas.google.com/g/2005#kind" term="http://schemas.google.com/acl/2007#accessRule"/>
+    <title type="text">Document Permission - user@gmail.com</title>
+    <link rel="self" type="application/atom+xml" href="http://docs.google.com/feeds/acl/private/full/spreadsheet%3ApFrmMi8feTQp4pwUwUQ/user%3Auser%40gmail.com"/>
+    <link rel="edit" type="application/atom+xml" href="http://docs.google.com/feeds/acl/private/full/spreadsheet%3ApFrmMi8feTQp4pwUwUQ/user%3Auser%40gmail.com"/>
+    <gAcl:role value="owner"/>
+    <gAcl:scope type="user" value="user@gmail.com"/>
+</entry>
+<entry>
+    <id>http://docs.google.com/feeds/acl/private/full/spreadsheet%3ApFrmMi8fCgZp4pwUwUQ/user%3Auser2%40google.com</id>
+    <updated>2009-02-22T03:48:26.257Z</updated>
+    <category scheme="http://schemas.google.com/g/2005#kind" term="http://schemas.google.com/acl/2007#accessRule"/>
+    <title type="text">Document Permission - user2@google.com</title>
+    <link rel="self" type="application/atom+xml" href="http://docs.google.com/feeds/acl/private/full/spreadsheet%3ApFrmMi8feTQYCgZp4pwUwUQ/user%3Auser2%40google.com"/>
+    <link rel="edit" type="application/atom+xml" href="http://docs.google.com/feeds/acl/private/full/spreadsheet%3ApFrmMi8feTQYCgZp4pwUwUQ/user%3Auser2%40google.com"/>
+    <gAcl:role value="writer"/>
+    <gAcl:scope type="domain" value="google.com"/>
+</entry>
+</feed>"""
+
 
 BATCH_ENTRY = """<?xml version='1.0' encoding='UTF-8'?>
 <entry xmlns="http://www.w3.org/2005/Atom"
@@ -2836,3 +2938,2311 @@ SITEMAPS_FEED = """<feed xmlns="http://www.w3.org/2005/Atom"
     <wt:sitemap-news-publication-label>LabelValue</wt:sitemap-news-publication-label>
   </entry>
 </feed>"""
+
+HEALTH_CCR_NOTICE_PAYLOAD = """<ContinuityOfCareRecord xmlns="urn:astm-org:CCR">
+  <Body>
+   <Problems>
+    <Problem>
+      <DateTime>
+        <Type><Text>Start date</Text></Type>
+        <ExactDateTime>2007-04-04T07:00:00Z</ExactDateTime>
+      </DateTime>
+      <Description>
+        <Text>Aortic valve disorders</Text>
+        <Code>
+          <Value>410.10</Value>
+          <CodingSystem>ICD9</CodingSystem>
+          <Version>2004</Version>
+        </Code>
+      </Description>
+      <Status><Text>Active</Text></Status>
+    </Problem>
+  </Problems>
+  </Body>
+</ContinuityOfCareRecord>"""
+
+HEALTH_PROFILE_ENTRY_DIGEST = """<?xml version="1.0" encoding="UTF-8"?>
+<entry xmlns="http://www.w3.org/2005/Atom" xmlns:openSearch="http://a9.com/-/spec/opensearchrss/1.0/" xmlns:ccr="urn:astm-org:CCR" xmlns:batch="http://schemas.google.com/gdata/batch" xmlns:h9m="http://schemas.google.com/health/metadata">
+  <id>https://www.google.com/health/feeds/profile/default/vneCn5qdEIY_digest</id>
+  <updated>2008-09-29T07:52:17.176Z</updated>
+  <category scheme="http://schemas.google.com/g/2005#kind" term="http://schemas.google.com/health/kinds#profile" />
+  <link rel="alternate" type="application/atom+xml" href="https://www.google.com/health/feeds/profile/default?digest=true" />
+  <link rel="self" type="application/atom+xml" href="https://www.google.com/health/feeds/profile/default/vneCn5qdEIY_digest" />
+  <link rel="edit" type="application/atom+xml" href="https://www.google.com/health/feeds/profile/default/vneCn5qdEIY_digest" />
+  <ContinuityOfCareRecord xmlns="urn:astm-org:CCR">
+    <CCRDocumentObjectID>vneCn5qdEIY</CCRDocumentObjectID>
+    <Language>
+      <Text>English</Text>
+      <Code>
+        <Value>en</Value>
+        <CodingSystem>ISO-639-1</CodingSystem>
+      </Code>
+    </Language>
+    <Version>V1.0</Version>
+    <DateTime>
+      <ExactDateTime>2008-09-29T07:52:17.176Z</ExactDateTime>
+    </DateTime>
+    <Patient>
+      <ActorID>Google Health Profile</ActorID>
+    </Patient>
+    <Body>
+      <FunctionalStatus>
+        <Function>
+          <Type>
+            <Text>Pregnancy status</Text>
+          </Type>
+          <Description>
+            <Text>Not pregnant</Text>
+          </Description>
+          <Status />
+          <Source>
+            <Actor>
+              <ActorID>user@google.com</ActorID>
+              <ActorRole>
+                <Text>Patient</Text>
+              </ActorRole>
+            </Actor>
+          </Source>
+        </Function>
+        <Function>
+          <Type>
+            <Text>Breastfeeding status</Text>
+          </Type>
+          <Description>
+            <Text>Not breastfeeding</Text>
+          </Description>
+          <Status />
+          <Source>
+            <Actor>
+              <ActorID>user@gmail.com</ActorID>
+              <ActorRole>
+                <Text>Patient</Text>
+              </ActorRole>
+            </Actor>
+          </Source>
+        </Function>
+      </FunctionalStatus>
+      <Problems>
+        <Problem>
+          <CCRDataObjectID>Hn0FE0IlcY-FMFFgSTxkvA/CONDITION/0</CCRDataObjectID>
+          <DateTime>
+            <Type>
+              <Text>Start date</Text>
+            </Type>
+            <ExactDateTime>2007-04-04T07:00:00Z</ExactDateTime>
+          </DateTime>
+          <Description>
+            <Text>Aortic valve disorders</Text>
+            <Code>
+              <Value>410.10</Value>
+              <CodingSystem>ICD9</CodingSystem>
+              <Version>2004</Version>
+            </Code>
+          </Description>
+          <Status>
+            <Text>Active</Text>
+          </Status>
+          <Source>
+            <Actor>
+              <ActorID>example.com</ActorID>
+              <ActorRole>
+                <Text>Information Provider</Text>
+              </ActorRole>
+            </Actor>
+          </Source>
+        </Problem>
+        <Problem>
+          <Type />
+          <Description>
+            <Text>Malaria</Text>
+            <Code>
+              <Value>136.9</Value>
+              <CodingSystem>ICD9_Broader</CodingSystem>
+            </Code>
+            <Code>
+              <Value>084.6</Value>
+              <CodingSystem>ICD9</CodingSystem>
+            </Code>
+          </Description>
+          <Status>
+            <Text>ACTIVE</Text>
+          </Status>
+          <Source>
+            <Actor>
+              <ActorID>user@gmail.com</ActorID>
+              <ActorRole>
+                <Text>Patient</Text>
+              </ActorRole>
+            </Actor>
+          </Source>
+          <HealthStatus>
+            <Description />
+          </HealthStatus>
+        </Problem>
+      </Problems>
+      <SocialHistory>
+        <SocialHistoryElement>
+          <Type>
+            <Text>Race</Text>
+            <Code>
+              <Value>S15814</Value>
+              <CodingSystem>HL7</CodingSystem>
+            </Code>
+          </Type>
+          <Description>
+            <Text>White</Text>
+          </Description>
+          <Status />
+          <Source>
+            <Actor>
+              <ActorID>user@gmail.com</ActorID>
+              <ActorRole>
+                <Text>Patient</Text>
+              </ActorRole>
+            </Actor>
+          </Source>
+          <Episodes>
+            <Frequency>
+              <Units />
+            </Frequency>
+          </Episodes>
+        </SocialHistoryElement>
+      </SocialHistory>
+      <Alerts>
+        <Alert>
+          <Type>
+            <Text>Allergy</Text>
+          </Type>
+          <Description>
+            <Text>A-Fil</Text>
+          </Description>
+          <Status>
+            <Text>ACTIVE</Text>
+          </Status>
+          <Source>
+            <Actor>
+              <ActorID>user@gmail.com</ActorID>
+              <ActorRole>
+                <Text>Patient</Text>
+              </ActorRole>
+            </Actor>
+          </Source>
+          <Reaction>
+            <Description />
+            <Severity>
+              <Text>Severe</Text>
+            </Severity>
+          </Reaction>
+        </Alert>
+        <Alert>
+          <Type>
+            <Text>Allergy</Text>
+          </Type>
+          <Description>
+            <Text>A.E.R Traveler</Text>
+          </Description>
+          <Status>
+            <Text>ACTIVE</Text>
+          </Status>
+          <Source>
+            <Actor>
+              <ActorID>user@gmail.com</ActorID>
+              <ActorRole>
+                <Text>Patient</Text>
+              </ActorRole>
+            </Actor>
+          </Source>
+          <Reaction>
+            <Description />
+            <Severity>
+              <Text>Severe</Text>
+            </Severity>
+          </Reaction>
+        </Alert>
+      </Alerts>
+      <Medications>
+        <Medication>
+          <Type />
+          <Description />
+          <Status>
+            <Text>ACTIVE</Text>
+          </Status>
+          <Source>
+            <Actor>
+              <ActorID>user@gmail.com</ActorID>
+              <ActorRole>
+                <Text>Patient</Text>
+              </ActorRole>
+            </Actor>
+          </Source>
+          <Product>
+            <ProductName>
+              <Text>A&amp; D</Text>
+            </ProductName>
+            <Strength>
+              <Units />
+              <StrengthSequencePosition>0</StrengthSequencePosition>
+              <VariableStrengthModifier />
+            </Strength>
+          </Product>
+          <Directions>
+            <Direction>
+              <Description />
+              <DeliveryMethod />
+              <Dose>
+                <Units />
+                <DoseSequencePosition>0</DoseSequencePosition>
+                <VariableDoseModifier />
+              </Dose>
+              <Route>
+                <Text>To skin</Text>
+                <Code>
+                  <Value>C38305</Value>
+                  <CodingSystem>FDA</CodingSystem>
+                </Code>
+                <RouteSequencePosition>0</RouteSequencePosition>
+                <MultipleRouteModifier />
+              </Route>
+            </Direction>
+          </Directions>
+          <Refills />
+        </Medication>
+        <Medication>
+          <Type />
+          <Description />
+          <Status>
+            <Text>ACTIVE</Text>
+          </Status>
+          <Source>
+            <Actor>
+              <ActorID>user@gmail.com</ActorID>
+              <ActorRole>
+                <Text>Patient</Text>
+              </ActorRole>
+            </Actor>
+          </Source>
+          <Product>
+            <ProductName>
+              <Text>A-Fil</Text>
+            </ProductName>
+            <Strength>
+              <Units />
+              <StrengthSequencePosition>0</StrengthSequencePosition>
+              <VariableStrengthModifier />
+            </Strength>
+          </Product>
+          <Directions>
+            <Direction>
+              <Description />
+              <DeliveryMethod />
+              <Dose>
+                <Units />
+                <DoseSequencePosition>0</DoseSequencePosition>
+                <VariableDoseModifier />
+              </Dose>
+              <Route>
+                <Text>To skin</Text>
+                <Code>
+                  <Value>C38305</Value>
+                  <CodingSystem>FDA</CodingSystem>
+                </Code>
+                <RouteSequencePosition>0</RouteSequencePosition>
+                <MultipleRouteModifier />
+              </Route>
+            </Direction>
+          </Directions>
+          <Refills />
+        </Medication>
+        <Medication>
+          <Type />
+          <Description />
+          <Status>
+            <Text>ACTIVE</Text>
+          </Status>
+          <Source>
+            <Actor>
+              <ActorID>user@gmail.com</ActorID>
+              <ActorRole>
+                <Text>Patient</Text>
+              </ActorRole>
+            </Actor>
+          </Source>
+          <Product>
+            <ProductName>
+              <Text>Lipitor</Text>
+            </ProductName>
+            <Strength>
+              <Units />
+              <StrengthSequencePosition>0</StrengthSequencePosition>
+              <VariableStrengthModifier />
+            </Strength>
+          </Product>
+          <Directions>
+            <Direction>
+              <Description />
+              <DeliveryMethod />
+              <Dose>
+                <Units />
+                <DoseSequencePosition>0</DoseSequencePosition>
+                <VariableDoseModifier />
+              </Dose>
+              <Route>
+                <Text>By mouth</Text>
+                <Code>
+                  <Value>C38288</Value>
+                  <CodingSystem>FDA</CodingSystem>
+                </Code>
+                <RouteSequencePosition>0</RouteSequencePosition>
+                <MultipleRouteModifier />
+              </Route>
+            </Direction>
+          </Directions>
+          <Refills />
+        </Medication>
+      </Medications>
+      <Immunizations>
+        <Immunization>
+          <Type />
+          <Description />
+          <Status />
+          <Source>
+            <Actor>
+              <ActorID>user@gmail.com</ActorID>
+              <ActorRole>
+                <Text>Patient</Text>
+              </ActorRole>
+            </Actor>
+          </Source>
+          <Product>
+            <ProductName>
+              <Text>Chickenpox Vaccine</Text>
+              <Code>
+                <Value>21</Value>
+                <CodingSystem>HL7</CodingSystem>
+              </Code>
+            </ProductName>
+          </Product>
+          <Directions>
+            <Direction>
+              <Description />
+              <DeliveryMethod />
+            </Direction>
+          </Directions>
+          <Refills />
+        </Immunization>
+      </Immunizations>
+      <VitalSigns>
+        <Result>
+          <Type />
+          <Description />
+          <Status />
+          <Source>
+            <Actor>
+              <ActorID>user@gmail.com</ActorID>
+              <ActorRole>
+                <Text>Patient</Text>
+              </ActorRole>
+            </Actor>
+          </Source>
+          <Substance />
+          <Test>
+            <Type />
+            <Description>
+              <Text>Height</Text>
+            </Description>
+            <Status />
+            <TestResult>
+              <ResultSequencePosition>0</ResultSequencePosition>
+              <VariableResultModifier />
+              <Value>70</Value>
+              <Units>
+                <Unit>inches</Unit>
+              </Units>
+            </TestResult>
+            <ConfidenceValue />
+          </Test>
+        </Result>
+        <Result>
+          <Type />
+          <Description />
+          <Status />
+          <Source>
+            <Actor>
+              <ActorID>user@gmail.com</ActorID>
+              <ActorRole>
+                <Text>Patient</Text>
+              </ActorRole>
+            </Actor>
+          </Source>
+          <Substance />
+          <Test>
+            <Type />
+            <Description>
+              <Text>Weight</Text>
+            </Description>
+            <Status />
+            <TestResult>
+              <ResultSequencePosition>0</ResultSequencePosition>
+              <VariableResultModifier />
+              <Value>2480</Value>
+              <Units>
+                <Unit>ounces</Unit>
+              </Units>
+            </TestResult>
+            <ConfidenceValue />
+          </Test>
+        </Result>
+        <Result>
+          <Type />
+          <Description />
+          <Status />
+          <Source>
+            <Actor>
+              <ActorID>user@gmail.com</ActorID>
+              <ActorRole>
+                <Text>Patient</Text>
+              </ActorRole>
+            </Actor>
+          </Source>
+          <Substance />
+          <Test>
+            <Type />
+            <Description>
+              <Text>Blood Type</Text>
+            </Description>
+            <Status />
+            <TestResult>
+              <ResultSequencePosition>0</ResultSequencePosition>
+              <VariableResultModifier />
+              <Value>O+</Value>
+              <Units />
+            </TestResult>
+            <ConfidenceValue />
+          </Test>
+        </Result>
+      </VitalSigns>
+      <Results>
+        <Result>
+          <Type />
+          <Description />
+          <Status />
+          <Source>
+            <Actor>
+              <ActorID>user@gmail.com</ActorID>
+              <ActorRole>
+                <Text>Patient</Text>
+              </ActorRole>
+            </Actor>
+          </Source>
+          <Substance />
+          <Test>
+            <DateTime>
+              <Type>
+                <Text>Collection start date</Text>
+              </Type>
+              <ExactDateTime>2008-09-03</ExactDateTime>
+            </DateTime>
+            <Type />
+            <Description>
+              <Text>Acetaldehyde - Blood</Text>
+            </Description>
+            <Status />
+            <TestResult>
+              <ResultSequencePosition>0</ResultSequencePosition>
+              <VariableResultModifier />
+              <Units />
+            </TestResult>
+            <ConfidenceValue />
+          </Test>
+        </Result>
+      </Results>
+      <Procedures>
+        <Procedure>
+          <Type />
+          <Description>
+            <Text>Abdominal Ultrasound</Text>
+          </Description>
+          <Status />
+          <Source>
+            <Actor>
+              <ActorID>user@gmail.com</ActorID>
+              <ActorRole>
+                <Text>Patient</Text>
+              </ActorRole>
+            </Actor>
+          </Source>
+        </Procedure>
+        <Procedure>
+          <Type />
+          <Description>
+            <Text>Abdominoplasty</Text>
+          </Description>
+          <Status />
+          <Source>
+            <Actor>
+              <ActorID>user@gmail.com</ActorID>
+              <ActorRole>
+                <Text>Patient</Text>
+              </ActorRole>
+            </Actor>
+          </Source>
+        </Procedure>
+      </Procedures>
+    </Body>
+    <Actors>
+      <Actor>
+        <ActorObjectID>Google Health Profile</ActorObjectID>
+        <Person>
+          <Name>
+            <BirthName />
+            <CurrentName />
+          </Name>
+          <DateOfBirth>
+            <Type />
+            <ExactDateTime>1984-07-22</ExactDateTime>
+          </DateOfBirth>
+          <Gender>
+            <Text>Male</Text>
+          </Gender>
+        </Person>
+        <Status />
+        <Source>
+          <Actor>
+            <ActorID>user@gmail.com</ActorID>
+            <ActorRole>
+              <Text>Patient</Text>
+            </ActorRole>
+          </Actor>
+        </Source>
+      </Actor>
+    </Actors>
+  </ContinuityOfCareRecord>
+</entry>"""
+
+HEALTH_PROFILE_FEED = """<feed xmlns="http://www.w3.org/2005/Atom" xmlns:openSearch="http://a9.com/-/spec/opensearchrss/1.0/"
+xmlns:ccr="urn:astm-org:CCR" xmlns:batch="http://schemas.google.com/gdata/batch" xmlns:h9m="http://schemas.google.com/health/metadata">
+<id>https://www.google.com/health/feeds/profile/default</id>
+<updated>2008-09-30T01:07:17.888Z</updated>
+<category scheme="http://schemas.google.com/g/2005#kind" term="http://schemas.google.com/health/kinds#profile"/>
+<title type="text">Profile Feed</title>
+<link rel="http://schemas.google.com/g/2005#feed" type="application/atom+xml" href="https://www.google.com/health/feeds/profile/default"/>
+<link rel="http://schemas.google.com/g/2005#post" type="application/atom+xml" href="https://www.google.com/health/feeds/profile/default"/>
+<link rel="http://schemas.google.com/g/2005#batch" type="application/atom+xml" href="https://www.google.com/health/feeds/profile/default/batch"/>
+<link rel="self" type="application/atom+xml" href="https://www.google.com/health/feeds/profile/default?digest=false"/>
+<openSearch:startIndex>1</openSearch:startIndex>
+<entry>
+    <id>https://www.google.com/health/feeds/profile/default/DysasdfARnFAao</id>
+    <published>2008-09-29T03:12:50.850Z</published>
+    <updated>2008-09-29T03:12:50.850Z</updated>
+    <category term="MEDICATION"/>
+    <category scheme="http://schemas.google.com/g/2005#kind" term="http://schemas.google.com/health/kinds#profile"/>
+    <category scheme="http://schemas.google.com/health/item" term="A&amp; D"/>
+    <title type="text"/>
+    <content type="html"/>
+    <link rel="http://schemas.google.com/health/data#complete" type="application/atom+xml" href="https://www.google.com/health/feeds/profile/default/-/MEDICATION/%7Bhttp%3A%2F%2Fschemas.google.com%2Fg%2F2005%23kind%7Dhttp%3A%2F%2Fschemas.google.com%2Fhealth%2Fkinds%23profile/%7Bhttp%3A%2F%2Fschemas.google.com%2Fhealth%2Fitem%7DA%26+D"/>
+    <link rel="self" type="application/atom+xml" href="https://www.google.com/health/feeds/profile/default/DysasdfARnFAao"/>
+    <link rel="edit" type="application/atom+xml" href="https://www.google.com/health/feeds/profile/default/DysasdfARnFAao"/>
+    <author>
+        <name>User Name</name>
+        <email>user@gmail.com</email>
+    </author>
+    <ContinuityOfCareRecord xmlns="urn:astm-org:CCR">
+        <CCRDocumentObjectID>hiD9sEigSzdk8nNT0evR4g</CCRDocumentObjectID>
+        <Language/>
+        <DateTime>
+            <Type/>
+        </DateTime>
+        <Patient/>
+        <Body>
+            <Medications>
+                <Medication>
+                    <Type/>
+                    <Description/>
+                    <Status>
+                        <Text>ACTIVE</Text>
+                    </Status>
+                    <Source>
+                        <Actor>
+                            <ActorID>user@gmail.com</ActorID>
+                            <ActorRole>
+                                <Text>Patient</Text>
+                            </ActorRole>
+                        </Actor>
+                    </Source>
+                    <Product>
+                        <ProductName>
+                            <Text>A&amp; D</Text>
+                        </ProductName>
+                        <Strength>
+                            <Units/>
+                            <StrengthSequencePosition>0</StrengthSequencePosition>
+                            <VariableStrengthModifier/>
+                        </Strength>
+                    </Product>
+                    <Directions>
+                        <Direction>
+                            <Description/>
+                            <DeliveryMethod/>
+                            <Dose>
+                                <Units/>
+                                <DoseSequencePosition>0</DoseSequencePosition>
+                                <VariableDoseModifier/>
+                            </Dose>
+                            <Route>
+                                <Text>To skin</Text>
+                                <Code>
+                                    <Value>C38305</Value>
+                                    <CodingSystem>FDA</CodingSystem>
+                                </Code>
+                                <RouteSequencePosition>0</RouteSequencePosition>
+                                <MultipleRouteModifier/>
+                            </Route>
+                        </Direction>
+                    </Directions>
+                    <Refills/>
+                </Medication>
+            </Medications>
+        </Body>
+    </ContinuityOfCareRecord>
+</entry>
+<entry>
+    <id>https://www.google.com/health/feeds/profile/default/7I1WQzZrgp4</id>
+    <published>2008-09-29T03:27:14.909Z</published>
+    <updated>2008-09-29T03:27:14.909Z</updated>
+    <category scheme="http://schemas.google.com/g/2005#kind" term="http://schemas.google.com/health/kinds#profile"/>
+    <category scheme="http://schemas.google.com/health/item" term="A-Fil"/>
+    <category term="ALLERGY"/>
+    <title type="text"/>
+    <content type="html"/>
+    <link rel="http://schemas.google.com/health/data#complete" type="application/atom+xml" href="https://www.google.com/health/feeds/profile/default/-/%7Bhttp%3A%2F%2Fschemas.google.com%2Fg%2F2005%23kind%7Dhttp%3A%2F%2Fschemas.google.com%2Fhealth%2Fkinds%23profile/%7Bhttp%3A%2F%2Fschemas.google.com%2Fhealth%2Fitem%7DA-Fil/ALLERGY"/>
+    <link rel="self" type="application/atom+xml" href="https://www.google.com/health/feeds/profile/default/7I1WQzZrgp4"/>
+    <link rel="edit" type="application/atom+xml" href="https://www.google.com/health/feeds/profile/default/7I1WQzZrgp4"/>
+    <author>
+        <name>User Name</name>
+        <email>user@gmail.com</email>
+    </author>
+    <ContinuityOfCareRecord xmlns="urn:astm-org:CCR">
+        <CCRDocumentObjectID>YOyHDxQUiECCPgnsjV8SlQ</CCRDocumentObjectID>
+        <Language/>
+        <DateTime>
+            <Type/>
+        </DateTime>
+        <Patient/>
+        <Body>
+            <Alerts>
+                <Alert>
+                    <Type>
+                        <Text>Allergy</Text>
+                    </Type>
+                    <Description>
+                        <Text>A-Fil</Text>
+                    </Description>
+                    <Status>
+                        <Text>ACTIVE</Text>
+                    </Status>
+                    <Source>
+                        <Actor>
+                            <ActorID>user@gmail.com</ActorID>
+                            <ActorRole>
+                                <Text>Patient</Text>
+                            </ActorRole>
+                        </Actor>
+                    </Source>
+                    <Reaction>
+                        <Description/>
+                        <Severity>
+                            <Text>Severe</Text>
+                        </Severity>
+                    </Reaction>
+                </Alert>
+            </Alerts>
+        </Body>
+    </ContinuityOfCareRecord>
+</entry>
+<entry>
+    <id>https://www.google.com/health/feeds/profile/default/Dz9wV83sKFg</id>
+    <published>2008-09-29T03:12:52.166Z</published>
+    <updated>2008-09-29T03:12:52.167Z</updated>
+    <category term="MEDICATION"/>
+    <category scheme="http://schemas.google.com/g/2005#kind" term="http://schemas.google.com/health/kinds#profile"/>
+    <category scheme="http://schemas.google.com/health/item" term="A-Fil"/>
+    <title type="text"/>
+    <content type="html"/>
+    <link rel="http://schemas.google.com/health/data#complete" type="application/atom+xml" href="https://www.google.com/health/feeds/profile/default/-/MEDICATION/%7Bhttp%3A%2F%2Fschemas.google.com%2Fg%2F2005%23kind%7Dhttp%3A%2F%2Fschemas.google.com%2Fhealth%2Fkinds%23profile/%7Bhttp%3A%2F%2Fschemas.google.com%2Fhealth%2Fitem%7DA-Fil"/>
+    <link rel="self" type="application/atom+xml" href="https://www.google.com/health/feeds/profile/default/Dz9wV83sKFg"/>
+    <link rel="edit" type="application/atom+xml" href="https://www.google.com/health/feeds/profile/default/Dz9wV83sKFg"/>
+    <author>
+        <name>User Name</name>
+        <email>user@gmail.com</email>
+    </author>
+    <ContinuityOfCareRecord xmlns="urn:astm-org:CCR">
+        <CCRDocumentObjectID>7w.XFEPeuIYN3Rn32pUiUw</CCRDocumentObjectID>
+        <Language/>
+        <DateTime>
+            <Type/>
+        </DateTime>
+        <Patient/>
+        <Body>
+            <Medications>
+                <Medication>
+                    <Type/>
+                    <Description/>
+                    <Status>
+                        <Text>ACTIVE</Text>
+                    </Status>
+                    <Source>
+                        <Actor>
+                            <ActorID>user@gmail.com</ActorID>
+                            <ActorRole>
+                                <Text>Patient</Text>
+                            </ActorRole>
+                        </Actor>
+                    </Source>
+                    <Product>
+                        <ProductName>
+                            <Text>A-Fil</Text>
+                        </ProductName>
+                        <Strength>
+                            <Units/>
+                            <StrengthSequencePosition>0</StrengthSequencePosition>
+                            <VariableStrengthModifier/>
+                        </Strength>
+                    </Product>
+                    <Directions>
+                        <Direction>
+                            <Description/>
+                            <DeliveryMethod/>
+                            <Dose>
+                                <Units/>
+                                <DoseSequencePosition>0</DoseSequencePosition>
+                                <VariableDoseModifier/>
+                            </Dose>
+                            <Route>
+                                <Text>To skin</Text>
+                                <Code>
+                                    <Value>C38305</Value>
+                                    <CodingSystem>FDA</CodingSystem>
+                                </Code>
+                                <RouteSequencePosition>0</RouteSequencePosition>
+                                <MultipleRouteModifier/>
+                            </Route>
+                        </Direction>
+                    </Directions>
+                    <Refills/>
+                </Medication>
+            </Medications>
+        </Body>
+    </ContinuityOfCareRecord>
+</entry>
+<entry>
+    <id>https://www.google.com/health/feeds/profile/default/lzsxVzqZUyw</id>
+    <published>2008-09-29T03:13:07.496Z</published>
+    <updated>2008-09-29T03:13:07.497Z</updated>
+    <category scheme="http://schemas.google.com/health/item" term="A.E.R Traveler"/>
+    <category scheme="http://schemas.google.com/g/2005#kind" term="http://schemas.google.com/health/kinds#profile"/>
+    <category term="ALLERGY"/>
+    <title type="text"/>
+    <content type="html"/>
+    <link rel="http://schemas.google.com/health/data#complete" type="application/atom+xml" href="https://www.google.com/health/feeds/profile/default/-/%7Bhttp%3A%2F%2Fschemas.google.com%2Fhealth%2Fitem%7DA.E.R+Traveler/%7Bhttp%3A%2F%2Fschemas.google.com%2Fg%2F2005%23kind%7Dhttp%3A%2F%2Fschemas.google.com%2Fhealth%2Fkinds%23profile/ALLERGY"/>
+    <link rel="self" type="application/atom+xml" href="https://www.google.com/health/feeds/profile/default/lzsxVzqZUyw"/>
+    <link rel="edit" type="application/atom+xml" href="https://www.google.com/health/feeds/profile/default/lzsxVzqZUyw"/>
+    <author>
+        <name>User Name</name>
+        <email>user@gmail.com</email>
+    </author>
+    <ContinuityOfCareRecord xmlns="urn:astm-org:CCR">
+        <CCRDocumentObjectID>5efFB0J2WgEHNUvk2z3A1A</CCRDocumentObjectID>
+        <Language/>
+        <DateTime>
+            <Type/>
+        </DateTime>
+        <Patient/>
+        <Body>
+            <Alerts>
+                <Alert>
+                    <Type>
+                        <Text>Allergy</Text>
+                    </Type>
+                    <Description>
+                        <Text>A.E.R Traveler</Text>
+                    </Description>
+                    <Status>
+                        <Text>ACTIVE</Text>
+                    </Status>
+                    <Source>
+                        <Actor>
+                            <ActorID>user@gmail.com</ActorID>
+                            <ActorRole>
+                                <Text>Patient</Text>
+                            </ActorRole>
+                        </Actor>
+                    </Source>
+                    <Reaction>
+                        <Description/>
+                        <Severity>
+                            <Text>Severe</Text>
+                        </Severity>
+                    </Reaction>
+                </Alert>
+            </Alerts>
+        </Body>
+    </ContinuityOfCareRecord>
+</entry>
+<entry>
+    <id>https://www.google.com/health/feeds/profile/default/6PvhfKAXyYw</id>
+    <published>2008-09-29T03:13:02.123Z</published>
+    <updated>2008-09-29T03:13:02.124Z</updated>
+    <category scheme="http://schemas.google.com/g/2005#kind" term="http://schemas.google.com/health/kinds#profile"/>
+    <category term="PROCEDURE"/>
+    <category scheme="http://schemas.google.com/health/item" term="Abdominal Ultrasound"/>
+    <title type="text"/>
+    <content type="html"/>
+    <link rel="http://schemas.google.com/health/data#complete" type="application/atom+xml" href="https://www.google.com/health/feeds/profile/default/-/%7Bhttp%3A%2F%2Fschemas.google.com%2Fg%2F2005%23kind%7Dhttp%3A%2F%2Fschemas.google.com%2Fhealth%2Fkinds%23profile/PROCEDURE/%7Bhttp%3A%2F%2Fschemas.google.com%2Fhealth%2Fitem%7DAbdominal+Ultrasound"/>
+    <link rel="self" type="application/atom+xml" href="https://www.google.com/health/feeds/profile/default/6PvhfKAXyYw"/>
+    <link rel="edit" type="application/atom+xml" href="https://www.google.com/health/feeds/profile/default/6PvhfKAXyYw"/>
+    <author>
+        <name>User Name</name>
+        <email>user@gmail.com</email>
+    </author>
+    <ContinuityOfCareRecord xmlns="urn:astm-org:CCR">
+        <CCRDocumentObjectID>W3Wbvx_QHwG5pxVchpuF1A</CCRDocumentObjectID>
+        <Language/>
+        <DateTime>
+            <Type/>
+        </DateTime>
+        <Patient/>
+        <Body>
+            <Procedures>
+                <Procedure>
+                    <Type/>
+                    <Description>
+                        <Text>Abdominal Ultrasound</Text>
+                    </Description>
+                    <Status/>
+                    <Source>
+                        <Actor>
+                            <ActorID>user@gmail.com</ActorID>
+                            <ActorRole>
+                                <Text>Patient</Text>
+                            </ActorRole>
+                        </Actor>
+                    </Source>
+                </Procedure>
+            </Procedures>
+        </Body>
+    </ContinuityOfCareRecord>
+</entry>
+<entry>
+    <id>https://www.google.com/health/feeds/profile/default/r2zGPGewCeU</id>
+    <published>2008-09-29T03:13:03.434Z</published>
+    <updated>2008-09-29T03:13:03.435Z</updated>
+    <category scheme="http://schemas.google.com/health/item" term="Abdominoplasty"/>
+    <category scheme="http://schemas.google.com/g/2005#kind" term="http://schemas.google.com/health/kinds#profile"/>
+    <category term="PROCEDURE"/>
+    <title type="text"/>
+    <content type="html"/>
+    <link rel="http://schemas.google.com/health/data#complete" type="application/atom+xml" href="https://www.google.com/health/feeds/profile/default/-/%7Bhttp%3A%2F%2Fschemas.google.com%2Fhealth%2Fitem%7DAbdominoplasty/%7Bhttp%3A%2F%2Fschemas.google.com%2Fg%2F2005%23kind%7Dhttp%3A%2F%2Fschemas.google.com%2Fhealth%2Fkinds%23profile/PROCEDURE"/>
+    <link rel="self" type="application/atom+xml" href="https://www.google.com/health/feeds/profile/default/r2zGPGewCeU"/>
+    <link rel="edit" type="application/atom+xml" href="https://www.google.com/health/feeds/profile/default/r2zGPGewCeU"/>
+    <author>
+        <name>User Name</name>
+        <email>user@gmail.com</email>
+    </author>
+    <ContinuityOfCareRecord xmlns="urn:astm-org:CCR">
+        <CCRDocumentObjectID>OUKgj5X0KMnbkC5sDL.yHA</CCRDocumentObjectID>
+        <Language/>
+        <DateTime>
+            <Type/>
+        </DateTime>
+        <Patient/>
+        <Body>
+            <Procedures>
+                <Procedure>
+                    <Type/>
+                    <Description>
+                        <Text>Abdominoplasty</Text>
+                    </Description>
+                    <Status/>
+                    <Source>
+                        <Actor>
+                            <ActorID>user@gmail.com</ActorID>
+                            <ActorRole>
+                                <Text>Patient</Text>
+                            </ActorRole>
+                        </Actor>
+                    </Source>
+                </Procedure>
+            </Procedures>
+        </Body>
+    </ContinuityOfCareRecord>
+</entry>
+<entry>
+    <id>https://www.google.com/health/feeds/profile/default/_cCCbQ0O3ug</id>
+    <published>2008-09-29T03:13:29.041Z</published>
+    <updated>2008-09-29T03:13:29.042Z</updated>
+    <category scheme="http://schemas.google.com/g/2005#kind" term="http://schemas.google.com/health/kinds#profile"/>
+    <category scheme="http://schemas.google.com/health/item" term="Acetaldehyde - Blood"/>
+    <category term="LABTEST"/>
+    <title type="text"/>
+    <content type="html"/>
+    <link rel="http://schemas.google.com/health/data#complete" type="application/atom+xml" href="https://www.google.com/health/feeds/profile/default/-/%7Bhttp%3A%2F%2Fschemas.google.com%2Fg%2F2005%23kind%7Dhttp%3A%2F%2Fschemas.google.com%2Fhealth%2Fkinds%23profile/%7Bhttp%3A%2F%2Fschemas.google.com%2Fhealth%2Fitem%7DAcetaldehyde+-+Blood/LABTEST"/>
+    <link rel="self" type="application/atom+xml" href="https://www.google.com/health/feeds/profile/default/_cCCbQ0O3ug"/>
+    <link rel="edit" type="application/atom+xml" href="https://www.google.com/health/feeds/profile/default/_cCCbQ0O3ug"/>
+    <author>
+        <name>User Name</name>
+        <email>user@gmail.com</email>
+    </author>
+    <ContinuityOfCareRecord xmlns="urn:astm-org:CCR">
+        <CCRDocumentObjectID>YWtomFb8aG.DueZ7z7fyug</CCRDocumentObjectID>
+        <Language/>
+        <DateTime>
+            <Type/>
+        </DateTime>
+        <Patient/>
+        <Body>
+            <Results>
+                <Result>
+                    <Type/>
+                    <Description/>
+                    <Status/>
+                    <Source>
+                        <Actor>
+                            <ActorID>user@gmail.com</ActorID>
+                            <ActorRole>
+                                <Text>Patient</Text>
+                            </ActorRole>
+                        </Actor>
+                    </Source>
+                    <Substance/>
+                    <Test>
+                        <DateTime>
+                            <Type>
+                                <Text>Collection start date</Text>
+                            </Type>
+                            <ExactDateTime>2008-09-03</ExactDateTime>
+                        </DateTime>
+                        <Type/>
+                        <Description>
+                            <Text>Acetaldehyde - Blood</Text>
+                        </Description>
+                        <Status/>
+                        <TestResult>
+                            <ResultSequencePosition>0</ResultSequencePosition>
+                            <VariableResultModifier/>
+                            <Units/>
+                        </TestResult>
+                        <ConfidenceValue/>
+                    </Test>
+                </Result>
+            </Results>
+        </Body>
+    </ContinuityOfCareRecord>
+</entry>
+<entry>
+    <id>https://www.google.com/health/feeds/profile/default/BdyA3iJZyCc</id>
+    <published>2008-09-29T03:00:45.915Z</published>
+    <updated>2008-09-29T03:00:45.915Z</updated>
+    <category scheme="http://schemas.google.com/health/item" term="Aortic valve disorders"/>
+    <category scheme="http://schemas.google.com/g/2005#kind" term="http://schemas.google.com/health/kinds#profile"/>
+    <category term="CONDITION"/>
+    <title type="text">Aortic valve disorders</title>
+    <link rel="http://schemas.google.com/health/data#complete" type="application/atom+xml" href="https://www.google.com/health/feeds/profile/default/-/%7Bhttp%3A%2F%2Fschemas.google.com%2Fhealth%2Fitem%7DAortic+valve+disorders/%7Bhttp%3A%2F%2Fschemas.google.com%2Fg%2F2005%23kind%7Dhttp%3A%2F%2Fschemas.google.com%2Fhealth%2Fkinds%23profile/CONDITION"/>
+    <link rel="self" type="application/atom+xml" href="https://www.google.com/health/feeds/profile/default/BdyA3iJZyCc"/>
+    <link rel="edit" type="application/atom+xml" href="https://www.google.com/health/feeds/profile/default/BdyA3iJZyCc"/>
+    <author>
+        <name>example.com</name>
+        <uri>example.com</uri>
+    </author>
+    <ContinuityOfCareRecord xmlns="urn:astm-org:CCR">
+        <CCRDocumentObjectID>h1ljpoeKJ85li.1FHsG9Gw</CCRDocumentObjectID>
+        <Body>
+            <Problems>
+                <Problem>
+                    <CCRDataObjectID>Hn0FE0IlcY-FMFFgSTxkvA/CONDITION/0</CCRDataObjectID>
+                    <DateTime>
+                        <Type>
+                            <Text>Start date</Text>
+                        </Type>
+                        <ExactDateTime>2007-04-04T07:00:00Z</ExactDateTime>
+                    </DateTime>
+                    <Description>
+                        <Text>Aortic valve disorders</Text>
+                        <Code>
+                            <Value>410.10</Value>
+                            <CodingSystem>ICD9</CodingSystem>
+                            <Version>2004</Version>
+                        </Code>
+                    </Description>
+                    <Status>
+                        <Text>Active</Text>
+                    </Status>
+                    <Source>
+                        <Actor>
+                            <ActorID>example.com</ActorID>
+                            <ActorRole>
+                                <Text>Information Provider</Text>
+                            </ActorRole>
+                        </Actor>
+                    </Source>
+                </Problem>
+            </Problems>
+        </Body>
+    </ContinuityOfCareRecord>
+</entry>
+<entry>
+    <id>https://www.google.com/health/feeds/profile/default/Cl.aMWIH5VA</id>
+    <published>2008-09-29T03:13:34.996Z</published>
+    <updated>2008-09-29T03:13:34.997Z</updated>
+    <category scheme="http://schemas.google.com/g/2005#kind" term="http://schemas.google.com/health/kinds#profile"/>
+    <category scheme="http://schemas.google.com/health/item" term="Chickenpox Vaccine"/>
+    <category term="IMMUNIZATION"/>
+    <title type="text"/>
+    <content type="html"/>
+    <link rel="http://schemas.google.com/health/data#complete" type="application/atom+xml" href="https://www.google.com/health/feeds/profile/default/-/%7Bhttp%3A%2F%2Fschemas.google.com%2Fg%2F2005%23kind%7Dhttp%3A%2F%2Fschemas.google.com%2Fhealth%2Fkinds%23profile/%7Bhttp%3A%2F%2Fschemas.google.com%2Fhealth%2Fitem%7DChickenpox+Vaccine/IMMUNIZATION"/>
+    <link rel="self" type="application/atom+xml" href="https://www.google.com/health/feeds/profile/default/Cl.aMWIH5VA"/>
+    <link rel="edit" type="application/atom+xml" href="https://www.google.com/health/feeds/profile/default/Cl.aMWIH5VA"/>
+    <author>
+        <name>User Name</name>
+        <email>user@gmail.com</email>
+    </author>
+    <ContinuityOfCareRecord xmlns="urn:astm-org:CCR">
+        <CCRDocumentObjectID>KlhUqfftgELIitpKbqYalw</CCRDocumentObjectID>
+        <Language/>
+        <DateTime>
+            <Type/>
+        </DateTime>
+        <Patient/>
+        <Body>
+            <Immunizations>
+                <Immunization>
+                    <Type/>
+                    <Description/>
+                    <Status/>
+                    <Source>
+                        <Actor>
+                            <ActorID>user@gmail.com</ActorID>
+                            <ActorRole>
+                                <Text>Patient</Text>
+                            </ActorRole>
+                        </Actor>
+                    </Source>
+                    <Product>
+                        <ProductName>
+                            <Text>Chickenpox Vaccine</Text>
+                            <Code>
+                                <Value>21</Value>
+                                <CodingSystem>HL7</CodingSystem>
+                            </Code>
+                        </ProductName>
+                    </Product>
+                    <Directions>
+                        <Direction>
+                            <Description/>
+                            <DeliveryMethod/>
+                        </Direction>
+                    </Directions>
+                    <Refills/>
+                </Immunization>
+            </Immunizations>
+        </Body>
+    </ContinuityOfCareRecord>
+</entry>
+<entry>
+    <id>https://www.google.com/health/feeds/profile/default/l0a7.FlX3_0</id>
+    <published>2008-09-29T03:14:47.461Z</published>
+    <updated>2008-09-29T03:14:47.461Z</updated>
+    <category scheme="http://schemas.google.com/g/2005#kind" term="http://schemas.google.com/health/kinds#profile"/>
+    <category term="DEMOGRAPHICS"/>
+    <category scheme="http://schemas.google.com/health/item" term="Demographics"/>
+    <title type="text">Demographics</title>
+    <content type="html"/>
+    <link rel="http://schemas.google.com/health/data#complete" type="application/atom+xml" href="https://www.google.com/health/feeds/profile/default/-/%7Bhttp%3A%2F%2Fschemas.google.com%2Fg%2F2005%23kind%7Dhttp%3A%2F%2Fschemas.google.com%2Fhealth%2Fkinds%23profile/DEMOGRAPHICS/%7Bhttp%3A%2F%2Fschemas.google.com%2Fhealth%2Fitem%7DDemographics"/>
+    <link rel="self" type="application/atom+xml" href="https://www.google.com/health/feeds/profile/default/l0a7.FlX3_0"/>
+    <link rel="edit" type="application/atom+xml" href="https://www.google.com/health/feeds/profile/default/l0a7.FlX3_0"/>
+    <author>
+        <name>User Name</name>
+        <email>user@gmail.com</email>
+    </author>
+    <ContinuityOfCareRecord xmlns="urn:astm-org:CCR">
+        <CCRDocumentObjectID>U5GDAVOxFbexQw3iyvqPYg</CCRDocumentObjectID>
+        <Language/>
+        <DateTime>
+            <Type/>
+        </DateTime>
+        <Patient/>
+        <Body/>
+        <Actors>
+            <Actor>
+                <Person>
+                    <Name>
+                        <BirthName/>
+                        <CurrentName/>
+                    </Name>
+                    <DateOfBirth>
+                        <Type/>
+                        <ExactDateTime>1984-07-22</ExactDateTime>
+                    </DateOfBirth>
+                    <Gender>
+                        <Text>Male</Text>
+                    </Gender>
+                </Person>
+                <Status/>
+                <Source>
+                    <Actor>
+                        <ActorID>user@gmail.com</ActorID>
+                        <ActorRole>
+                            <Text>Patient</Text>
+                        </ActorRole>
+                    </Actor>
+                </Source>
+            </Actor>
+        </Actors>
+    </ContinuityOfCareRecord>
+</entry>
+<entry>
+    <id>https://www.google.com/health/feeds/profile/default/oIBDdgwFLyo</id>
+    <published>2008-09-29T03:14:47.690Z</published>
+    <updated>2008-09-29T03:14:47.691Z</updated>
+    <category scheme="http://schemas.google.com/g/2005#kind" term="http://schemas.google.com/health/kinds#profile"/>
+    <category term="DEMOGRAPHICS"/>
+    <category scheme="http://schemas.google.com/health/item" term="FunctionalStatus"/>
+    <title type="text">FunctionalStatus</title>
+    <content type="html"/>
+    <link rel="http://schemas.google.com/health/data#complete" type="application/atom+xml" href="https://www.google.com/health/feeds/profile/default/-/%7Bhttp%3A%2F%2Fschemas.google.com%2Fg%2F2005%23kind%7Dhttp%3A%2F%2Fschemas.google.com%2Fhealth%2Fkinds%23profile/DEMOGRAPHICS/%7Bhttp%3A%2F%2Fschemas.google.com%2Fhealth%2Fitem%7DFunctionalStatus"/>
+    <link rel="self" type="application/atom+xml" href="https://www.google.com/health/feeds/profile/default/oIBDdgwFLyo"/>
+    <link rel="edit" type="application/atom+xml" href="https://www.google.com/health/feeds/profile/default/oIBDdgwFLyo"/>
+    <author>
+        <name>User Name</name>
+        <email>user@gmail.com</email>
+    </author>
+    <ContinuityOfCareRecord xmlns="urn:astm-org:CCR">
+        <CCRDocumentObjectID>W.EJcnhxb7W5M4eR4Tr1YA</CCRDocumentObjectID>
+        <Language/>
+        <DateTime>
+            <Type/>
+        </DateTime>
+        <Patient/>
+        <Body>
+            <FunctionalStatus>
+                <Function>
+                    <Type>
+                        <Text>Pregnancy status</Text>
+                    </Type>
+                    <Description>
+                        <Text>Not pregnant</Text>
+                    </Description>
+                    <Status/>
+                    <Source>
+                        <Actor>
+                            <ActorID>user@gmail.com</ActorID>
+                            <ActorRole>
+                                <Text>Patient</Text>
+                            </ActorRole>
+                        </Actor>
+                    </Source>
+                </Function>
+                <Function>
+                    <Type>
+                        <Text>Breastfeeding status</Text>
+                    </Type>
+                    <Description>
+                        <Text>Not breastfeeding</Text>
+                    </Description>
+                    <Status/>
+                    <Source>
+                        <Actor>
+                            <ActorID>user@gmail.com</ActorID>
+                            <ActorRole>
+                                <Text>Patient</Text>
+                            </ActorRole>
+                        </Actor>
+                    </Source>
+                </Function>
+            </FunctionalStatus>
+        </Body>
+    </ContinuityOfCareRecord>
+</entry>
+<entry>
+    <id>https://www.google.com/health/feeds/profile/default/wwljIlXuTVg</id>
+    <published>2008-09-29T03:26:10.080Z</published>
+    <updated>2008-09-29T03:26:10.081Z</updated>
+    <category term="MEDICATION"/>
+    <category scheme="http://schemas.google.com/g/2005#kind" term="http://schemas.google.com/health/kinds#profile"/>
+    <category scheme="http://schemas.google.com/health/item" term="Lipitor"/>
+    <title type="text"/>
+    <content type="html"/>
+    <link rel="http://schemas.google.com/health/data#complete" type="application/atom+xml" href="https://www.google.com/health/feeds/profile/default/-/MEDICATION/%7Bhttp%3A%2F%2Fschemas.google.com%2Fg%2F2005%23kind%7Dhttp%3A%2F%2Fschemas.google.com%2Fhealth%2Fkinds%23profile/%7Bhttp%3A%2F%2Fschemas.google.com%2Fhealth%2Fitem%7DLipitor"/>
+    <link rel="self" type="application/atom+xml" href="https://www.google.com/health/feeds/profile/default/wwljIlXuTVg"/>
+    <link rel="edit" type="application/atom+xml" href="https://www.google.com/health/feeds/profile/default/wwljIlXuTVg"/>
+    <author>
+        <name>User Name</name>
+        <email>user@gmail.com</email>
+    </author>
+    <ContinuityOfCareRecord xmlns="urn:astm-org:CCR">
+        <CCRDocumentObjectID>OrpghzvvbG_YaO5koqT2ug</CCRDocumentObjectID>
+        <Language/>
+        <DateTime>
+            <Type/>
+        </DateTime>
+        <Patient/>
+        <Body>
+            <Medications>
+                <Medication>
+                    <Type/>
+                    <Description/>
+                    <Status>
+                        <Text>ACTIVE</Text>
+                    </Status>
+                    <Source>
+                        <Actor>
+                            <ActorID>user@gmail.com</ActorID>
+                            <ActorRole>
+                                <Text>Patient</Text>
+                            </ActorRole>
+                        </Actor>
+                    </Source>
+                    <Product>
+                        <ProductName>
+                            <Text>Lipitor</Text>
+                        </ProductName>
+                        <Strength>
+                            <Units/>
+                            <StrengthSequencePosition>0</StrengthSequencePosition>
+                            <VariableStrengthModifier/>
+                        </Strength>
+                    </Product>
+                    <Directions>
+                        <Direction>
+                            <Description/>
+                            <DeliveryMethod/>
+                            <Dose>
+                                <Units/>
+                                <DoseSequencePosition>0</DoseSequencePosition>
+                                <VariableDoseModifier/>
+                            </Dose>
+                            <Route>
+                                <Text>By mouth</Text>
+                                <Code>
+                                    <Value>C38288</Value>
+                                    <CodingSystem>FDA</CodingSystem>
+                                </Code>
+                                <RouteSequencePosition>0</RouteSequencePosition>
+                                <MultipleRouteModifier/>
+                            </Route>
+                        </Direction>
+                    </Directions>
+                    <Refills/>
+                </Medication>
+            </Medications>
+        </Body>
+    </ContinuityOfCareRecord>
+</entry>
+<entry>
+    <id>https://www.google.com/health/feeds/profile/default/dd09TR12SiY</id>
+    <published>2008-09-29T07:52:17.175Z</published>
+    <updated>2008-09-29T07:52:17.176Z</updated>
+    <category scheme="http://schemas.google.com/g/2005#kind" term="http://schemas.google.com/health/kinds#profile"/>
+    <category scheme="http://schemas.google.com/health/item" term="Malaria"/>
+    <category term="CONDITION"/>
+    <title type="text"/>
+    <content type="html"/>
+    <link rel="http://schemas.google.com/health/data#complete" type="application/atom+xml" href="https://www.google.com/health/feeds/profile/default/-/%7Bhttp%3A%2F%2Fschemas.google.com%2Fg%2F2005%23kind%7Dhttp%3A%2F%2Fschemas.google.com%2Fhealth%2Fkinds%23profile/%7Bhttp%3A%2F%2Fschemas.google.com%2Fhealth%2Fitem%7DMalaria/CONDITION"/>
+    <link rel="self" type="application/atom+xml" href="https://www.google.com/health/feeds/profile/default/dd09TR12SiY"/>
+    <link rel="edit" type="application/atom+xml" href="https://www.google.com/health/feeds/profile/default/dd09TR12SiY"/>
+    <author>
+        <name>User Name</name>
+        <email>user@gmail.com</email>
+    </author>
+    <ContinuityOfCareRecord xmlns="urn:astm-org:CCR">
+        <CCRDocumentObjectID>XF99N6X4lpy.jfPUPLMMSQ</CCRDocumentObjectID>
+        <Language/>
+        <DateTime>
+            <Type/>
+        </DateTime>
+        <Patient/>
+        <Body>
+            <Problems>
+                <Problem>
+                    <Type/>
+                    <Description>
+                        <Text>Malaria</Text>
+                        <Code>
+                            <Value>136.9</Value>
+                            <CodingSystem>ICD9_Broader</CodingSystem>
+                        </Code>
+                        <Code>
+                            <Value>084.6</Value>
+                            <CodingSystem>ICD9</CodingSystem>
+                        </Code>
+                    </Description>
+                    <Status>
+                        <Text>ACTIVE</Text>
+                    </Status>
+                    <Source>
+                        <Actor>
+                            <ActorID>user@gmail.com</ActorID>
+                            <ActorRole>
+                                <Text>Patient</Text>
+                            </ActorRole>
+                        </Actor>
+                    </Source>
+                    <HealthStatus>
+                        <Description/>
+                    </HealthStatus>
+                </Problem>
+            </Problems>
+        </Body>
+    </ContinuityOfCareRecord>
+</entry>
+<entry>
+    <id>https://www.google.com/health/feeds/profile/default/aS0Cf964DPs</id>
+    <published>2008-09-29T03:14:47.463Z</published>
+    <updated>2008-09-29T03:14:47.463Z</updated>
+    <category scheme="http://schemas.google.com/g/2005#kind" term="http://schemas.google.com/health/kinds#profile"/>
+    <category term="DEMOGRAPHICS"/>
+    <category scheme="http://schemas.google.com/health/item" term="SocialHistory (Drinking, Smoking)"/>
+    <title type="text">SocialHistory (Drinking, Smoking)</title>
+    <content type="html"/>
+    <link rel="http://schemas.google.com/health/data#complete" type="application/atom+xml" href="https://www.google.com/health/feeds/profile/default/-/%7Bhttp%3A%2F%2Fschemas.google.com%2Fg%2F2005%23kind%7Dhttp%3A%2F%2Fschemas.google.com%2Fhealth%2Fkinds%23profile/DEMOGRAPHICS/%7Bhttp%3A%2F%2Fschemas.google.com%2Fhealth%2Fitem%7DSocialHistory+%28Drinking%2C+Smoking%29"/>
+    <link rel="self" type="application/atom+xml" href="https://www.google.com/health/feeds/profile/default/aS0Cf964DPs"/>
+    <link rel="edit" type="application/atom+xml" href="https://www.google.com/health/feeds/profile/default/aS0Cf964DPs"/>
+    <author>
+        <name>User Name</name>
+        <email>user@gmail.com</email>
+    </author>
+    <ContinuityOfCareRecord xmlns="urn:astm-org:CCR">
+        <CCRDocumentObjectID>kXylGU5YXLBzriv61xPGZQ</CCRDocumentObjectID>
+        <Language/>
+        <DateTime>
+            <Type/>
+        </DateTime>
+        <Patient/>
+        <Body>
+            <SocialHistory>
+                <SocialHistoryElement>
+                    <Type>
+                        <Text>Race</Text>
+                        <Code>
+                            <Value>S15814</Value>
+                            <CodingSystem>HL7</CodingSystem>
+                        </Code>
+                    </Type>
+                    <Description>
+                        <Text>White</Text>
+                    </Description>
+                    <Status/>
+                    <Source>
+                        <Actor>
+                            <ActorID>user@gmail.com</ActorID>
+                            <ActorRole>
+                                <Text>Patient</Text>
+                            </ActorRole>
+                        </Actor>
+                    </Source>
+                    <Episodes>
+                        <Frequency>
+                            <Units/>
+                        </Frequency>
+                    </Episodes>
+                </SocialHistoryElement>
+            </SocialHistory>
+        </Body>
+    </ContinuityOfCareRecord>
+</entry>
+<entry>
+    <id>https://www.google.com/health/feeds/profile/default/s5lII5xfj_g</id>
+    <published>2008-09-29T03:14:47.544Z</published>
+    <updated>2008-09-29T03:14:47.545Z</updated>
+    <category scheme="http://schemas.google.com/health/item" term="VitalSigns"/>
+    <category scheme="http://schemas.google.com/g/2005#kind" term="http://schemas.google.com/health/kinds#profile"/>
+    <category term="DEMOGRAPHICS"/>
+    <title type="text">VitalSigns</title>
+    <content type="html"/>
+    <link rel="http://schemas.google.com/health/data#complete" type="application/atom+xml" href="https://www.google.com/health/feeds/profile/default/-/%7Bhttp%3A%2F%2Fschemas.google.com%2Fhealth%2Fitem%7DVitalSigns/%7Bhttp%3A%2F%2Fschemas.google.com%2Fg%2F2005%23kind%7Dhttp%3A%2F%2Fschemas.google.com%2Fhealth%2Fkinds%23profile/DEMOGRAPHICS"/>
+    <link rel="self" type="application/atom+xml" href="https://www.google.com/health/feeds/profile/default/s5lII5xfj_g"/>
+    <link rel="edit" type="application/atom+xml" href="https://www.google.com/health/feeds/profile/default/s5lII5xfj_g"/>
+    <author>
+        <name>User Name</name>
+        <email>user@gmail.com</email>
+    </author>
+    <ContinuityOfCareRecord xmlns="urn:astm-org:CCR">
+        <CCRDocumentObjectID>FTTIiY0TVVj35kZqFFjPjQ</CCRDocumentObjectID>
+        <Language/>
+        <DateTime>
+            <Type/>
+        </DateTime>
+        <Patient/>
+        <Body>
+            <VitalSigns>
+                <Result>
+                    <Type/>
+                    <Description/>
+                    <Status/>
+                    <Source>
+                        <Actor>
+                            <ActorID>user@gmail.com</ActorID>
+                            <ActorRole>
+                                <Text>Patient</Text>
+                            </ActorRole>
+                        </Actor>
+                    </Source>
+                    <Substance/>
+                    <Test>
+                        <Type/>
+                        <Description>
+                            <Text>Height</Text>
+                        </Description>
+                        <Status/>
+                        <TestResult>
+                            <ResultSequencePosition>0</ResultSequencePosition>
+                            <VariableResultModifier/>
+                            <Value>70</Value>
+                            <Units>
+                                <Unit>inches</Unit>
+                            </Units>
+                        </TestResult>
+                        <ConfidenceValue/>
+                    </Test>
+                </Result>
+                <Result>
+                    <Type/>
+                    <Description/>
+                    <Status/>
+                    <Source>
+                        <Actor>
+                            <ActorID>user@gmail.com</ActorID>
+                            <ActorRole>
+                                <Text>Patient</Text>
+                            </ActorRole>
+                        </Actor>
+                    </Source>
+                    <Substance/>
+                    <Test>
+                        <Type/>
+                        <Description>
+                            <Text>Weight</Text>
+                        </Description>
+                        <Status/>
+                        <TestResult>
+                            <ResultSequencePosition>0</ResultSequencePosition>
+                            <VariableResultModifier/>
+                            <Value>2480</Value>
+                            <Units>
+                                <Unit>ounces</Unit>
+                            </Units>
+                        </TestResult>
+                        <ConfidenceValue/>
+                    </Test>
+                </Result>
+                <Result>
+                    <Type/>
+                    <Description/>
+                    <Status/>
+                    <Source>
+                        <Actor>
+                            <ActorID>user@gmail.com</ActorID>
+                            <ActorRole>
+                                <Text>Patient</Text>
+                            </ActorRole>
+                        </Actor>
+                    </Source>
+                    <Substance/>
+                    <Test>
+                        <Type/>
+                        <Description>
+                            <Text>Blood Type</Text>
+                        </Description>
+                        <Status/>
+                        <TestResult>
+                            <ResultSequencePosition>0</ResultSequencePosition>
+                            <VariableResultModifier/>
+                            <Value>O+</Value>
+                            <Units/>
+                        </TestResult>
+                        <ConfidenceValue/>
+                    </Test>
+                </Result>
+            </VitalSigns>
+        </Body>
+    </ContinuityOfCareRecord>
+</entry>
+</feed>"""
+
+HEALTH_PROFILE_LIST_ENTRY = """ <entry xmlns='http://www.w3.org/2005/Atom'
+xmlns:openSearch='http://a9.com/-/spec/opensearchrss/1.0/'>
+  <id>
+  https://www.google.com/health/feeds/profile/list/vndCn5sdfwdEIY</id>
+  <updated>1970-01-01T00:00:00.000Z</updated>
+  <title type='text'>profile name</title>
+  <content type='text'>vndCn5sdfwdEIY</content>
+  <link rel='self' type='application/atom+xml'
+  href='https://www.google.com/health/feeds/profile/list/vndCn5sdfwdEIY' />
+  <link rel='edit' type='application/atom+xml'
+  href='https://www.google.com/health/feeds/profile/list/vndCn5sdfwdEIY' />
+  <author>
+    <name>user@gmail.com</name>
+  </author>
+</entry>"""
+
+BOOK_ENTRY = """<?xml version='1.0' encoding='UTF-8'?>"""\
+    """<entry xmlns='http://www.w3.org/2005/Atom' xmlns:gbs='http://schemas.google.com/books/2008' xmlns:dc='http://purl.org/dc/terms' xmlns:gd='http://schemas.google.com/g/2005'>"""\
+    """<id>http://www.google.com/books/feeds/volumes/b7GZr5Btp30C</id>"""\
+    """<updated>2009-04-24T23:35:16.000Z</updated>"""\
+    """<category scheme='http://schemas.google.com/g/2005#kind' term='http://schemas.google.com/books/2008#volume'/>"""\
+    """<title type='text'>A theory of justice</title>"""\
+    """<link rel='http://schemas.google.com/books/2008/thumbnail' type='image/x-unknown' href='http://bks0.books.google.com/books?id=b7GZr5Btp30C&amp;printsec=frontcover&amp;img=1&amp;zoom=5&amp;sig=ACfU3U121bWZsbjBfVwVRSK2o982jJTd1w&amp;source=gbs_gdata'/>"""\
+    """<link rel='http://schemas.google.com/books/2008/info' type='text/html' href='http://books.google.com/books?id=b7GZr5Btp30C&amp;ie=ISO-8859-1&amp;source=gbs_gdata'/>"""\
+    """<link rel='http://schemas.google.com/books/2008/annotation' type='application/atom+xml' href='http://www.google.com/books/feeds/users/me/volumes'/>"""\
+    """<link rel='alternate' type='text/html' href='http://books.google.com/books?id=b7GZr5Btp30C&amp;ie=ISO-8859-1'/>"""\
+    """<link rel='self' type='application/atom+xml' href='http://www.google.com/books/feeds/volumes/b7GZr5Btp30C'/>"""\
+    """<gbs:embeddability value='http://schemas.google.com/books/2008#embeddable'/>"""\
+    """<gbs:openAccess value='http://schemas.google.com/books/2008#disabled'/>"""\
+    """<gd:rating min='1' max='5' average='4.00'/>"""\
+    """<gbs:viewability value='http://schemas.google.com/books/2008#view_partial'/>"""\
+    """<dc:creator>John Rawls</dc:creator>"""\
+    """<dc:date>1999</dc:date>"""\
+    """<dc:description>p Since it appeared in 1971, John Rawls's i A Theory of Justice /i has become a classic. The author has now revised the original edition to clear up a number of difficulties he and others have found in the original book. /p p Rawls aims to express an essential part of the common core of the democratic tradition--justice as fairness--and to provide an alternative to utilitarianism, which had dominated the Anglo-Saxon tradition of political thought since the nineteenth century. Rawls substitutes the ideal of the social contract as a more satisfactory account of the basic rights and liberties of citizens as free and equal persons. "Each person," writes Rawls, "possesses an inviolability founded on justice that even the welfare of society as a whole cannot override." Advancing the ideas of Rousseau, Kant, Emerson, and Lincoln, Rawls's theory is as powerful today as it was when first published. /p</dc:description>"""\
+    """<dc:format>538 pages</dc:format>"""\
+    """<dc:identifier>b7GZr5Btp30C</dc:identifier>"""\
+    """<dc:identifier>ISBN:0198250541</dc:identifier>"""\
+    """<dc:identifier>ISBN:9780198250548</dc:identifier>"""\
+    """<dc:language>en</dc:language>"""\
+    """<dc:publisher>Oxford University Press</dc:publisher>"""\
+    """<dc:title>A theory of justice</dc:title>"""\
+"""</entry>"""
+
+BOOK_FEED = """<?xml version='1.0' encoding='UTF-8'?>"""\
+    """<feed xmlns='http://www.w3.org/2005/Atom' xmlns:openSearch='http://a9.com/-/spec/opensearchrss/1.0/' xmlns:gbs='http://schemas.google.com/books/2008' xmlns:dc='http://purl.org/dc/terms' xmlns:gd='http://schemas.google.com/g/2005'>"""\
+    """<id>http://www.google.com/books/feeds/volumes</id>"""\
+    """<updated>2009-04-24T23:39:47.000Z</updated>"""\
+    """<category scheme='http://schemas.google.com/g/2005#kind' term='http://schemas.google.com/books/2008#volume'/>"""\
+    """<title type='text'>Search results for 9780198250548</title>"""\
+    """<link rel='alternate' type='text/html' href='http://www.google.com'/>"""\
+    """<link rel='http://schemas.google.com/g/2005#feed' type='application/atom+xml' href='http://www.google.com/books/feeds/volumes'/>"""\
+    """<link rel='self' type='application/atom+xml' href='http://www.google.com/books/feeds/volumes?q=9780198250548'/>"""\
+    """<author>"""\
+    """<name>Google Books Search</name>"""\
+    """<uri>http://www.google.com</uri>"""\
+    """</author>"""\
+    """<generator version='beta'>Google Book Search data API</generator>"""\
+    """<openSearch:totalResults>1</openSearch:totalResults>"""\
+    """<openSearch:startIndex>1</openSearch:startIndex>"""\
+    """<openSearch:itemsPerPage>20</openSearch:itemsPerPage>"""\
+    """<entry>"""\
+    """<id>http://www.google.com/books/feeds/volumes/b7GZr5Btp30C</id>"""\
+    """<updated>2009-04-24T23:39:47.000Z</updated>"""\
+    """<category scheme='http://schemas.google.com/g/2005#kind' term='http://schemas.google.com/books/2008#volume'/>"""\
+    """<title type='text'>A theory of justice</title>"""\
+    """<link rel='http://schemas.google.com/books/2008/thumbnail' type='image/x-unknown' href='http://bks9.books.google.com/books?id=b7GZr5Btp30C&amp;printsec=frontcover&amp;img=1&amp;zoom=5&amp;sig=ACfU3U121bWZsbjBfVwVRSK2o982jJTd1w&amp;source=gbs_gdata'/>"""\
+    """<link rel='http://schemas.google.com/books/2008/info' type='text/html' href='http://books.google.com/books?id=b7GZr5Btp30C&amp;dq=9780198250548&amp;ie=ISO-8859-1&amp;source=gbs_gdata'/>"""\
+    """<link rel='http://schemas.google.com/books/2008/preview' type='text/html' href='http://books.google.com/books?id=b7GZr5Btp30C&amp;pg=PA494&amp;dq=9780198250548&amp;ie=ISO-8859-1&amp;source=gbs_gdata'/>"""\
+    """<link rel='http://schemas.google.com/books/2008/annotation' type='application/atom+xml' href='http://www.google.com/books/feeds/users/me/volumes'/>"""\
+    """<link rel='alternate' type='text/html' href='http://books.google.com/books?id=b7GZr5Btp30C&amp;dq=9780198250548&amp;ie=ISO-8859-1'/>"""\
+    """<link rel='self' type='application/atom+xml' href='http://www.google.com/books/feeds/volumes/b7GZr5Btp30C'/>"""\
+    """<gbs:embeddability value='http://schemas.google.com/books/2008#embeddable'/>"""\
+    """<gbs:openAccess value='http://schemas.google.com/books/2008#disabled'/>"""\
+    """<gbs:viewability value='http://schemas.google.com/books/2008#view_partial'/>"""\
+    """<dc:creator>John Rawls</dc:creator>"""\
+    """<dc:date>1999</dc:date>"""\
+    """<dc:description>... 9780198250548 ...</dc:description>"""\
+    """<dc:format>538 pages</dc:format>"""\
+    """<dc:identifier>b7GZr5Btp30C</dc:identifier>"""\
+    """<dc:identifier>ISBN:0198250541</dc:identifier>"""\
+    """<dc:identifier>ISBN:9780198250548</dc:identifier>"""\
+    """<dc:subject>Law</dc:subject>"""\
+    """<dc:title>A theory of justice</dc:title>"""\
+    """</entry>"""\
+"""</feed>"""
+
+MAP_FEED = """<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xmlns:openSearch="http://a9.com/-/spec/opensearch/1.1/" xmlns:batch="http://schemas.google.com/gdata/batch" xmlns:gd="http://schemas.google.com/g/2005" gd:etag="W/&quot;CkIESHg4eSp7ImA9WxJbF08.&quot;">
+  <id>http://maps.google.com/maps/feeds/maps/208825816854482607313</id>
+  <updated>2009-07-27T18:48:29.631Z</updated>
+  <category scheme="http://schemas.google.com/g/2005#kind" term="http://schemas.google.com/maps/2008#map"/>
+  <title>My maps</title>
+  <link rel="alternate" type="text/html" href="http://maps.google.com/maps/ms?msa=1"/>
+  <link rel="http://schemas.google.com/g/2005#feed" type="application/atom+xml" href="http://maps.google.com/maps/feeds/maps/208825816854482607313/full"/>
+  <link rel="self" type="application/atom+xml" href="http://maps.google.com/maps/feeds/maps/208825816854482607313/full"/>
+  <link rel="http://schemas.google.com/g/2005#batch" type="application/atom+xml" href="http://maps.google.com/maps/feeds/maps/208825816854482607313/full/batch"/>
+  <link rel="http://schemas.google.com/g/2005#post" type="application/atom+xml" href="http://maps.google.com/maps/feeds/maps/208825816854482607313/full"/>
+  <author>
+    <name>Roman</name>
+  </author>
+  <openSearch:totalResults>1</openSearch:totalResults>
+  <openSearch:startIndex>1</openSearch:startIndex>
+  <openSearch:itemsPerPage>1</openSearch:itemsPerPage>
+  <entry gd:etag="W/&quot;CkIESHg4eSp7ImA9WxJbF08.&quot;">
+    <id>http://maps.google.com/maps/feeds/maps/208825816854482607313/00046fb45f88fa910bcea</id>
+    <published>2009-07-27T18:46:34.451Z</published>
+    <updated>2009-07-27T18:48:29.631Z</updated>
+    <app:edited xmlns:app="http://www.w3.org/2007/app">2009-07-27T18:48:29.631Z</app:edited>
+    <app:control xmlns:app="http://www.w3.org/2007/app">
+      <app:draft>yes</app:draft>
+    </app:control>
+    <category scheme="http://schemas.google.com/g/2005#kind" term="http://schemas.google.com/maps/2008#map"/>
+    <title>Untitled</title>
+    <summary/>
+    <content src="http://maps.google.com/maps/feeds/features/208825816854482607313/00046fb45f88fa910bcea/full"/>
+    <link rel="self" type="application/atom+xml" href="http://maps.google.com/maps/feeds/maps/208825816854482607313/full/00046fb45f88fa910bcea"/>
+    <link rel="alternate" type="text/html" href="http://maps.google.com/maps/ms?msa=0&amp;msid=208825816854482607313.00046fb45f88fa910bcea"/>
+    <link rel="edit" type="application/atom+xml" href="http://maps.google.com/maps/feeds/maps/208825816854482607313/full/00046fb45f88fa910bcea"/>
+    <author>
+      <name>Roman</name>
+    </author>
+  </entry>
+</feed>
+"""
+
+MAP_ENTRY = """<?xml version="1.0" encoding="UTF-8"?>
+<entry xmlns="http://www.w3.org/2005/Atom" xmlns:batch="http://schemas.google.com/gdata/batch" xmlns:gd="http://schemas.google.com/g/2005" gd:etag="W/&quot;CkIESHg4eSp7ImA9WxJbF08.&quot;">
+  <id>http://maps.google.com/maps/feeds/maps/208825816854482607313/00046fb45f88fa910bcea</id>
+  <published>2009-07-27T18:46:34.451Z</published>
+  <updated>2009-07-27T18:48:29.631Z</updated>
+  <app:edited xmlns:app="http://www.w3.org/2007/app">2009-07-27T18:48:29.631Z</app:edited>
+  <app:control xmlns:app="http://www.w3.org/2007/app">
+    <app:draft>yes</app:draft>
+  </app:control>
+  <category scheme="http://schemas.google.com/g/2005#kind" term="http://schemas.google.com/maps/2008#map"/>
+  <title>Untitled</title>
+  <summary/>
+  <content src="http://maps.google.com/maps/feeds/features/208825816854482607313/00046fb45f88fa910bcea/full"/>
+  <link rel="self" type="application/atom+xml" href="http://maps.google.com/maps/feeds/maps/208825816854482607313/full/00046fb45f88fa910bcea"/>
+  <link rel="alternate" type="text/html" href="http://maps.google.com/maps/ms?msa=0&amp;msid=208825816854482607313.00046fb45f88fa910bcea"/>
+  <link rel="edit" type="application/atom+xml" href="http://maps.google.com/maps/feeds/maps/208825816854482607313/full/00046fb45f88fa910bcea"/>
+  <author>
+    <name>Roman</name>
+  </author>
+</entry>
+"""
+
+MAP_FEATURE_FEED = """<?xml version="1.0" encoding="UTF-8"?>
+<atom:feed xmlns="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:openSearch="http://a9.com/-/spec/opensearch/1.1/" xmlns:batch="http://schemas.google.com/gdata/batch" xmlns:gd="http://schemas.google.com/g/2005" gd:etag="W/&quot;CkIESHg4eSp7ImA9WxJbF08.&quot;">
+  <atom:id>http://maps.google.com/maps/feeds/features/208825816854482607313/00046fb45f88fa910bcea</atom:id>
+  <atom:updated>2009-07-27T18:48:29.631Z</atom:updated>
+  <atom:category scheme="http://schemas.google.com/g/2005#kind" term="http://schemas.google.com/maps/2008#feature"/>
+  <atom:title>Untitled</atom:title>
+  <atom:link rel="http://schemas.google.com/g/2005#feed" type="application/atom+xml" href="http://maps.google.com/maps/feeds/features/208825816854482607313/00046fb45f88fa910bcea/full"/>
+  <atom:link rel="self" type="application/atom+xml" href="http://maps.google.com/maps/feeds/features/208825816854482607313/00046fb45f88fa910bcea/full"/>
+  <atom:link rel="http://schemas.google.com/g/2005#batch" type="application/atom+xml" href="http://maps.google.com/maps/feeds/features/208825816854482607313/00046fb45f88fa910bcea/full/batch"/>
+  <atom:link rel="http://schemas.google.com/g/2005#post" type="application/atom+xml" href="http://maps.google.com/maps/feeds/features/208825816854482607313/00046fb45f88fa910bcea/full"/>
+  <openSearch:totalResults>4</openSearch:totalResults>
+  <openSearch:startIndex>1</openSearch:startIndex>
+  <openSearch:itemsPerPage>4</openSearch:itemsPerPage>
+  <atom:entry gd:etag="W/&quot;CkMBRH44fyp7ImA9WxJbF08.&quot;">
+    <atom:id>http://maps.google.com/maps/feeds/features/208825816854482607313/00046fb45f88fa910bcea/00046fb4632573b19e0b7</atom:id>
+    <atom:published>2009-07-27T18:47:35.037Z</atom:published>
+    <atom:updated>2009-07-27T18:47:35.037Z</atom:updated>
+    <app:edited xmlns:app="http://www.w3.org/2007/app">2009-07-27T18:47:35.037Z</app:edited>
+    <atom:category scheme="http://schemas.google.com/g/2005#kind" term="http://schemas.google.com/maps/2008#feature"/>
+    <atom:title>Some feature title</atom:title>
+    <atom:content type="application/vnd.google-earth.kml+xml">
+      <Placemark>
+        <name>Some feature title</name>
+        <description><![CDATA[<div dir="ltr">Some feature content</div>]]></description>
+        <Style>
+          <IconStyle>
+            <Icon>
+              <href>http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/ylw-pushpin.png</href>
+            </Icon>
+          </IconStyle>
+        </Style>
+        <Point>
+          <coordinates>-113.818359,41.442726,0.0</coordinates>
+        </Point>
+      </Placemark>
+    </atom:content>
+    <atom:link rel="self" type="application/atom+xml" href="http://maps.google.com/maps/feeds/features/208825816854482607313/00046fb45f88fa910bcea/full/00046fb4632573b19e0b7"/>
+    <atom:link rel="edit" type="application/atom+xml" href="http://maps.google.com/maps/feeds/features/208825816854482607313/00046fb45f88fa910bcea/full/00046fb4632573b19e0b7"/>
+    <atom:author>
+      <atom:name>Roman</atom:name>
+    </atom:author>
+    <atom:contributor>
+      <atom:name>Roman</atom:name>
+    </atom:contributor>
+  </atom:entry>
+  <atom:entry gd:etag="W/&quot;CkIEQ38zfCp7ImA9WxJbF08.&quot;">
+    <atom:id>http://maps.google.com/maps/feeds/features/208825816854482607313/00046fb45f88fa910bcea/00046fb46325e839a11e6</atom:id>
+    <atom:published>2009-07-27T18:47:35.067Z</atom:published>
+    <atom:updated>2009-07-27T18:48:22.184Z</atom:updated>
+    <app:edited xmlns:app="http://www.w3.org/2007/app">2009-07-27T18:48:22.184Z</app:edited>
+    <atom:category scheme="http://schemas.google.com/g/2005#kind" term="http://schemas.google.com/maps/2008#feature"/>
+    <atom:title>A cool poly!</atom:title>
+    <atom:content type="application/vnd.google-earth.kml+xml">
+      <Placemark>
+        <name>A cool poly!</name>
+        <description><![CDATA[<div dir="ltr">And a description</div>]]></description>
+        <Style>
+          <LineStyle>
+            <color>FF0066FF</color>
+            <width>3</width>
+          </LineStyle>
+          <PolyStyle>
+            <color>730099FF</color>
+            <fill>1</fill>
+            <outline>1</outline>
+          </PolyStyle>
+        </Style>
+        <Polygon>
+          <outerBoundaryIs>
+            <LinearRing>
+              <tessellate>1</tessellate>
+              <coordinates>-109.775391,47.457809,0.0 -99.755859,51.508742,0.0 -92.900391,48.04871,0.0 -92.8125,44.339565,0.0 -95.273437,44.402392,0.0 -97.207031,46.619261,0.0 -100.898437,46.073231,0.0 -102.480469,43.068888,0.0 -110.742187,45.274886,0.0 -109.775391,47.457809,0.0 </coordinates>
+            </LinearRing>
+          </outerBoundaryIs>
+        </Polygon>
+      </Placemark>
+    </atom:content>
+    <atom:link rel="self" type="application/atom+xml" href="http://maps.google.com/maps/feeds/features/208825816854482607313/00046fb45f88fa910bcea/full/00046fb46325e839a11e6"/>
+    <atom:link rel="edit" type="application/atom+xml" href="http://maps.google.com/maps/feeds/features/208825816854482607313/00046fb45f88fa910bcea/full/00046fb46325e839a11e6"/>
+    <atom:author>
+      <atom:name>Roman</atom:name>
+    </atom:author>
+    <atom:contributor>
+      <atom:name>Roman</atom:name>
+    </atom:contributor>
+  </atom:entry>
+  <atom:entry gd:etag="W/&quot;CkIEQ38yfCp7ImA9WxJbF08.&quot;">
+    <atom:id>http://maps.google.com/maps/feeds/features/208825816854482607313/00046fb45f88fa910bcea/00046fb465f5002e56b7a</atom:id>
+    <atom:published>2009-07-27T18:48:22.194Z</atom:published>
+    <atom:updated>2009-07-27T18:48:22.194Z</atom:updated>
+    <app:edited xmlns:app="http://www.w3.org/2007/app">2009-07-27T18:48:22.194Z</app:edited>
+    <atom:category scheme="http://schemas.google.com/g/2005#kind" term="http://schemas.google.com/maps/2008#feature"/>
+    <atom:title>New Mexico</atom:title>
+    <atom:content type="application/vnd.google-earth.kml+xml">
+      <Placemark>
+        <name>New Mexico</name>
+        <description><![CDATA[<div dir="ltr">Word.</div>]]></description>
+        <Style>
+          <LineStyle>
+            <color>73009900</color>
+            <width>5</width>
+          </LineStyle>
+        </Style>
+        <LineString>
+          <tessellate>1</tessellate>
+          <coordinates>-110.039062,37.788081,0.0 -103.183594,37.926868,0.0 -103.183594,32.472695,0.0 -108.896484,32.026706,0.0 -109.863281,31.203405,0.0 -110.039062,37.788081,0.0 </coordinates>
+        </LineString>
+      </Placemark>
+    </atom:content>
+    <atom:link rel="self" type="application/atom+xml" href="http://maps.google.com/maps/feeds/features/208825816854482607313/00046fb45f88fa910bcea/full/00046fb465f5002e56b7a"/>
+    <atom:link rel="edit" type="application/atom+xml" href="http://maps.google.com/maps/feeds/features/208825816854482607313/00046fb45f88fa910bcea/full/00046fb465f5002e56b7a"/>
+    <atom:author>
+      <atom:name>Roman</atom:name>
+    </atom:author>
+    <atom:contributor>
+      <atom:name>Roman</atom:name>
+    </atom:contributor>
+  </atom:entry>
+</atom:feed>
+"""
+
+MAP_FEATURE_ENTRY = """<?xml version="1.0" encoding="UTF-8"?>
+<atom:entry xmlns="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:batch="http://schemas.google.com/gdata/batch" xmlns:gd="http://schemas.google.com/g/2005" gd:etag="W/&quot;CkMBRH44fyp7ImA9WxJbF08.&quot;">
+  <atom:id>http://maps.google.com/maps/feeds/features/208825816854482607313/00046fb45f88fa910bcea/00046fb4632573b19e0b7</atom:id>
+  <atom:published>2009-07-27T18:47:35.037Z</atom:published>
+  <atom:updated>2009-07-27T18:47:35.037Z</atom:updated>
+  <app:edited xmlns:app="http://www.w3.org/2007/app">2009-07-27T18:47:35.037Z</app:edited>
+  <atom:category scheme="http://schemas.google.com/g/2005#kind" term="http://schemas.google.com/maps/2008#feature"/>
+  <atom:title>Some feature title</atom:title>
+  <atom:content type="application/vnd.google-earth.kml+xml">
+    <Placemark>
+      <name>Some feature title</name>
+      <description><![CDATA[<div dir="ltr">Some feature content</div>]]></description>
+      <Style>
+        <IconStyle>
+          <Icon>
+            <href>http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/ylw-pushpin.png</href>
+          </Icon>
+        </IconStyle>
+      </Style>
+      <Point>
+        <coordinates>-113.818359,41.442726,0.0</coordinates>
+      </Point>
+    </Placemark>
+  </atom:content>
+  <atom:link rel="self" type="application/atom+xml" href="http://maps.google.com/maps/feeds/features/208825816854482607313/00046fb45f88fa910bcea/full/00046fb4632573b19e0b7"/>
+  <atom:link rel="edit" type="application/atom+xml" href="http://maps.google.com/maps/feeds/features/208825816854482607313/00046fb45f88fa910bcea/full/00046fb4632573b19e0b7"/>
+  <atom:author>
+    <atom:name>Roman</atom:name>
+  </atom:author>
+  <atom:contributor>
+    <atom:name>Roman</atom:name>
+  </atom:contributor>
+</atom:entry>
+"""
+
+MAP_FEATURE_KML = """<Placemark>
+  <name>Some feature title</name>
+  <description><![CDATA[<div dir="ltr">Some feature content</div>]]></description>
+  <Style>
+    <IconStyle>
+      <Icon>
+        <href>http://maps.gstatic.com/intl/en_us/mapfiles/ms/micons/ylw-pushpin.png</href>
+      </Icon>
+    </IconStyle>
+  </Style>
+  <Point>
+    <coordinates>-113.818359,41.442726,0.0</coordinates>
+  </Point>
+</Placemark>
+"""
+
+SITES_LISTPAGE_ENTRY = '''<?xml version="1.0" encoding="UTF-8"?>
+<entry xmlns="http://www.w3.org/2005/Atom">
+  <id>http:///sites.google.com/feeds/content/site/gdatatestsite/1712987567114738703</id>
+  <updated>2009-06-16T00:37:37.393Z</updated>
+  <category scheme="http://schemas.google.com/g/2005#kind" term="http://schemas.google.com/sites/2008#listpage"/>
+  <title type="text">ListPagesTitle</title>
+  <content type="xhtml">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+    <jot:section xmlns:jot="http://www.google.com/ns/jotspot/srvtmpl/" target="content-1">
+    <div dir="ltr">stuff go here<div>asdf</div>
+    <div>sdf</div>
+    <div>
+      <br/>
+    </div>
+  </div>
+  </jot:section>
+  </div>
+  </content>
+  <link rel="self" type="application/atom+xml" href="http:///sites.google.com/feeds/content/site/gdatatestsite/1712987567114738703"/>
+  <link rel="edit" type="application/atom+xml" href="http:///sites.google.com/feeds/content/site/gdatatestsite/1712987567114738703"/>
+  <author>
+    <name>Test User</name>
+    <email>test@gmail.com</email>
+  </author>
+  <gs:worksheet xmlns:gs="http://schemas.google.com/spreadsheets/2006" name="listpage"/>
+  <gs:header xmlns:gs="http://schemas.google.com/spreadsheets/2006" row="1"/>
+  <gs:data xmlns:gs="http://schemas.google.com/spreadsheets/2006" startRow="2">
+  <gs:column index="A" name="Owner"/>
+  <gs:column index="B" name="Description"/>
+  <gs:column index="C" name="Resolution"/>
+  <gs:column index="D" name="Complete"/>
+  <gs:column index="E" name="MyCo"/>
+  </gs:data>
+  <gd:feedLink xmlns:gd="http://schemas.google.com/g/2005" href="http:///sites.google.com/feeds/content/site/gdatatestsite?parent=abc"/>
+</entry>'''
+
+SITES_COMMENT_ENTRY = '''<?xml version="1.0" encoding="UTF-8"?>
+<entry xmlns="http://www.w3.org/2005/Atom">
+  <id>http://sites.google.com/feeds/content/site/gdatatestsite/abc123</id>
+  <updated>2009-06-15T18:40:22.407Z</updated>
+  <category scheme="http://schemas.google.com/g/2005#kind" term="http://schemas.google.com/sites/2008#comment"/>
+  <title type="text"/>
+  <content type="xhtml">
+    <div xmlns="http://www.w3.org/1999/xhtml">first comment</div>
+  </content>
+  <link rel="http://schemas.google.com/sites/2008#parent" type="application/atom+xml" href="http://sites.google.com/feeds/content/site/gdatatestsite/abc123parent"/>
+  <link rel="self" type="application/atom+xml" href="http://sites.google.com/feeds/content/site/gdatatestsite/abc123"/>
+  <link rel="edit" type="application/atom+xml" href="http://sites.google.com/feeds/content/site/gdatatestsite/abc123"/>
+  <author>
+    <name>Test User</name>
+    <email>test@gmail.com</email>
+  </author>
+  <thr:in-reply-to xmlns:thr="http://purl.org/syndication/thread/1.0" href="http://sites.google.com/site/gdatatestsite/annoucment/testpost" ref="http://sites.google.com/feeds/content/site/gdatatestsite/abc123" source="http://sites.google.com/feeds/content/site/gdatatestsite" type="text/html"/>
+</entry>'''
+
+SITES_LISTITEM_ENTRY = '''<?xml version="1.0" encoding="UTF-8"?>
+<entry xmlns="http://www.w3.org/2005/Atom">
+  <id>http://sites.google.com/feeds/content/site/gdatatestsite/abc123</id>
+  <updated>2009-06-16T00:34:55.633Z</updated>
+  <category scheme="http://schemas.google.com/g/2005#kind" term="http://schemas.google.com/sites/2008#listitem"/>
+  <title type="text"/>
+  <link rel="http://schemas.google.com/sites/2008#parent" type="application/atom+xml" href="http://sites.google.com/feeds/content/site/gdatatestsite/abc123def"/>
+  <link rel="self" type="application/atom+xml" href="http://sites.google.com/feeds/content/site/gdatatestsite/abc123"/>
+  <link rel="edit" type="application/atom+xml" href="http://sites.google.com/feeds/content/site/gdatatestsite/abc123"/>
+  <author>
+    <name>Test User</name>
+    <email>test@gmail.com</email>
+  </author>
+  <gs:field xmlns:gs="http://schemas.google.com/spreadsheets/2006" index="A" name="Owner">test value</gs:field>
+  <gs:field xmlns:gs="http://schemas.google.com/spreadsheets/2006" index="B" name="Description">test</gs:field>
+  <gs:field xmlns:gs="http://schemas.google.com/spreadsheets/2006" index="C" name="Resolution">90</gs:field>
+  <gs:field xmlns:gs="http://schemas.google.com/spreadsheets/2006" index="D" name="Complete"/>
+  <gs:field xmlns:gs="http://schemas.google.com/spreadsheets/2006" index="E" name="MyCo">2009-05-31</gs:field>
+</entry>'''
+
+SITES_CONTENT_FEED = '''<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xmlns:openSearch="http://a9.com/-/spec/opensearch/1.1/"
+xmlns:sites="http://schemas.google.com/sites/2008" xmlns:gs="http://schemas.google.com/spreadsheets/2006"
+xmlns:dc="http://purl.org/dc/terms" xmlns:batch="http://schemas.google.com/gdata/batch"
+xmlns:gd="http://schemas.google.com/g/2005" xmlns:thr="http://purl.org/syndication/thread/1.0">
+<id>http://sites.google.com/feeds/content/site/gdatatestsite</id>
+<updated>2009-06-15T21:35:43.282Z</updated>
+<link rel="http://schemas.google.com/g/2005#feed" type="application/atom+xml" href="http://sites.google.com/feeds/content/site/gdatatestsite"/>
+<link rel="http://schemas.google.com/g/2005#post" type="application/atom+xml" href="http://sites.google.com/feeds/content/site/gdatatestsite"/>
+<link rel="self" type="application/atom+xml" href="http://sites.google.com/feeds/content/site/gdatatestsite"/>
+<generator version="1" uri="http://sites.google.com">Google Sites</generator>
+<openSearch:startIndex>1</openSearch:startIndex>
+<entry>
+  <id>http:///sites.google.com/feeds/content/site/gdatatestsite/1712987567114738703</id>
+  <updated>2009-06-16T00:37:37.393Z</updated>
+  <category scheme="http://schemas.google.com/g/2005#kind" term="http://schemas.google.com/sites/2008#listpage"/>
+  <title type="text">ListPagesTitle</title>
+  <content type="xhtml">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+    <jot:section xmlns:jot="http://www.google.com/ns/jotspot/srvtmpl/" target="content-1">
+    <div dir="ltr">stuff go here<div>asdf</div>
+    <div>sdf</div>
+    <div>
+      <br/>
+    </div>
+  </div>
+  </jot:section>
+  </div>
+  </content>
+  <link rel="self" type="application/atom+xml" href="http:///sites.google.com/feeds/content/site/gdatatestsite/1712987567114738703"/>
+  <link rel="edit" type="application/atom+xml" href="http:///sites.google.com/feeds/content/site/gdatatestsite/1712987567114738703"/>
+  <author>
+    <name>Test User</name>
+    <email>test@gmail.com</email>
+  </author>
+  <gs:worksheet xmlns:gs="http://schemas.google.com/spreadsheets/2006" name="listpage"/>
+  <gs:header xmlns:gs="http://schemas.google.com/spreadsheets/2006" row="1"/>
+  <gs:data xmlns:gs="http://schemas.google.com/spreadsheets/2006" startRow="2">
+  <gs:column index="A" name="Owner"/>
+  <gs:column index="B" name="Description"/>
+  <gs:column index="C" name="Resolution"/>
+  <gs:column index="D" name="Complete"/>
+  <gs:column index="E" name="MyCo"/>
+  </gs:data>
+  <sites:revision>2</sites:revision>
+  <gd:deleted/>
+  <sites:pageName>home</sites:pageName>
+  <gd:feedLink xmlns:gd="http://schemas.google.com/g/2005" href="http://sites.google.com/feeds/content/site/gdatatestsite?parent=abc"/>
+</entry>
+<entry>
+  <id>http://sites.google.com/feeds/content/site/gdatatestsite/abc123</id>
+  <updated>2009-06-17T00:40:37.082Z</updated>
+  <category scheme="http://schemas.google.com/g/2005#kind" term="http://schemas.google.com/sites/2008#filecabinet"/>
+  <title type="text">filecabinet</title>
+  <content type="xhtml">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+    <jot:section xmlns:jot="http://www.google.com/ns/jotspot/srvtmpl/" target="content-1">
+    <div dir="ltr">sdf</div>
+  </jot:section>
+</div>
+</content>
+<link rel="http://schemas.google.com/sites/2008#parent" type="application/atom+xml" href="http://sites.google.com/feeds/content/site/gdatatestsite/abc123"/>
+<link rel="self" type="application/atom+xml" href="http://sites.google.com/feeds/content/site/gdatatestsite/abc123"/>
+<link rel="edit" type="application/atom+xml" href="http://sites.google.com/feeds/content/site/gdatatestsite/abc123"/>
+ <author>
+    <name>Test User</name>
+    <email>test@gmail.com</email>
+  </author>
+<gd:feedLink xmlns:gd="http://schemas.google.com/g/2005" href="http://sites.google.com/feeds/content/site/gdatatestsite?parent=8472761212299270332"/>
+</entry>
+<entry>
+  <id>http://sites.google.com/feeds/content/site/gdatatestsite/abc123</id>
+  <updated>2009-06-16T00:34:55.633Z</updated>
+  <category scheme="http://schemas.google.com/g/2005#kind" term="http://schemas.google.com/sites/2008#listitem"/>
+  <title type="text"/>
+  <link rel="http://schemas.google.com/sites/2008#parent" type="application/atom+xml" href="http://sites.google.com/feeds/content/site/gdatatestsite/abc123def"/>
+  <link rel="self" type="application/atom+xml" href="http://sites.google.com/feeds/content/site/gdatatestsite/abc123"/>
+  <link rel="edit" type="application/atom+xml" href="http://sites.google.com/feeds/content/site/gdatatestsite/abc123"/>
+  <author>
+    <name>Test User</name>
+    <email>test@gmail.com</email>
+  </author>
+  <gs:field xmlns:gs="http://schemas.google.com/spreadsheets/2006" index="A" name="Owner">test value</gs:field>
+  <gs:field xmlns:gs="http://schemas.google.com/spreadsheets/2006" index="B" name="Description">test</gs:field>
+  <gs:field xmlns:gs="http://schemas.google.com/spreadsheets/2006" index="C" name="Resolution">90</gs:field>
+  <gs:field xmlns:gs="http://schemas.google.com/spreadsheets/2006" index="D" name="Complete"/>
+  <gs:field xmlns:gs="http://schemas.google.com/spreadsheets/2006" index="E" name="MyCo">2009-05-31</gs:field>
+</entry>
+<entry>
+  <id>http://sites.google.com/feeds/content/site/gdatatestsite/abc123</id>
+  <updated>2009-06-15T18:40:32.922Z</updated>
+  <category scheme="http://schemas.google.com/g/2005#kind" term="http://schemas.google.com/sites/2008#attachment"/>
+  <title type="text">testFile.ods</title>
+  <link rel="alternate" type="application/vnd.oasis.opendocument.spreadsheet" href="http://sites.google.com/feeds/SOMELONGURL"/>
+  <link rel="http://schemas.google.com/sites/2008#parent" type="application/atom+xml" href="http://sites.google.com/feeds/content/site/gdatatestsite/abc123"/>
+  <link rel="self" type="application/atom+xml" href="http://sites.google.com/feeds/content/site/gdatatestsite/abc123"/>
+  <link rel="edit" type="application/atom+xml" href="http://sites.google.com/feeds/content/site/gdatatestsite/abc123"/>
+  <author>
+    <name>Test User</name>
+    <email>test@gmail.com</email>
+  </author>
+  <gd:deleted/>
+  <sites:pageName>something else</sites:pageName>
+</entry>
+<entry>
+  <id>http://sites.google.com/feeds/content/site/gdatatestsite/abc123</id>
+  <updated>2009-06-15T18:40:22.407Z</updated>
+  <category scheme="http://schemas.google.com/g/2005#kind" term="http://schemas.google.com/sites/2008#comment"/>
+  <title type="text"/>
+  <content type="xhtml">
+    <div xmlns="http://www.w3.org/1999/xhtml">first comment</div>
+  </content>
+  <link rel="http://schemas.google.com/sites/2008#parent" type="application/atom+xml" href="http://sites.google.com/feeds/content/site/gdatatestsite/abc123"/>
+  <link rel="self" type="application/atom+xml" href="http://sites.google.com/feeds/content/site/gdatatestsite/abc123"/>
+  <link rel="edit" type="application/atom+xml" href="http://sites.google.com/feeds/content/site/gdatatestsite/abc123"/>
+  <author>
+    <name>Test User</name>
+    <email>test@gmail.com</email>
+  </author>
+  <thr:in-reply-to xmlns:thr="http://purl.org/syndication/thread/1.0" href="http://sites.google.com/site/gdatatestsite/annoucment/testpost" ref="http://sites.google.com/feeds/content/site/gdatatestsite/abc123" source="http://sites.google.com/feeds/content/site/gdatatestsite" type="text/html"/>
+</entry>
+<entry>
+  <id>http://sites.google.com/feeds/content/site/gdatatestsite/abc123</id>
+  <updated>2009-06-15T18:40:16.388Z</updated>
+  <category scheme="http://schemas.google.com/g/2005#kind" term="http://schemas.google.com/sites/2008#announcement"/>
+  <title type="text">TestPost</title>
+  <content type="xhtml">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+    <jot:section xmlns:jot="http://www.google.com/ns/jotspot/srvtmpl/" target="content-1">
+    <div dir="ltr">content goes here</div>
+  </jot:section>
+</div>
+</content>
+<link rel="http://schemas.google.com/sites/2008#parent" type="application/atom+xml" href="http://sites.google.com/feeds/content/site/gdatatestsite/abc123"/>
+<link rel="self" type="application/atom+xml" href="http://sites.google.com/feeds/content/site/gdatatestsite/abc123"/>
+<link rel="edit" type="application/atom+xml" href="http://sites.google.com/feeds/content/site/gdatatestsite/abc123"/>
+<author>
+  <name>Test User</name>
+  <email>test@gmail.com</email>
+</author>
+</entry>
+<entry>
+  <id>http://sites.google.com/feeds/content/site/gdatatestsite/abc123</id>
+  <updated>2009-06-12T23:37:59.417Z</updated>
+  <category scheme="http://schemas.google.com/g/2005#kind" term="http://schemas.google.com/sites/2008#webpage"/>
+  <title type="text">Home</title>
+  <content type="xhtml">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+    <jot:section xmlns:jot="http://www.google.com/ns/jotspot/srvtmpl/" target="content-1">
+    <div dir="ltr">Some Content goes here<div>
+    <br/>
+  </div>
+  <div>
+    <jot:embed height="300" id="4981865780428052" props="align:left;width:250;maxDepth:6" src="http://www.google.com/chart?SOMELONGURL" style="display: block; text-align: left; " type="toc" width="250"/>
+    <br/>
+  </div>
+</div>
+</jot:section>
+</div>
+</content>
+<link rel="self" type="application/atom+xml" href="http://sites.google.com/feeds/content/site/gdatatestsite/abc123"/>
+<link rel="edit" type="application/atom+xml" href="http://sites.google.com/feeds/content/site/gdatatestsite/abc123"/>
+<author>
+  <name>Test User</name>
+  <email>test@gmail.com</email>
+</author>
+</entry>
+<entry>
+  <id>http://sites.google.com/feeds/content/site/gdatatestsite/2639323850129333500</id>
+  <updated>2009-06-12T23:32:09.191Z</updated>
+  <category scheme="http://schemas.google.com/g/2005#kind" term="http://schemas.google.com/sites/2008#announcementspage"/>
+  <title type="text">annoucment</title>
+  <content type="xhtml">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+  </div>
+</content>
+<link rel="self" type="application/atom+xml" href="http://sites.google.com/feeds/content/site/gdatatestsite/abc123"/>
+<link rel="edit" type="application/atom+xml" href="http://sites.google.com/feeds/content/site/gdatatestsite/abc123"/>
+<author>
+  <name>Test User</name>
+  <email>test@gmail.com</email>
+</author>
+<gd:feedLink xmlns:gd="http://schemas.google.com/g/2005" href="http://sites.google.com/feeds/content/site/gdatatestsite?parent=abc123"/>
+</entry>
+</feed>'''
+
+SITES_ACTIVITY_FEED = '''<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xmlns:openSearch="http://a9.com/-/spec/opensearch/1.1/">
+<id>http://sites.google.com/feeds/activity/site/siteName</id>
+<updated>2009-08-19T05:46:01.503Z</updated>
+<title>Activity</title>
+<link rel="alternate" type="text/html" href="http://sites.google.com/a/site/siteName/system/app/pages/recentChanges"/>
+<link rel="http://schemas.google.com/g/2005#feed" type="application/atom+xml" href="http://sites.google.com/feeds/activity/site/siteName"/>
+<link rel="self" type="application/atom+xml" href="http://sites.google.com/feeds/activity/site/siteName"/>
+<generator version="1" uri="http://sites.google.com">Google Sites</generator>
+<openSearch:startIndex>1</openSearch:startIndex>
+<entry xmlns:gd="http://schemas.google.com/g/2005" gd:etag="W/&quot;DUENSH0zfyl7ImA9WxNTFEs.&quot;">
+<id>http://sites.google.com/feeds/activity/site/siteName/197441951793148343</id>
+<updated>2009-08-17T00:08:19.387Z</updated>
+<category scheme="http://schemas.google.com/g/2005#kind" term="http://schemas.google.com/sites/2008#deletion" label="deletion"/>
+<title>NewWebpage3</title>
+<summary type="xhtml">
+  <div xmlns="http://www.w3.org/1999/xhtml">User deleted <a href="http://sites.google.com/site/siteName/newwebpage">NewWebpage3</a>
+</div>
+</summary>
+<link rel="http://schemas.google.com/sites/2008#revision" type="application/atom+xml" href="http://sites.google.com/feeds/revision/site/siteName/6397361387376148502"/>
+<link rel="http://schemas.google.com/sites/2008#current" type="application/atom+xml" href="http://sites.google.com/feeds/content/site/siteName/6397361387376148502"/>
+<link rel="self" type="application/atom+xml" href="http://sites.google.com/feeds/activity/site/siteName/197441951793148343"/>
+<author>
+  <name>User</name>
+  <email>user@gmail.com</email>
+</author>
+</entry>
+<entry xmlns:gd="http://schemas.google.com/g/2005" gd:etag="W/&quot;DUEMQnk6eSl7ImA9WxNTFEs.&quot;">
+<id>http://sites.google.com/feeds/activity/site/siteName/7299542210274956360</id>
+<updated>2009-08-17T00:08:03.711Z</updated>
+<category scheme="http://schemas.google.com/g/2005#kind" term="http://schemas.google.com/sites/2008#edit" label="edit"/>
+<title>NewWebpage3</title>
+<summary type="xhtml">
+  <div xmlns="http://www.w3.org/1999/xhtml">User edited <a href="http://sites.google.com/site/siteName/newwebpage">NewWebpage3</a>
+</div>
+</summary>
+<link rel="http://schemas.google.com/sites/2008#revision" type="application/atom+xml" href="http://sites.google.com/feeds/revision/site/siteName/6397361387376148502"/>
+<link rel="http://schemas.google.com/sites/2008#current" type="application/atom+xml" href="http://sites.google.com/feeds/content/site/siteName/6397361387376148502"/>
+<link rel="self" type="application/atom+xml" href="http://sites.google.com/feeds/activity/site/siteName/7299542210274956360"/>
+<author>
+  <name>User</name>
+  <email>user@gmail.com</email>
+</author>
+</entry>
+</feed>'''
+
+SITES_REVISION_FEED = '''
+<feed xmlns="http://www.w3.org/2005/Atom" xmlns:openSearch="http://a9.com/-/spec/opensearch/1.1/" xmlns:sites="http://schemas.google.com/sites/2008" xmlns:gs="http://schemas.google.com/spreadsheets/2006" xmlns:dc="http://purl.org/dc/terms" xmlns:batch="http://schemas.google.com/gdata/batch" xmlns:gd="http://schemas.google.com/g/2005" xmlns:thr="http://purl.org/syndication/thread/1.0">
+<id>http://sites.google.com/feeds/revision/site/siteName/2947510322163358574</id>
+<updated>2009-08-19T06:20:18.151Z</updated>
+<title>Revisions</title>
+<link rel="http://schemas.google.com/g/2005#feed" type="application/atom+xml" href="http://sites.google.com/feeds/revision/2947510322163358574"/>
+<link rel="self" type="application/atom+xml" href="http://sites.google.com/feeds/revision/site/siteName/2947510322163358574"/>
+<generator version="1" uri="http://sites.google.com">Google Sites</generator>
+<openSearch:startIndex>1</openSearch:startIndex>
+<entry gd:etag="W/&quot;DEQNRXY-fil7ImA9WxNTFkg.&quot;">
+<id>http://sites.google.com/feeds/revision/site/siteName/2947510322163358574/1</id>
+<updated>2009-08-19T04:33:14.856Z</updated>
+<category scheme="http://schemas.google.com/g/2005#kind" term="http://schemas.google.com/sites/2008#comment" label="comment"/>
+<title/>
+<content type="xhtml">
+  <div xmlns="http://www.w3.org/1999/xhtml">
+  <table cellspacing="0" class="sites-layout-name-one-column sites-layout-hbox">
+    <tbody>
+      <tr>
+        <td class="sites-layout-tile sites-tile-name-content-1">testcomment</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+</content>
+<link rel="http://schemas.google.com/sites/2008#parent" type="application/atom+xml" href="http://sites.google.com/feeds/content/site/siteName/54395424125706119"/>
+<link rel="alternate" type="text" href="http://sites.google.com/site/system/app/pages/admin/compare?wuid=wuid%3Agx%3A28e7a9057c581b6e&amp;rev1=1"/>
+<link rel="self" type="application/atom+xml" href="http://sites.google.com/feeds/revision/site/siteName/2947510322163358574/1"/>
+<author>
+  <name>User</name>
+  <email>user@gmail.com</email>
+</author>
+<thr:in-reply-to href="http://sites.google.com/site/siteName/code/js" ref="http://sites.google.com/feeds/content/site/siteName/54395424125706119" source="http://sites.google.com/feeds/content/google.com/siteName" type="text/html;charset=UTF-8"/>
+<sites:revision>1</sites:revision>
+</entry>
+</feed>'''
+
+ANALYTICS_ACCOUNT_FEED_old = '''
+<feed xmlns='http://www.w3.org/2005/Atom' xmlns:openSearch='http://a9.com/-/spec/opensearchrss/1.0/' xmlns:dxp='http://schemas.google.com/analytics/2009'>
+<id>http://www.google.com/analytics/feeds/accounts/abc@test.com</id>
+<updated>2009-06-25T03:55:22.000-07:00</updated>
+<title type='text'>Profile list for abc@test.com</title>
+<link rel='self' type='application/atom+xml' href='http://www.google.com/analytics/feeds/accounts/default'/>
+<author>
+<name>Google Analytics</name>
+</author>
+<generator version='1.0'>Google Analytics</generator>
+<openSearch:totalResults>12</openSearch:totalResults>
+<openSearch:startIndex>1</openSearch:startIndex>
+<openSearch:itemsPerPage>12</openSearch:itemsPerPage>
+<entry>
+<id>http://www.google.com/analytics/feeds/accounts/ga:1174</id>
+<updated>2009-06-25T03:55:22.000-07:00</updated>
+<title type='text'>www.googlestore.com</title>
+<link rel='alternate' type='text/html' href='http://www.google.com/analytics'/>
+<dxp:tableId>ga:1174</dxp:tableId>
+<dxp:property name='ga:accountId' value='30481'/>
+<dxp:property name='ga:accountName' value='Google Store'/>
+<dxp:property name='ga:profileId' value='1174'/>
+<dxp:property name='ga:webPropertyId' value='UA-30481-1'/>
+<dxp:property name='ga:currency' value='USD'/>
+<dxp:property name='ga:timezone' value='America/Los_Angeles'/>
+</entry>
+</feed>'''
+
+ANALYTICS_ACCOUNT_FEED = '''
+<feed xmlns='http://www.w3.org/2005/Atom' xmlns:dxp='http://schemas.google.com/analytics/2009' xmlns:ga='http://schemas.google.com/ga/2009' xmlns:openSearch='http://a9.com/-/spec/opensearch/1.1/' xmlns:gd='http://schemas.google\
+.com/g/2005' gd:etag='W/&quot;DE8CRH47eCp7I2A9WxNWFU4.&quot;' gd:kind='analytics#accounts'>
+  <id>http://www.google.com/analytics/feeds/accounts/api.nickm@google.com</id>
+  <updated>2009-10-14T09:14:25.000-07:00</updated>
+  <title>Profile list for abc@test.com</title>
+  <link rel='self' type='application/atom+xml' href='http://www.google.com/analytics/feeds/accounts/default?v=2'/>
+  <author>
+    <name>Google Analytics</name>
+  </author>
+  <generator version='1.0'>Google Analytics</generator>
+  <openSearch:totalResults>37</openSearch:totalResults>
+  <openSearch:startIndex>1</openSearch:startIndex>
+  <openSearch:itemsPerPage>37</openSearch:itemsPerPage>
+  <dxp:segment id='gaid::-11' name='Visits from iPhones'>
+    <dxp:definition>ga:operatingSystem==iPhone</dxp:definition>
+  </dxp:segment>
+  <entry gd:etag='W/&quot;DE8CRH47eCp7I2A9WxNWFU4.&quot;' gd:kind='analytics#account'>
+    <id>http://www.google.com/analytics/feeds/accounts/ga:1174</id>
+    <updated>2009-10-14T09:14:25.000-07:00</updated>
+    <title>www.googlestore.com</title>
+    <link rel='alternate' type='text/html' href='http://www.google.com/analytics'/>
+    <ga:goal active='true' name='Completing Order' number='1' value='10.0'>
+      <ga:destination caseSensitive='false' expression='/purchaseComplete.html' matchType='regex' step1Required='false'>
+        <ga:step name='View Product Categories' number='1' path='/Apps|Accessories|Fun|Kid\+s|Office'/>
+        <ga:step name='View Product' number='2' path='/Apps|Accessories|Fun|Kid\+s|Office|Wearables'/>
+      </ga:destination>
+    </ga:goal>
+    <ga:goal active='true' name='Browsed my site over 5 minutes' number='6' value='0.0'>
+      <ga:engagement comparison='&gt;' thresholdValue='300' type='timeOnSite'/>
+    </ga:goal>
+    <ga:goal active='true' name='Visited &gt; 4 pages' number='7' value='0.25'>
+      <ga:engagement comparison='&gt;' thresholdValue='4' type='pagesVisited'/>
+    </ga:goal>
+    <ga:customVariable index='1' name='My Custom Variable' scope='3'/>
+    <ga:customVariable index='2' name='My Seconds Variable' scope='1'/>
+    <dxp:property name='ga:accountId' value='30481'/>
+    <dxp:property name='ga:accountName' value='Google Store'/>
+    <dxp:property name='ga:profileId' value='1174'/>
+    <dxp:property name='ga:webPropertyId' value='UA-30481-1'/>
+    <dxp:property name='ga:currency' value='USD'/>
+    <dxp:property name='ga:timezone' value='America/Los_Angeles'/>
+    <dxp:tableId>ga:1174</dxp:tableId>
+  </entry>
+</feed>'''
+
+ANALYTICS_DATA_FEED = '''
+<feed xmlns='http://www.w3.org/2005/Atom' xmlns:openSearch='http://a9.com/-/spec/opensearchrss/1.0/' xmlns:dxp='http://schemas.google.com/analytics/2009'>
+  <id>http://www.google.com/analytics/feeds/data?ids=ga:1174&amp;dimensions=ga:medium,ga:source&amp;metrics=ga:bounces,ga:visits&amp;filters=ga:medium%3D%3Dreferral&amp;start-date=2008-10-01&amp;end-date=2008-10-31</id>
+  <updated>2008-10-31T16:59:59.999-07:00</updated>
+  <title type='text'>Google Analytics Data for Profile 1174</title>
+  <link rel='self' type='application/atom+xml' href='http://www.google.com/analytics/feeds/data?max-results=5&amp;sort=-ga%3Avisits&amp;end-date=2008-10-31&amp;start-date=2008-10-01&amp;metrics=ga%3Avisits%2Cga%3Abounces&amp;ids=ga%3A1174&amp;dimensions=ga%3Asource%2Cga%3Amedium&amp;filters=ga%3Amedium%3D%3Dreferral'/>
+  <link rel='next' type='application/atom+xml' href='http://www.google.com/analytics/feeds/data?start-index=6&amp;max-results=5&amp;sort=-ga%3Avisits&amp;end-date=2008-10-31&amp;start-date=2008-10-01&amp;metrics=ga%3Avisits%2Cga%3Abounces&amp;ids=ga%3A1174&amp;dimensions=ga%3Asource%2Cga%3Amedium&amp;filters=ga%3Amedium%3D%3Dreferral'/>
+  <author>
+    <name>Google Analytics</name>
+  </author>
+  <generator version='1.0'>Google Analytics</generator>
+  <openSearch:totalResults>6451</openSearch:totalResults>
+  <openSearch:startIndex>1</openSearch:startIndex>
+  <openSearch:itemsPerPage>2</openSearch:itemsPerPage>
+  <dxp:startDate>2008-10-01</dxp:startDate>
+  <dxp:endDate>2008-10-31</dxp:endDate>
+  <dxp:segment id='gaid::-11' name='Visits from iPhones'>
+    <dxp:definition>ga:operatingSystem==iPhone</dxp:definition>
+  </dxp:segment>
+  <dxp:aggregates>
+    <dxp:metric confidenceInterval='0.0' name='ga:visits' type='integer' value='136540'/>
+    <dxp:metric confidenceInterval='0.0' name='ga:bounces' type='integer' value='101535'/>
+  </dxp:aggregates>
+  <dxp:dataSource>
+    <dxp:tableId>ga:1174</dxp:tableId>
+    <dxp:tableName>www.googlestore.com</dxp:tableName>
+    <dxp:property name='ga:profileId' value='1174'/>
+    <dxp:property name='ga:webPropertyId' value='UA-30481-1'/>
+    <dxp:property name='ga:accountName' value='Google Store'/>
+  </dxp:dataSource>
+  <entry>
+    <id>http://www.google.com/analytics/feeds/data?ids=ga:1174&amp;ga:medium=referral&amp;ga:source=blogger.com&amp;filters=ga:medium%3D%3Dreferral&amp;start-date=2008-10-01&amp;end-date=2008-10-31</id>
+    <updated>2008-10-30T17:00:00.001-07:00</updated>
+    <title type='text'>ga:source=blogger.com | ga:medium=referral</title>
+    <link rel='alternate' type='text/html' href='http://www.google.com/analytics'/>
+    <dxp:dimension name='ga:source' value='blogger.com'/>
+    <dxp:dimension name='ga:medium' value='referral'/>
+    <dxp:metric confidenceInterval='0.0' name='ga:visits' type='integer' value='68140'/>
+    <dxp:metric confidenceInterval='0.0' name='ga:bounces' type='integer' value='61095'/>
+  </entry>
+</feed>'''

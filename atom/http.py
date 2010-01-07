@@ -42,9 +42,22 @@ import atom.url
 import atom.http_interface
 import socket
 import base64
+import atom.http_core
+ssl_imported = False
+ssl = None
+try:
+  import ssl
+  ssl_imported = True
+except ImportError:
+  pass
+  
 
 
 class ProxyError(atom.http_interface.Error):
+  pass
+
+
+class TestConfigurationError(Exception):
   pass
 
 
@@ -52,6 +65,10 @@ DEFAULT_CONTENT_TYPE = 'application/atom+xml'
 
 
 class HttpClient(atom.http_interface.GenericHttpClient):
+  # Added to allow old v1 HttpClient objects to use the new 
+  # http_code.HttpClient. Used in unit tests to inject a mock client.
+  v2_http_client = None
+
   def __init__(self, headers=None):
     self.debug = False
     self.headers = headers or {}
@@ -79,6 +96,32 @@ class HttpClient(atom.http_interface.GenericHttpClient):
       headers: dict of strings. HTTP headers which should be sent
           in the request. 
     """
+    all_headers = self.headers.copy()
+    if headers:
+      all_headers.update(headers)
+
+    # If the list of headers does not include a Content-Length, attempt to
+    # calculate it based on the data object.
+    if data and 'Content-Length' not in all_headers:
+      if isinstance(data, types.StringTypes):
+        all_headers['Content-Length'] = str(len(data))
+      else:
+        raise atom.http_interface.ContentLengthRequired('Unable to calculate '
+            'the length of the data parameter. Specify a value for '
+            'Content-Length')
+
+    # Set the content type to the default value if none was set.
+    if 'Content-Type' not in all_headers:
+      all_headers['Content-Type'] = DEFAULT_CONTENT_TYPE
+
+    if self.v2_http_client is not None:
+      http_request = atom.http_core.HttpRequest(method=operation)
+      atom.http_core.Uri.parse_uri(str(url)).modify_request(http_request)
+      http_request.headers = all_headers
+      if data:
+        http_request._body_parts.append(data)
+      return self.v2_http_client.request(http_request=http_request)
+
     if not isinstance(url, atom.url.Url):
       if isinstance(url, types.StringTypes):
         url = atom.url.parse_url(url)
@@ -86,10 +129,6 @@ class HttpClient(atom.http_interface.GenericHttpClient):
         raise atom.http_interface.UnparsableUrlObject('Unable to parse url '
             'parameter because it was not a string or atom.url.Url')
     
-    all_headers = self.headers.copy()
-    if headers:
-      all_headers.update(headers) 
-
     connection = self._prepare_connection(url, all_headers)
 
     if self.debug:
@@ -97,7 +136,10 @@ class HttpClient(atom.http_interface.GenericHttpClient):
 
     connection.putrequest(operation, self._get_access_url(url), 
         skip_host=True)
-    connection.putheader('Host', url.host)
+    if url.port is not None:
+      connection.putheader('Host', '%s:%s' % (url.host, url.port))
+    else:
+      connection.putheader('Host', url.host)
 
     # Overcome a bug in Python 2.4 and 2.5
     # httplib.HTTPConnection.putrequest adding
@@ -114,20 +156,6 @@ class HttpClient(atom.http_interface.GenericHttpClient):
             replacement_header_line)
       except ValueError:  # header_line missing from connection._buffer
         pass
-
-    # If the list of headers does not include a Content-Length, attempt to
-    # calculate it based on the data object.
-    if data and 'Content-Length' not in all_headers:
-      if isinstance(data, types.StringTypes):
-        all_headers['Content-Length'] = len(data)
-      else:
-        raise atom.http_interface.ContentLengthRequired('Unable to calculate '
-            'the length of the data parameter. Specify a value for '
-            'Content-Length')
-
-    # Set the content type to the default value if none was set.
-    if 'Content-Type' not in all_headers:
-      all_headers['Content-Type'] = DEFAULT_CONTENT_TYPE
 
     # Send the HTTP headers.
     for header_name in all_headers:
@@ -222,12 +250,16 @@ class ProxiedHttpClient(HttpClient):
           raise ProxyError('Error status=%s' % str(p_status))
 
         # Trivial setup for ssl socket.
-        ssl = socket.ssl(p_sock, None, None)
-        fake_sock = httplib.FakeSocket(p_sock, ssl)
+        sslobj = None
+        if ssl_imported:
+          sslobj = ssl.wrap_socket(p_sock, None, None)
+        else:
+          sock_ssl = socket.ssl(p_sock, None, None)
+          sslobj = httplib.FakeSocket(p_sock, sock_ssl)
  
         # Initalize httplib and replace with the proxy socket.
         connection = httplib.HTTPConnection(proxy_url.host)
-        connection.sock=fake_sock
+        connection.sock = sslobj
         return connection
       else:
         # The request was HTTPS, but there was no https_proxy set.
