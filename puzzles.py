@@ -301,7 +301,7 @@ class SpreadsheetAddHandler(handler.RequestHandler):
     client = gdata.docs.client.DocsClient()
     # TODO(glasser): Use puzzle name in spreadsheet name
     doc = client.Create(gdata.docs.data.SPREADSHEET_LABEL,
-                        self.request.get('title'),
+                        "%s [%s]" % (self.request.get('title'), puzzle.title),
                         writers_can_invite=True,
                         auth_token=token)
     match = gdata.docs.data.RESOURCE_ID_PATTERN.match(doc.resource_id.text)
