@@ -7,8 +7,8 @@ from google.appengine.ext import webapp
 import my_template
 import model
 
-INSTANCE_NAME = 'Optimus Funk'
-APPS_DOMAIN = 'optimusfunk.org'  # For spreadsheets, etc
+INSTANCE_NAME = 'R2-DISCO'
+APPS_DOMAIN = 'r2disco.org'  # For spreadsheets, etc
 
 port = os.environ['SERVER_PORT']
 if port and port != '80':
