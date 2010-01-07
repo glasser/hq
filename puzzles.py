@@ -322,24 +322,6 @@ class SpreadsheetAddHandler(handler.RequestHandler):
     sheet.put()
     self.redirect(PuzzleHandler.get_url(puzzle_id))
 
-class SSDumpHandler(handler.RequestHandler):
-  def get(self, resource_id):
-    # See if we have an auth token for this user.
-    token = get_auth_token(self.request)
-    if token is None:
-      auth_url = gdata.gauth.generate_auth_sub_url(
-          self.request.url,
-          (gdata.docs.client.DocsClient.auth_scopes +
-           gdata.spreadsheets.client.SpreadsheetsClient.auth_scopes),
-          domain=handler.APPS_DOMAIN)
-      self.render_template("auth_required", {"auth_url": auth_url})
-      return
-    assert token != False  # There must be a user to access the app at all
-
-    client = gdata.docs.client.DocsClient()
-    permissions = client.get_acl_permissions(resource_id,
-                                             auth_token=token)
-    assert False, permissions
 
 class RelatedAddHandler(handler.RequestHandler):
   def post(self, puzzle_id):
@@ -445,5 +427,4 @@ HANDLERS = [
     ('/puzzles/delete-image/(\\d+)/?', ImageDeleteHandler),
     ('/change-user/?', UserChangeHandler),
     ('/?', TopPageHandler),
-    ('/ss-dump/(.+)', SSDumpHandler),
 ]
