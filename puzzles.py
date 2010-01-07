@@ -11,10 +11,12 @@ from google.appengine.ext import db
 
 import bzrlib.merge3
 from django.utils import html
-import gdata.gauth
+import atom.data
+import gdata.acl.data
 import gdata.client
 import gdata.docs.client
 import gdata.docs.data
+import gdata.gauth
 import gdata.spreadsheets.client
 
 class PuzzleListHandler(handler.RequestHandler):
@@ -308,14 +310,36 @@ class SpreadsheetAddHandler(handler.RequestHandler):
     assert match
     assert match.group(1) == gdata.docs.data.SPREADSHEET_LABEL
     doc_key = match.group(3)
-    # acl_entry = gdata.docs.data.Acl(
-    #   role=gdata.acl.data.Role(value="writer"),
-    #   scope=
-    # permissions = client.get_acl_permissions(doc.resource_id.text,
-    #                                          auth_token=token)
+    acl_entry = gdata.docs.data.Acl(
+      role=gdata.acl.data.AclRole(value="writer"),
+      scope=gdata.acl.data.AclScope(type="group",
+                                    value=handler.GROUP_ACL))
+    acl_entry.category.append(atom.data.Category(
+      scheme=gdata.docs.data.DATA_KIND_SCHEME,
+      term="http://schemas.google.com/acl/2007#accessRule"))
+    client.post(acl_entry, doc.get_acl_feed_link().href, auth_token=token)
     sheet = model.Spreadsheet(puzzle=puzzle, spreadsheet_key=doc_key)
     sheet.put()
     self.redirect(PuzzleHandler.get_url(puzzle_id))
+
+class SSDumpHandler(handler.RequestHandler):
+  def get(self, resource_id):
+    # See if we have an auth token for this user.
+    token = get_auth_token(self.request)
+    if token is None:
+      auth_url = gdata.gauth.generate_auth_sub_url(
+          self.request.url,
+          (gdata.docs.client.DocsClient.auth_scopes +
+           gdata.spreadsheets.client.SpreadsheetsClient.auth_scopes),
+          domain=handler.APPS_DOMAIN)
+      self.render_template("auth_required", {"auth_url": auth_url})
+      return
+    assert token != False  # There must be a user to access the app at all
+
+    client = gdata.docs.client.DocsClient()
+    permissions = client.get_acl_permissions(resource_id,
+                                             auth_token=token)
+    assert False, permissions
 
 class RelatedAddHandler(handler.RequestHandler):
   def post(self, puzzle_id):
@@ -421,4 +445,5 @@ HANDLERS = [
     ('/puzzles/delete-image/(\\d+)/?', ImageDeleteHandler),
     ('/change-user/?', UserChangeHandler),
     ('/?', TopPageHandler),
+    ('/ss-dump/(.+)', SSDumpHandler),
 ]
