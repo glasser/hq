@@ -301,7 +301,6 @@ class SpreadsheetAddHandler(handler.RequestHandler):
     assert token != False  # There must be a user to access the app at all
 
     client = gdata.docs.client.DocsClient()
-    # TODO(glasser): Use puzzle name in spreadsheet name
     doc = client.Create(gdata.docs.data.SPREADSHEET_LABEL,
                         "%s [%s]" % (self.request.get('title'), puzzle.title),
                         writers_can_invite=True,
