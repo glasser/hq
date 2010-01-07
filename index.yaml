@@ -10,23 +10,11 @@ indexes:
 # automatically uploaded to the admin console when you next deploy
 # your application using appcfg.py.
 
-# Used once in query history.
-- kind: Banner
-  properties:
-  - name: created
-    direction: desc
-
 # Used 197 times in query history.
 - kind: Comment
   ancestor: yes
   properties:
   - name: replaced_by
   - name: priority
-  - name: created
-    direction: desc
-
-# Used 10 times in query history.
-- kind: Newsfeed
-  properties:
   - name: created
     direction: desc
