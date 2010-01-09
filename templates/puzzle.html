@@ -204,7 +204,8 @@
         {% ifequal current_user "nobody" %}
           <span class="petite">[log in at the top of the page to edit comments]</span>
         {% else %}
-          <a href="#" id="edit-comment-{{ comment.key.id }}">[edit comment]</a>
+          <a href="#" id="edit-comment-{{ comment.key.id }}">[edit comment (as
+            {{ current_user|escape }})]</a>
           <div class="comment-{{ comment.key.id }}">
             <form action="{% url CommentEditHandler comment.key.id %}" method="post">
               <textarea name="text" rows="20" cols="80">{{ comment.text|escape }}</textarea>
@@ -218,7 +219,7 @@
       {% ifequal current_user "nobody" %}
         <span class="petite">[log in at the top of the page to post a new comment]</span>
       {% else %}
-        Post a new comment:
+        Post a new comment (as {{ current_user|escape }}):
         <form action="{% url CommentAddHandler puzzle.key.id %}" method="post">
           <textarea name="text" rows="20" cols="80"></textarea>
           <input type="submit" value="add comment" />
