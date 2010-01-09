@@ -14,7 +14,7 @@
     <li>
       <form action="{% url HeaderLinkAddHandler %}" method="post">
         text:
-        <input type="text" name="title" />
+        <input type="text" name="title" autocomplete="off" />
         link (eg, <code>/puzzles/search/round:4/-status:solved/showmeta=answer/</code>):
         <input type="text" name="href" />
         <input type="submit" value="add link" />

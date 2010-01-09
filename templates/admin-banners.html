@@ -13,7 +13,7 @@
   {% endfor %}
     <li>
       <form action="{% url BannerAddHandler %}" method="post">
-        <input type="text" name="contents" />
+        <input type="text" name="contents" autocomplete="off" />
         <input type="submit" value="add banner" />
       </form>
     </li>

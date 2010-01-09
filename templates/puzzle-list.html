@@ -2,6 +2,17 @@
 
 {% block title %}Puzzles {{ puzzles.display_query }}{% endblock %}
 
+{% block jqueryready %}
+  $('input#new-puzzle-add').attr('disabled','disabled');
+  $('input#new-puzzle-title').keyup(function() {
+    if ($('input#new-puzzle-title').val() == "") {
+      $('input#new-puzzle-add').attr('disabled','disabled');
+    } else {
+      $('input#new-puzzle-add').removeAttr('disabled');
+    }
+  });
+{% endblock %}
+
 {% block content %}
 <h3 class="puzzles_header">Puzzles {{ puzzles.describe_query }}</h3>
 
@@ -49,7 +60,7 @@
     {% endfor %}
     <tr class="add_puzzle_row">
       <td class="puzzle_name">
-        <input type="text" name="title" />
+        <input type="text" name="title" id="new-puzzle-title" autocomplete="off"/>
       </td>
       {% for family in families %}
         <td class="tag_{{ family.key.name }}">
@@ -72,7 +83,7 @@
     </tr>
   </table>
 
-  <input type="submit" value="add puzzle" class="add_puzzle" />
+  <input type="submit" value="add puzzle" class="add_puzzle" id="new-puzzle-add" />
 </form>
 
 {% endblock content %}
