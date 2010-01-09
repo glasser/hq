@@ -118,7 +118,7 @@ body.puzzle #newsfeeds { display: none; }
 #edit-tag-editor        {align: center}
 .family-editor          {margin: 0 0 0 10px}
 
-.toggle-edit-link { font-size: x-small; }
+.toggle-edit-link, .petite { font-size: x-small; }
 
 #spreadsheets {width: 72%;}
 
