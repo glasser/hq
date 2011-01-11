@@ -1,4 +1,4 @@
-application: battlestarelectronica-hq
+application: battlestarelectronica-cic
 version: 1
 runtime: python
 api_version: 1
