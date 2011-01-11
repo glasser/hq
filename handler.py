@@ -7,9 +7,9 @@ from google.appengine.ext import webapp
 import my_template
 import model
 
-INSTANCE_NAME = 'R2-DISCO'
-APPS_DOMAIN = 'r2disco.org'  # For spreadsheets, etc
-GROUP_ACL = 'r2disco@googlegroups.com'
+INSTANCE_NAME = 'Battlestar Electronica'
+APPS_DOMAIN = 'battlestarelectronica.org'  # For spreadsheets, etc
+GROUP_ACL = 'battlestar-electronica@googlegroups.com'
 
 port = os.environ['SERVER_PORT']
 if port and port != '80':
