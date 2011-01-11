@@ -244,6 +244,7 @@ class CommentPrioritizeHandler(handler.RequestHandler):
     self.redirect(PuzzleHandler.get_url(puzzle.key().id()))
 
 
+# TODO(glasser): Figure out if we can now DESTROY THIS COMPLETELY.
 # From gdata/samples/blogger/app/blogapp.py
 def get_auth_token(request):
   """Retrieves the AuthSub token for the current user.
