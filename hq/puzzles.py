@@ -308,7 +308,13 @@ class GetAccessTokenHandler(handler.RequestHandler):
     client = gdata.docs.client.DocsClient()
     access_token = client.GetAccessToken(request_token)
     gdata.gauth.AeSave(access_token, AccessTokenKey())
-    self.redirect(PuzzleHandler.get_url(puzzle_id))
+    self.redirect(LogOutAfterTokensHandler.get_url(puzzle_id))
+
+
+class LogOutAfterTokensHandler(handler.RequestHandler):
+  def get(self, puzzle_id):
+    self.redirect(users.create_logout_url(
+        dest_url=PuzzleHandler.get_url(puzzle_id)))
 
 
 class AclWithKey(atom.core.XmlElement):
@@ -466,5 +472,6 @@ HANDLERS = [
     ('/log-out-for-tokens/(\\d+)', LogOutForTokensHandler),
     ('/get-oauth-token/(\\d+)', GetOAuthTokenHandler),
     ('/get-access-token/(\\d+)', GetAccessTokenHandler),
+    ('/log-out-after-tokens/(\\d+)', LogOutAfterTokensHandler),
     ('/?', TopPageHandler),
 ]
