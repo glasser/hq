@@ -87,7 +87,7 @@
             src="http://spreadsheets.google.com/ccc?key={{ spreadsheet.spreadsheet_key|urlencode }}&amp;output=html&amp;authkey={{ spreadsheet.auth_key|urlencode }}"></iframe>
     <br/>
     <a href="http://spreadsheets.google.com/ccc?key={{ spreadsheet.spreadsheet_key|urlencode }}&amp;authkey={{ spreadsheet.auth_key|urlencode }}"
-       >Edit the spreadsheet.</a>
+       >Edit the spreadsheet</a> (this link may work even if the link in the frame does not)
     <br/>
   {% endfor %}
 
@@ -96,6 +96,7 @@
         <input type="text" name="title" autocomplete="off" />
         <input type="submit" value="add spreadsheet" />
       </form>
+      <p><a href="{{ logout_url }}">Log out (switch spreadsheet creation user)</a></p>
     {% else %}
       <p><a href="{% url GetOAuthTokenHandler puzzle.key.id %}">Enable
           spreadsheet creation</a></p>
