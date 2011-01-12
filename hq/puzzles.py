@@ -3,8 +3,8 @@ import random
 import re
 import StringIO
 
-import model
-import handler
+from hq import model
+from hq import handler
 
 from google.appengine.api import users
 from google.appengine.ext import db

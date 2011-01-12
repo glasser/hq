@@ -7,8 +7,8 @@ import os
 from google.appengine.api import memcache
 from google.appengine.ext import webapp
 
-import my_template
-import model
+from hq import my_template
+from hq import model
 
 INSTANCE_NAME = 'Battlestar Electronica'
 APPS_DOMAIN = 'battlestarelectronica.org'  # For spreadsheets, etc
@@ -107,7 +107,7 @@ class RequestHandler(webapp.RequestHandler):
                                 include_custom_css=True,
                                 include_rendered_banners=True,
                                 include_rendered_newsfeeds=True):
-    path = os.path.join(os.path.dirname(__file__), 'templates',
+    path = os.path.join(os.path.dirname(__file__), '..', 'templates',
                         '%s.html' % template_name)
     params['instance_name'] = INSTANCE_NAME
     if include_custom_css:

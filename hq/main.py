@@ -4,8 +4,8 @@ import wsgiref.handlers
 
 from google.appengine.ext import webapp
 
-import admin
-import puzzles
+from hq import admin
+from hq import puzzles
 
 def main():
   application = webapp.WSGIApplication(

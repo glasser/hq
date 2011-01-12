@@ -1,6 +1,6 @@
 #!/usr/bin/env python2.5
-import model
-import handler
+from hq import model
+from hq import handler
 
 from google.appengine.api import memcache
 
