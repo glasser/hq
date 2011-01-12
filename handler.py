@@ -4,6 +4,7 @@ import base64
 import logging
 import os
 
+from google.appengine.api import memcache
 from google.appengine.ext import webapp
 
 import my_template
@@ -112,8 +113,32 @@ class RequestHandler(webapp.RequestHandler):
     if include_custom_css:
       params['custom_css'] = model.Css.get_custom_css()
     if include_rendered_banners:
-      params['rendered_banners'] = model.Banner.get_rendered()
+      params['rendered_banners'] = cls.render_banners()
     if include_rendered_newsfeeds:
-      params['rendered_newsfeeds'] = model.Newsfeed.get_rendered()
+      params['rendered_newsfeeds'] = cls.render_newsfeeds()
     params['header_links'] = model.HeaderLink.all().order('created')
     return my_template.render(path, params)
+
+  @classmethod
+  def render_banners(cls):
+    rendered = memcache.get(model.Banner.MEMCACHE_KEY)
+    if rendered is not None:
+      return rendered
+    banners = model.Banner.all().order('-created')
+    rendered = cls.render_template_to_string('banners', {
+      'banners': banners,
+    }, include_rendered_banners=False, include_rendered_newsfeeds=False)
+    memcache.set(model.Banner.MEMCACHE_KEY, rendered)
+    return rendered
+
+  @classmethod
+  def render_newsfeeds(cls):
+    rendered = memcache.get(model.Newsfeed.MEMCACHE_KEY)
+    if rendered is not None:
+      return rendered
+    newsfeeds = model.Newsfeed.all().order('-created')
+    rendered = cls.render_template_to_string('newsfeeds', {
+      'newsfeeds': newsfeeds.fetch(15),
+    }, include_rendered_banners=False, include_rendered_newsfeeds=False)
+    memcache.set(model.Newsfeed.MEMCACHE_KEY, rendered)
+    return rendered

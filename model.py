@@ -7,8 +7,6 @@ from google.appengine.api import datastore
 from google.appengine.api import memcache
 from google.appengine.ext import db
 
-import handler
-
 # Temporary workaround for an upstream bug where ListPropertys are
 # only validated at set time (ie, mutation isn't detected).
 # TODO(glasser): See if upstream patch is accepted and released.
@@ -453,18 +451,6 @@ class Banner(db.Model):
     is enough to differentiate days."""
     return datetime_display(self.created)
 
-  @classmethod
-  def get_rendered(cls):
-    rendered = memcache.get(cls.MEMCACHE_KEY)
-    if rendered is not None:
-      return rendered
-    banners = cls.all().order('-created')
-    rendered = handler.RequestHandler.render_template_to_string('banners', {
-      'banners': banners,
-    }, include_rendered_banners=False, include_rendered_newsfeeds=False)
-    memcache.set(cls.MEMCACHE_KEY, rendered)
-    return rendered
-
 
 class Newsfeed(db.Model):
   contents = db.TextProperty()
@@ -485,19 +471,6 @@ class Newsfeed(db.Model):
     is Mystery Hunt, so we can assume Eastern time, and the weekday name
     is enough to differentiate days."""
     return datetime_display_short(self.created)
-
-  @classmethod
-  def get_rendered(cls):
-    rendered = memcache.get(cls.MEMCACHE_KEY)
-    if rendered is not None:
-      return rendered
-    newsfeeds = cls.all().order("-created")
-    rendered = handler.RequestHandler.render_template_to_string('newsfeeds', {
-      'newsfeeds': newsfeeds.fetch(15),
-    }, include_rendered_banners=False, include_rendered_newsfeeds=False)
-    memcache.set(cls.MEMCACHE_KEY, rendered)
-    return rendered
-
 
 
 # Don't manipulate elements of this class directly: just use
