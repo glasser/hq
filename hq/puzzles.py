@@ -36,19 +36,16 @@ GDATA_SETTINGS = {
 }
 
 
-def RequestTokenKey(user):
-  return 'RequestToken' + user.user_id()
+def RequestTokenKey():
+  return 'RequestToken'
 
 
-def AccessTokenKey(user):
-  return 'AccessToken' + user.user_id()
+def AccessTokenKey():
+  return 'AccessToken'
 
 
 def LoadAccessToken():
-  user = users.get_current_user()
-  if user is None:
-    return None
-  access_token = gdata.gauth.AeLoad(AccessTokenKey(user))
+  access_token = gdata.gauth.AeLoad(AccessTokenKey())
   if isinstance(access_token, gdata.gauth.OAuthHmacToken):
     return access_token
   return None
@@ -82,7 +79,6 @@ class PuzzleHandler(handler.RequestHandler):
       "comments": comments,
       "families": families,
       "has_access_token": LoadAccessToken() is not None,
-      "logout_url": users.create_logout_url(self.get_url(key_id)),
     })
 
 
@@ -281,32 +277,27 @@ class CommentPrioritizeHandler(handler.RequestHandler):
     self.redirect(PuzzleHandler.get_url(puzzle.key().id()))
 
 
+class LogOutForTokensHandler(handler.RequestHandler):
+  def get(self, puzzle_id):
+    self.redirect(users.create_logout_url(
+        dest_url=GetOAuthTokenHandler.get_url(puzzle_id)))
+
+
 class GetOAuthTokenHandler(handler.RequestHandler):
   def get(self, puzzle_id):
-    user = users.get_current_user()
-    if user is None:
-      self.redirect(users.create_login_url(
-          dest_url=GetOAuthTokenHandler.get_url(puzzle_id)))
-      return
     callback_url = ('http://' + GDATA_SETTINGS['CONSUMER_KEY']
                     + GetAccessTokenHandler.get_url(puzzle_id))
     client = gdata.docs.client.DocsClient()
     request_token = client.GetOAuthToken(
       GDATA_SETTINGS['SCOPES'], callback_url, GDATA_SETTINGS['CONSUMER_KEY'],
       GDATA_SETTINGS['CONSUMER_SECRET'])
-    gdata.gauth.AeSave(request_token, RequestTokenKey(user))
+    gdata.gauth.AeSave(request_token, RequestTokenKey())
     self.redirect(str(request_token.generate_authorization_url()))
 
 
 class GetAccessTokenHandler(handler.RequestHandler):
   def get(self, puzzle_id):
-    user = users.get_current_user()
-    if user is None:
-      # Go back to the first step
-      self.redirect(users.create_login_url(
-          dest_url=GetOAuthToken.get_url(puzzle_id)))
-      return
-    request_token = gdata.gauth.AeLoad(RequestTokenKey(user))
+    request_token = gdata.gauth.AeLoad(RequestTokenKey())
     request_token.token = self.request.get('oauth_token')
     assert request_token.token != ''
     request_token.verifier = self.request.get('oauth_verifier')
@@ -314,7 +305,7 @@ class GetAccessTokenHandler(handler.RequestHandler):
     request_token.auth_state = gdata.gauth.AUTHORIZED_REQUEST_TOKEN
     client = gdata.docs.client.DocsClient()
     access_token = client.GetAccessToken(request_token)
-    gdata.gauth.AeSave(access_token, AccessTokenKey(user))
+    gdata.gauth.AeSave(access_token, AccessTokenKey())
     self.redirect(PuzzleHandler.get_url(puzzle_id))
 
 
@@ -470,6 +461,7 @@ HANDLERS = [
     ('/puzzles/add-image/(\\d+)/?', ImageUploadHandler),
     ('/puzzles/delete-image/(\\d+)/?', ImageDeleteHandler),
     ('/change-user/?', UserChangeHandler),
+    ('/log-out-for-tokens/(\\d+)', LogOutForTokensHandler),
     ('/get-oauth-token/(\\d+)', GetOAuthTokenHandler),
     ('/get-access-token/(\\d+)', GetAccessTokenHandler),
     ('/?', TopPageHandler),

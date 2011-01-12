@@ -96,10 +96,11 @@
         <input type="text" name="title" autocomplete="off" />
         <input type="submit" value="add spreadsheet" />
       </form>
-      <p><a href="{{ logout_url }}">Log out (switch spreadsheet creation user)</a></p>
     {% else %}
-      <p><a href="{% url GetOAuthTokenHandler puzzle.key.id %}">Enable
-          spreadsheet creation</a></p>
+      <p>Spreadsheet creation is disabled. Search your email for the username
+        and password of the magic spreadsheet account (search
+        for <q>mdhfanllackjdsf</q>) and <a
+           href="{% url LogOutForTokensHandler puzzle.key.id %}">click here</a></p>
     {% endif %}
 </div>
 
