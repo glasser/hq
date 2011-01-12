@@ -14,7 +14,6 @@ import atom.core
 import bzrlib.merge3
 from django.utils import html
 import gdata.acl.data
-import gdata.auth
 import gdata.docs.client
 import gdata.docs.data
 import gdata.gauth
@@ -30,7 +29,6 @@ GDATA_SETTINGS = {
   'APP_NAME': 'battlestarelectronica-cic',
   'CONSUMER_KEY': 'cic.battlestarelectronica.org',
   'CONSUMER_SECRET': LoadConsumerSecret(),
-  'SIG_METHOD': gdata.auth.OAuthSignatureMethod.HMAC_SHA1,
   'SCOPES': (gdata.docs.client.DocsClient.auth_scopes +
              gdata.spreadsheets.client.SpreadsheetsClient.auth_scopes),
 }
