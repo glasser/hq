@@ -84,9 +84,9 @@
 
   {% for spreadsheet in puzzle.spreadsheet_set %}
     <iframe width='80%' height='250' frameborder='1'
-            src="http://spreadsheets.google.com/ccc?key={{ spreadsheet.spreadsheet_key|urlencode }}&amp;output=html"></iframe>
+            src="http://spreadsheets.google.com/ccc?key={{ spreadsheet.spreadsheet_key|urlencode }}&amp;output=html&amp;authkey={{ spreadsheet.auth_key|urlencode }}"></iframe>
     <br/>
-    <a href="http://spreadsheets.google.com/ccc?key={{ spreadsheet.spreadsheet_key|urlencode }}"
+    <a href="http://spreadsheets.google.com/ccc?key={{ spreadsheet.spreadsheet_key|urlencode }}&amp;authkey={{ spreadsheet.auth_key|urlencode }}"
        >Edit the spreadsheet.</a>
     <br/>
   {% endfor %}

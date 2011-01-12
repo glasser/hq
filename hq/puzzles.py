@@ -343,8 +343,11 @@ class SpreadsheetAddHandler(handler.RequestHandler):
     acl_entry.category.append(atom.data.Category(
       scheme=gdata.docs.data.DATA_KIND_SCHEME,
       term="http://schemas.google.com/acl/2007#accessRule"))
-    client.post(acl_entry, doc.get_acl_feed_link().href, auth_token=auth_token)
-    sheet = model.Spreadsheet(puzzle=puzzle, spreadsheet_key=doc_key)
+    acl_from_server = client.post(
+      acl_entry, doc.get_acl_feed_link().href, auth_token=auth_token)
+    auth_key = acl_from_server.with_key.key
+    sheet = model.Spreadsheet(puzzle=puzzle, spreadsheet_key=doc_key,
+                              auth_key=auth_key)
     sheet.put()
     self.redirect(PuzzleHandler.get_url(puzzle_id))
 

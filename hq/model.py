@@ -377,6 +377,7 @@ def datetime_display_short(dt):
 class Spreadsheet(db.Model):
   puzzle = db.ReferenceProperty(reference_class=Puzzle, required=True)
   spreadsheet_key = db.StringProperty(required=True)
+  auth_key = db.StringProperty(required=True)
 
 
 class Related(db.Model):
