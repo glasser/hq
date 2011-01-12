@@ -32,6 +32,7 @@ h3.newsfeed_header     {text-align: center;}
          border: 1px #000 solid;
          background-color: #9EC5A9;
          overflow-y: scroll;
+         color: black;
         }
 
 .banner_edit_link   {margin: 5px;
@@ -56,6 +57,7 @@ h3.newsfeed_header     {text-align: center;}
            padding: 5px;
            border: 1px #000 solid;
            background-color: #9EC5A9;
+           color: black;
            float: right}
 
 .newsfeed_list    {padding: 0 0 0 12px;
@@ -72,10 +74,10 @@ h3.newsfeed_header     {text-align: center;}
 
 .puzzle_table   {width: 72%;
                 border-spacing: 0;
-                border: 1px #000 solid;
+                border: 1px white solid;
                 margin: 0px 5px 5px 5px;
                 padding: 5px;
-                background-color: #C1FFC1}
+                background-color: black;}
 
 tr.add_puzzle_row td input {
     width: 100%;
@@ -88,8 +90,8 @@ table td  {padding: 3px 6px;
 
 /**** Priority color handling ****/
 
-tr.puzzle_display_0  { background-color: #F3F4EA; }
-tr.puzzle_display_1  { background-color: #CCCCCC; }
+tr.puzzle_display_0  { background-color: #111111; }
+tr.puzzle_display_1  { background-color: #222222; }
 
 /******** Puzzle Page formatting ******/
 
@@ -102,20 +104,26 @@ tr.puzzle_display_1  { background-color: #CCCCCC; }
 #tag-list     {width: 100%;
               padding: 5px;
               border: 1px #000 solid;
-              background-color: #C1FFC1;}
+              background-color: #C1FFC1;
+              color: black;
+}
 
 #metadata-list {width: 100%;
               margin: 10px 0 0 0;
               padding: 5px;
               border: 1px #000 solid;
-              background-color: #C1FFC1;}
+              background-color: #C1FFC1;
+              color: black;
+}
 
 body.puzzle #newsfeeds { display: none; }
 
 #tags_and_meta #puzzle_newsfeeds {width: 100%;
                                 margin: 10px 0 0 0;padding: 5px;
                                 border: 1px #000 solid;
-                                background-color: #9EC5A9;}
+                                background-color: #9EC5A9;
+                                 color:black;
+}
 
 #edit-tag-editor        {align: center}
 .family-editor          {margin: 0 0 0 10px}
@@ -129,7 +137,9 @@ body.puzzle #newsfeeds { display: none; }
                 border: 1px #000 solid;
                 margin: 0px 5px 5px 5px;
                 padding: 5px;
-                background-color: #EEDFCC}
+                background-color: #EEDFCC;
+                color: black;
+             }
 
 #comments h4  {text-align: center;}
 
