@@ -279,6 +279,8 @@ class CommentPrioritizeHandler(handler.RequestHandler):
 
 class LogOutForTokensHandler(handler.RequestHandler):
   def get(self, puzzle_id):
+    gdata.gauth.AeDelete(RequestTokenKey())
+    gdata.gauth.AeDelete(AccessTokenKey())
     self.redirect(users.create_logout_url(
         dest_url=GetOAuthTokenHandler.get_url(puzzle_id)))
 
