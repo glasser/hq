@@ -125,7 +125,7 @@ options.register(
 options.register(
     'password',
     'Please enter the password for your test account',
-    secret=True, description='The test accounts password.')
+    secret=True, description='The test account password.')
 options.register(
     'clearcache',
     'Delete cached data? (enter true or false)',
@@ -150,6 +150,16 @@ options.register(
     'Run the live tests over SSL (enter true or false)',
     description='If set to true, all tests will be performed over HTTPS (SSL)',
     default='false')
+options.register(
+    'appsusername',
+    'Please enter the email address of your test Apps domain account', 
+    description=('The email address you want to sign in with. '
+                 'Make sure this is a test account on your Apps domain as '
+                 'these tests may edit or delete data.'))
+options.register(
+    'appspassword',
+    'Please enter the password for your test Apps domain account',
+    secret=True, description='The test Apps account password.')
 
 # Other options which may be used if needed.
 BLOG_ID_OPTION = Option(
@@ -167,11 +177,11 @@ SPREADSHEET_ID_OPTION = Option(
     'Please enter the ID of a spreadsheet to use in these tests',
     description=('The spreadsheet ID for the spreadsheet which should be'
                  ' modified by theses tests.'))
-SITES_DOMAIN_OPTION = Option(
-    'sitedomain',
-    'Please enter the domain of your Google Apps hosted Site',
-    description=('The domain the Site is hosted on or leave blank if n/a'),
-    default='site')
+APPS_DOMAIN_OPTION = Option(
+    'appsdomain',
+    'Please enter your Google Apps domain',
+    description=('The domain the Google Apps is hosted on or leave blank'
+                 ' if n/a'))
 SITES_NAME_OPTION = Option(
     'sitename',
     'Please enter name of your Google Site',
@@ -191,9 +201,27 @@ GA_TABLE_ID = Option(
     'Enter the Table ID of the Google Analytics profile to test',
     description=('The Table ID of the Google Analytics profile to test.'
                  ' Example ga:1174'))
+TARGET_USERNAME_OPTION = Option(
+    'targetusername',
+    'Please enter the username (without domain) of the user which will be'
+    ' affected by the tests',
+    description=('The username of the user to be tested'))
+YT_DEVELOPER_KEY_OPTION = Option(
+    'developerkey',
+    'Please enter your YouTube developer key',
+    description=('The YouTube developer key for your account'))
+YT_CLIENT_ID_OPTION = Option(
+    'clientid',
+    'Please enter your YouTube client ID',
+    description=('The YouTube client ID for your account'))
+YT_VIDEO_ID_OPTION= Option(
+    'videoid',
+    'Please enter the ID of a YouTube video you uploaded',
+    description=('The video ID of a YouTube video uploaded to your account'))
+
 
 # Functions to inject a cachable HTTP client into a service client.
-def configure_client(client, case_name, service_name):
+def configure_client(client, case_name, service_name, use_apps_auth=False):
   """Sets up a mock client which will reuse a saved session.
 
   Should be called during setUp of each unit test.
@@ -212,8 +240,11 @@ def configure_client(client, case_name, service_name):
                should be reused if and only if the same username, password,
                and service are being used.
     service_name: str The service name as used for ClientLogin to identify
-               the Google Data API being accessed. Example: 'blogger',
-               'wise', etc.
+                  the Google Data API being accessed. Example: 'blogger',
+                  'wise', etc.
+    use_apps_auth: bool (optional) If set to True, use appsusername and
+                   appspassword command-line args instead of username and
+                   password respectively.
   """
   # Use a mock HTTP client which will record and replay the HTTP traffic
   # from these tests.
@@ -229,8 +260,13 @@ def configure_client(client, case_name, service_name):
     if options.get_value('clearcache') == 'true':
       client.http_client.delete_session(cache_name)
     client.http_client.use_cached_session(cache_name)
-    auth_token = client.request_client_login_token(
-        options.get_value('username'), options.get_value('password'),
+    if not use_apps_auth:
+      username = options.get_value('username')
+      password = options.get_value('password')
+    else:
+      username = options.get_value('appsusername')
+      password = options.get_value('appspassword')
+    auth_token = client.request_client_login_token(username, password,
         case_name, service=service_name)
     options.values[auth_token_key] = gdata.gauth.token_to_blob(auth_token)
     client.http_client.close_session()
@@ -373,3 +409,13 @@ def check_data_classes(test, classes):
         except TypeError:
           test.fail('Element %s in %s was of type %s' % (
               attribute_name, data_class._qname, type(value)))
+
+
+def check_clients_with_auth(test, classes):
+  for client_class in classes:
+    test.assert_(hasattr(client_class, 'api_version'))
+    test.assert_(isinstance(client_class.auth_service, (str, unicode, int)))
+    test.assert_(hasattr(client_class, 'auth_service'))
+    test.assert_(isinstance(client_class.auth_service, (str, unicode)))
+    test.assert_(hasattr(client_class, 'auth_scopes'))
+    test.assert_(isinstance(client_class.auth_scopes, (list, tuple)))

@@ -155,7 +155,7 @@ class WorksheetEntry(gdata.data.GDEntry):
 
 class WorksheetsFeed(gdata.data.GDFeed):
   """A feed containing the worksheets in a single spreadsheet."""
-  entry = [Worksheet]
+  entry = [WorksheetEntry]
 
 
 class Table(gdata.data.GDEntry):
@@ -207,6 +207,11 @@ class Record(gdata.data.GDEntry):
     raise FieldMissing('There is no field for %s' % name)
 
   ValueForName = value_for_name
+
+  def get_record_id(self):
+    if self.id.text:
+      return self.id.text.split('/')[-1]
+    return None
 
 
 class RecordsFeed(gdata.data.GDFeed):

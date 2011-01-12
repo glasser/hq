@@ -16,6 +16,7 @@
 
 import atom.data
 import gdata.client
+import gdata.gauth
 import gdata.projecthosting.data
 
 
@@ -23,7 +24,8 @@ class ProjectHostingClient(gdata.client.GDClient):
   """Client to interact with the Project Hosting GData API."""
   api_version = '1.0'
   auth_service = 'code'
-  auth_scopes = ['http://code.google.com/feeds/issues']
+  auth_scopes = gdata.gauth.AUTH_SCOPES['code']
+  host = 'code.google.com'
 
   def get_issues(self, project_name,
                  desired_class=gdata.projecthosting.data.IssuesFeed, **kwargs):
@@ -36,7 +38,7 @@ class ProjectHostingClient(gdata.client.GDClient):
     Returns:
       data.IssuesFeed
     """
-    return self.get_feed(gdata.projecthosting.data.ISSUES_FULL_URL %
+    return self.get_feed(gdata.projecthosting.data.ISSUES_FULL_FEED %
                          project_name, desired_class=desired_class, **kwargs)
 
   def add_issue(self, project_name, title, content, author,
@@ -78,7 +80,7 @@ class ProjectHostingClient(gdata.client.GDClient):
 
     return self.post(
         new_entry,
-        gdata.projecthosting.data.ISSUES_FULL_URL % project_name,
+        gdata.projecthosting.data.ISSUES_FULL_FEED % project_name,
         **kwargs)
 
   def update_issue(self, project_name, issue_id, author, comment=None,
@@ -126,7 +128,7 @@ class ProjectHostingClient(gdata.client.GDClient):
 
     return self.post(
         update_entry,
-        gdata.projecthosting.data.COMMENTS_FULL_URL % (project_name, issue_id),
+        gdata.projecthosting.data.COMMENTS_FULL_FEED % (project_name, issue_id),
         **kwargs)
 
   def get_comments(self, project_name, issue_id,
@@ -142,7 +144,7 @@ class ProjectHostingClient(gdata.client.GDClient):
       data.CommentsFeed
     """
     return self.get_feed(
-        gdata.projecthosting.data.COMMENTS_FULL_URL % (project_name, issue_id),
+        gdata.projecthosting.data.COMMENTS_FULL_FEED % (project_name, issue_id),
         desired_class=desired_class, **kwargs)
 
   def update(self, entry, auth_token=None, force=False, **kwargs):

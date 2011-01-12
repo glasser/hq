@@ -79,6 +79,7 @@ import atom
 import atom.http_interface
 import atom.token_store
 import gdata.auth
+import gdata.gauth
 
 
 AUTH_SERVER_HOST = 'https://www.google.com'
@@ -96,52 +97,7 @@ SCOPE_URL_PARAM_NAME = 'authsub_token_scope'
 # default name (AKA key) for the URL parameter.
 OAUTH_SCOPE_URL_PARAM_NAME = 'oauth_token_scope'
 # Maps the service names used in ClientLogin to scope URLs.
-CLIENT_LOGIN_SCOPES = {
-    'cl': [ # Google Calendar
-        'https://www.google.com/calendar/feeds/',
-        'http://www.google.com/calendar/feeds/'],
-    'gbase': [ # Google Base
-        'http://base.google.com/base/feeds/',
-        'http://www.google.com/base/feeds/'], 
-    'blogger': [ # Blogger
-        'http://www.blogger.com/feeds/'], 
-    'codesearch': [ # Google Code Search
-        'http://www.google.com/codesearch/feeds/'],
-    'cp': [ # Contacts API
-        'https://www.google.com/m8/feeds/',
-        'http://www.google.com/m8/feeds/'],
-    'finance': [ # Google Finance
-        'http://finance.google.com/finance/feeds/'],
-    'health': [ # Google Health
-        'https://www.google.com/health/feeds/'],
-    'writely': [ # Documents List API
-        'https://docs.google.com/feeds/',
-        'http://docs.google.com/feeds/'],
-    'lh2': [ # Picasa Web Albums
-        'http://picasaweb.google.com/data/'],
-    'apps': [ # Google Apps Provisioning API
-        'http://www.google.com/a/feeds/',
-        'https://www.google.com/a/feeds/',
-        'http://apps-apis.google.com/a/feeds/',
-        'https://apps-apis.google.com/a/feeds/'],
-    'weaver': [ # Health H9 Sandbox
-        'https://www.google.com/h9/feeds/'],
-    'wise': [ # Spreadsheets Data API
-        'https://spreadsheets.google.com/feeds/',
-        'http://spreadsheets.google.com/feeds/'],
-    'sitemaps': [ # Google Webmaster Tools
-        'https://www.google.com/webmasters/tools/feeds/'],
-    'youtube': [ # YouTube
-        'http://gdata.youtube.com/feeds/api/',
-        'http://uploads.gdata.youtube.com/feeds/api',
-        'http://gdata.youtube.com/action/GetUploadToken'],
-    'books': [ # Google Books
-        'http://www.google.com/books/feeds/'],
-    'analytics': [ # Google Analytics
-        'https://www.google.com/analytics/feeds/'],
-    'jotspot': [ # Google Sites
-        'http://sites.google.com/feeds/',
-        'https://sites.google.com/feeds/']}
+CLIENT_LOGIN_SCOPES = gdata.gauth.AUTH_SCOPES
 # Default parameters for GDataService.GetWithRetries method
 DEFAULT_NUM_RETRIES = 3
 DEFAULT_DELAY = 1
@@ -354,6 +310,29 @@ class GDataService(atom.service.AtomService):
 
   captcha_url = property(__GetCaptchaURL,
       doc="""Get the captcha URL for a login request.""")
+
+  def GetGeneratorFromLinkFinder(self, link_finder, func, 
+                                 num_retries=DEFAULT_NUM_RETRIES,
+                                 delay=DEFAULT_DELAY,
+                                 backoff=DEFAULT_BACKOFF):
+    """returns a generator for pagination"""
+    yield link_finder
+    next = link_finder.GetNextLink()
+    while next is not None:
+      next_feed = func(str(self.GetWithRetries(
+            next.href, num_retries=num_retries, delay=delay, backoff=backoff)))
+      yield next_feed
+      next = next_feed.GetNextLink()
+
+  def _GetElementGeneratorFromLinkFinder(self, link_finder, func,
+                                        num_retries=DEFAULT_NUM_RETRIES,
+                                        delay=DEFAULT_DELAY,
+                                        backoff=DEFAULT_BACKOFF):
+    for element in self.GetGeneratorFromLinkFinder(link_finder, func,
+                                                   num_retries=num_retries,
+                                                   delay=delay,
+                                                   backoff=backoff).entry:
+      yield element
 
   def GetOAuthInputParameters(self):
     return self._oauth_input_params
@@ -973,19 +952,19 @@ class GDataService(atom.service.AtomService):
   def GetWithRetries(self, uri, extra_headers=None, redirects_remaining=4, 
       encoding='UTF-8', converter=None, num_retries=DEFAULT_NUM_RETRIES,
       delay=DEFAULT_DELAY, backoff=DEFAULT_BACKOFF, logger=None):
-    """This is a wrapper method for Get with retring capability.
+    """This is a wrapper method for Get with retrying capability.
 
-    To avoid various errors while retrieving bulk entities by retring
+    To avoid various errors while retrieving bulk entities by retrying
     specified times.
 
     Note this method relies on the time module and so may not be usable
     by default in Python2.2.
 
     Args:
-      num_retries: integer The retry count.
-      delay: integer The initial delay for retring.
-      backoff: integer how much the delay should lengthen after each failure.
-      logger: an object which has a debug(str) method to receive logging
+      num_retries: Integer; the retry count.
+      delay: Integer; the initial delay for retrying.
+      backoff: Integer; how much the delay should lengthen after each failure.
+      logger: An object which has a debug(str) method to receive logging
               messages. Recommended that you pass in the logging module.
     Raises:
       ValueError if any of the parameters has an invalid value.
@@ -1010,25 +989,30 @@ class GDataService(atom.service.AtomService):
     while mtries > 0:
       if mtries != num_retries:
         if logger:
-          logger.debug("Retrying...")
+          logger.debug("Retrying: %s" % uri)
       try:
         rv = self.Get(uri, extra_headers=extra_headers,
                       redirects_remaining=redirects_remaining,
                       encoding=encoding, converter=converter)
-      except (SystemExit, RequestError):
-        # Allow these errors
+      except SystemExit:
+        # Allow this error
         raise
+      except RequestError, e:
+        # Error 500 is 'internal server error' and warrants a retry
+        # Error 503 is 'service unavailable' and warrants a retry
+        if e[0]['status'] not in [500, 503]:
+          raise e
+        # Else, fall through to the retry code...
       except Exception, e:
         if logger:
           logger.debug(e)
-        mtries -= 1
-        time.sleep(mdelay)
-        mdelay *= backoff
+        # Fall through to the retry code...
       else:
         # This is the right path.
-        if logger:
-          logger.debug("Succeeeded...")
         return rv
+      mtries -= 1
+      time.sleep(mdelay)
+      mdelay *= backoff
     raise RanOutOfTries('Ran out of tries.')
 
   # CRUD operations
@@ -1331,8 +1315,9 @@ class GDataService(atom.service.AtomService):
 
     else:
       http_data = data
-      content_type = 'application/atom+xml'
-      extra_headers['Content-Type'] = content_type
+      if 'Content-Type' not in extra_headers:
+        content_type = 'application/atom+xml'
+        extra_headers['Content-Type'] = content_type
       server_response = self.request(verb, uri, data=http_data,
           headers=extra_headers, url_params=url_params)
       result_body = server_response.read()

@@ -26,26 +26,28 @@ __author__ = 'j.s@google.com (Jeff Scudder)'
 
 
 import gdata.client
+import gdata.gauth
 import gdata.spreadsheets.data
 import atom.data
 import atom.http_core
 
 
-SPREADSHEETS_URL = ('http://spreadsheets.google.com/feeds/spreadsheets'
+SPREADSHEETS_URL = ('https://spreadsheets.google.com/feeds/spreadsheets'
                     '/private/full')
-WORKSHEETS_URL = ('http://spreadsheets.google.com/feeds/worksheets/'
+WORKSHEETS_URL = ('https://spreadsheets.google.com/feeds/worksheets/'
                   '%s/private/full')
-WORKSHEET_URL = ('http://spreadsheets.google.com/feeds/worksheets/'
+WORKSHEET_URL = ('https://spreadsheets.google.com/feeds/worksheets/'
                  '%s/private/full/%s')
-TABLES_URL = 'http://spreadsheets.google.com/feeds/%s/tables'
-RECORDS_URL = 'http://spreadsheets.google.com/feeds/%s/records/%s'
+TABLES_URL = 'https://spreadsheets.google.com/feeds/%s/tables'
+RECORDS_URL = 'https://spreadsheets.google.com/feeds/%s/records/%s'
+RECORD_URL = 'https://spreadsheets.google.com/feeds/%s/records/%s/%s'
 
 
 class SpreadsheetsClient(gdata.client.GDClient):
   api_version = '3'
-  auth_serice = 'wise'
-  auth_scopes = ['https://spreadsheets.google.com/feeds/',
-                 'http://spreadsheets.google.com/feeds/']
+  auth_service = 'wise'
+  auth_scopes = gdata.gauth.AUTH_SCOPES['wise']
+  ssl = True
 
   def get_spreadsheets(self, auth_token=None,
                        desired_class=gdata.spreadsheets.data.SpreadsheetsFeed,
@@ -299,6 +301,41 @@ class SpreadsheetsClient(gdata.client.GDClient):
                          **kwargs)
 
   GetRecords = get_records
+
+  def get_record(self, spreadsheet_key, table_id, record_id,
+                 desired_class=gdata.spreadsheets.data.Record,
+                 auth_token=None, **kwargs):
+    """Retrieves a single record from the table.
+
+    Args:
+      spreadsheet_key: str, The unique ID of this containing spreadsheet. This
+                       can be the ID from the URL or as provided in a
+                       Spreadsheet entry.
+      table_id: str, The ID of the table within the worksheet whose records
+                we would like to fetch. The table ID can be found using the
+                get_table_id method of a gdata.spreadsheets.data.Table.
+      record_id: str, The ID of the record within this table which we want to
+                 fetch. You can find the record ID using get_record_id() on
+                 an instance of the gdata.spreadsheets.data.Record class.
+      desired_class: class descended from atom.core.XmlElement to which a
+                     successful response should be converted. If there is no
+                     converter function specified (converter=None) then the
+                     desired_class will be used in calling the
+                     atom.core.parse function. If neither
+                     the desired_class nor the converter is specified, an
+                     HTTP reponse object will be returned. Defaults to
+                     gdata.spreadsheets.data.RecordsFeed.
+      auth_token: An object which sets the Authorization HTTP header in its
+                  modify_request method. Recommended classes include
+                  gdata.gauth.ClientLoginToken and gdata.gauth.AuthSubToken
+                  among others. Represents the current user. Defaults to None
+                  and if None, this method will look for a value in the
+                  auth_token member of SpreadsheetsClient."""
+    return self.get_entry(RECORD_URL % (spreadsheet_key, table_id, record_id),
+                          desired_class=desired_class, auth_token=auth_token,
+                          **kwargs)
+
+  GetRecord = get_record
 
 
 class SpreadsheetQuery(gdata.client.Query):

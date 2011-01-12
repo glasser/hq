@@ -22,6 +22,7 @@ __author__ = 'j.s@google.com (Jeff Scudder)'
 
 
 import re
+import urlparse
 import atom.core
 import gdata.data
 
@@ -34,6 +35,8 @@ BLOG_ID_PATTERN = re.compile('(tag:blogger.com,1999:blog-)(\w*)')
 BLOG_ID2_PATTERN = re.compile('tag:blogger.com,1999:user-(\d+)\.blog-(\d+)')
 POST_ID_PATTERN = re.compile(
     '(tag:blogger.com,1999:blog-)(\w*)(.post-)(\w*)')
+PAGE_ID_PATTERN = re.compile(
+    '(tag:blogger.com,1999:blog-)(\w*)(.page-)(\w*)')
 COMMENT_ID_PATTERN = re.compile('.*-(\w*)$')
 
 
@@ -72,7 +75,7 @@ class BloggerEntry(gdata.data.GDEntry):
     """
     for link in self.link:
       if link.rel == 'alternate':
-        return BLOG_NAME_PATTERN.match(link.href).group(2)
+        return urlparse.urlparse(link.href)[1].split(".", 1)[0]
     return None
 
   GetBlogName = get_blog_name
@@ -116,6 +119,25 @@ class BlogPost(BloggerEntry):
 
 class BlogPostFeed(gdata.data.GDFeed):
   entry = [BlogPost]
+
+
+class BlogPage(BloggerEntry):
+  """Represents a single page on a blog."""
+
+  def get_page_id(self):
+    """Extracts the pageID string from entry's Atom id.
+
+    Returns: A string of digits which identify this post within the blog.
+    """
+    if self.id.text:
+      return PAGE_ID_PATTERN.match(self.id.text).group(4)
+    return None
+
+  GetPageId = get_page_id
+
+
+class BlogPageFeed(gdata.data.GDFeed):
+  entry = [BlogPage]
 
 
 class InReplyTo(atom.core.XmlElement):

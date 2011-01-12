@@ -25,6 +25,7 @@ import atom.data
 import atom.http_core
 import gdata.client
 import gdata.docs.data
+import gdata.gauth
 
 
 # Feed URI templates
@@ -40,8 +41,8 @@ class DocsClient(gdata.client.GDClient):
   host = 'docs.google.com'  # default server for the API
   api_version = '3.0'  # default major version for the service.
   auth_service = 'writely'
-  auth_scopes = ['http://docs.google.com/feeds/',
-                 'https://docs.google.com/feeds/']
+  auth_scopes = gdata.gauth.AUTH_SCOPES['writely']
+  ssl = True
 
   def __init__(self, auth_token=None, **kwargs):
     """Constructs a new client for the DocList API.
@@ -132,7 +133,7 @@ class DocsClient(gdata.client.GDClient):
 
     if isinstance(uri, (str, unicode)):
       uri = atom.http_core.Uri.parse_uri(uri)    
-    
+
     # Add max-results param if it wasn't included in the uri.
     if limit is not None and not 'max-results' in uri.query:
       uri.query['max-results'] = limit
@@ -142,7 +143,8 @@ class DocsClient(gdata.client.GDClient):
 
   GetDocList = get_doclist
 
-  def get_doc(self, resource_id, etag=None, auth_token=None, **kwargs):
+  def get_doc(self, resource_id, etag=None, auth_token=None, uri=None,
+              **kwargs):
     """Retrieves a particular document given by its resource id.
 
     Args:
@@ -153,6 +155,8 @@ class DocsClient(gdata.client.GDClient):
           developers_guide_protocol.html#RetrievingCached.
       auth_token: (optional) gdata.gauth.ClientLoginToken, AuthSubToken, or
           OAuthToken which authorizes this client to edit the user's data.
+      uri: (optional) URI to use for this request.  Translates to uri +
+          resource_id.
       kwargs: Other parameters to pass to self.get_entry().
 
     Returns:
@@ -164,8 +168,10 @@ class DocsClient(gdata.client.GDClient):
     match = gdata.docs.data.RESOURCE_ID_PATTERN.match(resource_id)
     if match is None:
       raise ValueError, 'Invalid resource id: %s' % resource_id
+    if uri is None:
+      uri = DOCLIST_FEED_URI
     return self.get_entry(
-        DOCLIST_FEED_URI + resource_id, etag=etag,
+        uri + resource_id, etag=etag,
         desired_class=gdata.docs.data.DocsEntry,
         auth_token=auth_token, **kwargs)
 
@@ -202,7 +208,8 @@ class DocsClient(gdata.client.GDClient):
 
   GetEverything = get_everything
 
-  def get_acl_permissions(self, resource_id, auth_token=None, **kwargs):
+  def get_acl_permissions(self, resource_id, auth_token=None, uri=None,
+                          **kwargs):
     """Retrieves a the ACL sharing permissions for a document.
 
     Args:
@@ -210,6 +217,8 @@ class DocsClient(gdata.client.GDClient):
           'pdf%3A0A1234567890'.
       auth_token: (optional) gdata.gauth.ClientLoginToken, AuthSubToken, or
           OAuthToken which authorizes this client to edit the user's data.
+      uri: (optional) URI to use when making this request.  Must be a template,
+          with a %s for where to put the resource_id.
       kwargs: Other parameters to pass to self.get_feed().
 
     Returns:
@@ -221,14 +230,16 @@ class DocsClient(gdata.client.GDClient):
     match = gdata.docs.data.RESOURCE_ID_PATTERN.match(resource_id)
     if match is None:
       raise ValueError, 'Invalid resource id: %s' % resource_id
+    if uri is None:
+      uri = ACL_FEED_TEMPLATE
 
     return self.get_feed(
-        ACL_FEED_TEMPLATE % resource_id, desired_class=gdata.docs.data.AclFeed,
+        uri % resource_id, desired_class=gdata.docs.data.AclFeed,
         auth_token=auth_token, **kwargs)
 
   GetAclPermissions = get_acl_permissions
 
-  def get_revisions(self, resource_id, auth_token=None, **kwargs):
+  def get_revisions(self, resource_id, auth_token=None, uri=None, **kwargs):
     """Retrieves the revision history for a document.
 
     Args:
@@ -236,6 +247,8 @@ class DocsClient(gdata.client.GDClient):
           'pdf%3A0A1234567890'.
       auth_token: (optional) gdata.gauth.ClientLoginToken, AuthSubToken, or
           OAuthToken which authorizes this client to edit the user's data.
+      uri: (optional) URI to use when making this request.  Must be a template,
+          with a %s for where to put the resource_id.
       kwargs: Other parameters to pass to self.get_feed().
 
     Returns:
@@ -247,29 +260,33 @@ class DocsClient(gdata.client.GDClient):
     match = gdata.docs.data.RESOURCE_ID_PATTERN.match(resource_id)
     if match is None:
       raise ValueError, 'Invalid resource id: %s' % resource_id
+    if uri is None:
+      uri = REVISIONS_FEED_TEMPLATE
 
     return self.get_feed(
-        REVISIONS_FEED_TEMPLATE % resource_id,
+        uri % resource_id,
         desired_class=gdata.docs.data.RevisionFeed, auth_token=auth_token,
         **kwargs)
 
   GetRevisions = get_revisions
 
   def create(self, doc_type, title, folder_or_id=None, writers_can_invite=None,
-             auth_token=None, **kwargs):
+             auth_token=None, uri=None, **kwargs):
     """Creates a new item in the user's doclist.
 
     Args:
       doc_type: str The type of object to create. For example: 'document',
           'spreadsheet', 'folder', 'presentation'.
       title: str A title for the document.
-      folder_or_id: DocsEntry or str (optional) Folder entry or the resouce id
-          of a folder to create the object under. Note: A valid resouce id for a
-          folder is of the form: folder%3Afolder_id.
+      folder_or_id: gdata.docs.data.DocsEntry or str (optional) Folder entry or
+          the resouce id of a folder to create the object under. Note: A valid
+          resource id for a folder is of the form: folder%3Afolder_id.
       writers_can_invite: bool (optional) False prevents collaborators from
           being able to invite others to edit or view the document.
       auth_token: (optional) gdata.gauth.ClientLoginToken, AuthSubToken, or
           OAuthToken which authorizes this client to edit the user's data.
+      uri: (optional) URI to use when making this request.  Must be a template,
+          with a %s for where to put the resource_id.
       kwargs: Other parameters to pass to self.post().
 
     Returns:
@@ -284,7 +301,8 @@ class DocsClient(gdata.client.GDClient):
       entry.writers_can_invite = gdata.docs.data.WritersCanInvite(
           value=str(writers_can_invite).lower())
 
-    uri = DOCLIST_FEED_URI
+    if uri is None:
+      uri = DOCLIST_FEED_URI
 
     if folder_or_id is not None:
       if isinstance(folder_or_id, gdata.docs.data.DocsEntry):
@@ -300,8 +318,36 @@ class DocsClient(gdata.client.GDClient):
 
   Create = create
 
+  def copy(self, source_entry, title, auth_token=None, uri=None, **kwargs):
+    """Copies a native Google document, spreadsheet, or presentation.
+
+    Note: arbitrary file types and PDFs do not support this feature.
+
+    Args:
+      source_entry: gdata.docs.data.DocsEntry An object representing the source
+          document/folder.
+      title: str A title for the new document.
+      auth_token: (optional) gdata.gauth.ClientLoginToken, AuthSubToken, or
+          OAuthToken which authorizes this client to edit the user's data.
+      uri: (optional) URI to use when making this request.  Must be a template,
+          with a %s for where to put the resource_id.
+      kwargs: Other parameters to pass to self.post().
+
+    Returns:
+      A gdata.docs.data.DocsEntry of the duplicated document.
+    """
+    entry = gdata.docs.data.DocsEntry(
+        title=atom.data.Title(text=title),
+        id=atom.data.Id(text=source_entry.GetSelfLink().href))
+    if uri is None:
+      uri = DOCLIST_FEED_URI
+    return self.post(entry, uri, auth_token=auth_token, **kwargs)
+
+  Copy = copy
+
   def move(self, source_entry, folder_entry=None,
-           keep_in_folders=False, auth_token=None, **kwargs):
+           keep_in_folders=False, auth_token=None, delete_folder_uri=None,
+           folder_uri=None, **kwargs):
     """Moves an item into a different folder (or to the root document list).
 
     Args:
@@ -314,6 +360,10 @@ class DocsClient(gdata.client.GDClient):
           is not removed from any existing parent folders it is in.
       auth_token: (optional) gdata.gauth.ClientLoginToken, AuthSubToken, or
           OAuthToken which authorizes this client to edit the user's data.
+      delete_folder_uri: (optional) URI to use when making this request.  Must
+          be a template, with a %s for where to put the resource_id.
+      folder_uri: (optional) URI to use when making this request.  Must be a
+          template, with a %s for where to put the resource_id.
       kwargs: Other parameters to pass to self.post().
 
     Returns:
@@ -324,16 +374,25 @@ class DocsClient(gdata.client.GDClient):
 
     # Remove the item from any folders it is already in.
     if not keep_in_folders:
+      construct_uri = False
+      if delete_folder_uri is None:
+        construct_uri = True
       for folder in source_entry.InFolders():
-        self.delete(
-            '%s/contents/%s' % (folder.href, source_entry.resource_id.text),
-            force=True)
+        if construct_uri:
+          uri = '%s/contents/%s' % (
+              folder.href,
+              urllib.quote(source_entry.resource_id.text))
+        else:
+          uri = delete_folder_uri % urllib.quote(source_entry.resource_id.text)
+
+        self.delete(uri, force=True)
 
     # If we're moving the resource into a folder, verify it is a folder entry.
     if folder_entry is not None:
       if folder_entry.get_document_type() == gdata.docs.data.FOLDER_LABEL:
-        return self.post(entry, folder_entry.content.src,
-                         auth_token=auth_token, **kwargs)
+        if folder_uri is None:
+          folder_uri = folder_entry.content.src
+        return self.post(entry, folder_uri, auth_token=auth_token, **kwargs)
       else:
         raise gdata.client.Error, 'Trying to move item into a non-folder.'
 
@@ -350,7 +409,7 @@ class DocsClient(gdata.client.GDClient):
           uploaded or a string of the filepath.
       title: str The title of the document on the server after being
           uploaded.
-      folder_or_uri: gdata.docs.data.DocList or str (optional) An object with
+      folder_or_uri: gdata.docs.data.DocsEntry or str (optional) An object with
           a link to the folder or the uri to upload the file to.
           Note: A valid uri for a folder is of the form:
                 /feeds/default/private/full/folder%3Afolder_id/contents
@@ -485,9 +544,9 @@ class DocsQuery(gdata.client.Query):
                opened_max=None, edited_min=None, edited_max=None, owner=None,
                writer=None, reader=None, show_folders=None,
                show_deleted=None, ocr=None, target_language=None,
-               source_language=None, **kwargs):
+               source_language=None, convert=None, **kwargs):
     """Constructs a query URL for the Google Documents List  API.
-    
+
     Args:
       title: str (optional) Specifies the search terms for the title of a
              document. This parameter used without title_exact will only
@@ -537,8 +596,13 @@ class DocsQuery(gdata.client.Query):
                        auto-detect the source language. See Document
                        Translation in the Protocol Guide for a table of
                        possible values (link in target_language).
+      convert: str (optional) Used when uploading arbitrary file types to
+               specity if document-type uploads should convert to a native
+               Google Docs format. Possible values are 'true' and 'false'.
+               The default is 'true'.
     """
     gdata.client.Query.__init__(self, **kwargs)
+    self.convert = convert
     self.title = title
     self.title_exact = title_exact
     self.opened_min = opened_min
@@ -555,6 +619,7 @@ class DocsQuery(gdata.client.Query):
     self.source_language = source_language
 
   def modify_request(self, http_request):
+    gdata.client._add_query_param('convert', self.convert, http_request)
     gdata.client._add_query_param('title', self.title, http_request)
     gdata.client._add_query_param('title-exact', self.title_exact,
                                   http_request)

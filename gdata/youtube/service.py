@@ -43,7 +43,7 @@ YOUTUBE_SERVER = 'gdata.youtube.com'
 YOUTUBE_SERVICE = 'youtube'
 YOUTUBE_CLIENTLOGIN_AUTHENTICATION_URL = 'https://www.google.com/youtube/accounts/ClientLogin'
 YOUTUBE_SUPPORTED_UPLOAD_TYPES = ('mov', 'avi', 'wmv', 'mpg', 'quicktime',
-                                  'flv')
+                                  'flv', 'mp4', 'x-flv')
 YOUTUBE_QUERY_VALID_TIME_PARAMETERS = ('today', 'this_week', 'this_month',
                                        'all_time')
 YOUTUBE_QUERY_VALID_ORDERBY_PARAMETERS = ('published', 'viewCount', 'rating',
@@ -155,16 +155,16 @@ class YouTubeService(gdata.service.GDataService):
       **kwargs: The other parameters to pass to gdata.service.GDataService
           constructor.
     """
-    if developer_key and not client_id:
-      raise YouTubeError('You must also specify the clientId')
 
     gdata.service.GDataService.__init__(
         self, email=email, password=password, service=YOUTUBE_SERVICE,
         source=source, server=server, additional_headers=additional_headers,
         **kwargs)
 
-    if client_id is not None and developer_key is not None:
+    if client_id is not None:
       self.additional_headers['X-Gdata-Client'] = client_id
+
+    if developer_key is not None:
       self.additional_headers['X-GData-Key'] = 'key=%s' % developer_key
 
     self.auth_service_url = YOUTUBE_CLIENTLOGIN_AUTHENTICATION_URL
@@ -614,15 +614,15 @@ class YouTubeService(gdata.service.GDataService):
           'body':'`video_entry` must be a gdata.youtube.VideoEntry instance',
           'reason':'Found %s, not VideoEntry' % type(video_entry)
           })
-    majtype, mintype = content_type.split('/')
-
-    try:
-      assert(mintype in YOUTUBE_SUPPORTED_UPLOAD_TYPES)
-    except (ValueError, AssertionError):
-      raise YouTubeError({'status':YOUTUBE_INVALID_CONTENT_TYPE,
-          'body':'This is not a valid content type: %s' % content_type,
-          'reason':'Accepted content types: %s' %
-              ['video/%s' % (t) for t in YOUTUBE_SUPPORTED_UPLOAD_TYPES]})
+    #majtype, mintype = content_type.split('/')
+    #
+    #try:
+    #  assert(mintype in YOUTUBE_SUPPORTED_UPLOAD_TYPES)
+    #except (ValueError, AssertionError):
+    #  raise YouTubeError({'status':YOUTUBE_INVALID_CONTENT_TYPE,
+    #      'body':'This is not a valid content type: %s' % content_type,
+    #      'reason':'Accepted content types: %s' %
+    #          ['video/%s' % (t) for t in YOUTUBE_SUPPORTED_UPLOAD_TYPES]})
 
     if (isinstance(filename_or_handle, (str, unicode)) 
         and os.path.exists(filename_or_handle)):
@@ -632,7 +632,7 @@ class YouTubeService(gdata.service.GDataService):
       import StringIO
       if hasattr(filename_or_handle, 'seek'):
         filename_or_handle.seek(0)
-      file_handle = StringIO.StringIO(filename_or_handle.read())
+      file_handle = filename_or_handle
       name = 'video'
       if hasattr(filename_or_handle, 'name'):
         name = filename_or_handle.name
@@ -1301,7 +1301,7 @@ class YouTubeService(gdata.service.GDataService):
     self.additional_headers['X-Gdata-Client'] = client_id
 
   client_id = property(_GetClientId, _SetClientId,
-                         doc="""The ClientId property""")
+                       doc="""The ClientId property""")
 
   def Query(self, uri):
     """Performs a query and returns a resulting feed or entry.
@@ -1339,12 +1339,12 @@ class YouTubeService(gdata.service.GDataService):
                                      'body': HTTP body of the server response})
     """
     result = self.Query(query.ToUri())
-    if isinstance(query, YouTubeVideoQuery):
-      return gdata.youtube.YouTubeVideoFeedFromString(result.ToString())
-    elif isinstance(query, YouTubeUserQuery):
+    if isinstance(query, YouTubeUserQuery):
       return gdata.youtube.YouTubeUserFeedFromString(result.ToString())
     elif isinstance(query, YouTubePlaylistQuery):
       return gdata.youtube.YouTubePlaylistFeedFromString(result.ToString())
+    elif isinstance(query, YouTubeVideoQuery):
+      return gdata.youtube.YouTubeVideoFeedFromString(result.ToString())
     else:
       return result
 
@@ -1383,17 +1383,20 @@ class YouTubeVideoQuery(gdata.service.Query):
     location: A string of geo coordinates. Note that this is not used when the
         search is performed but rather to filter the returned videos for ones
         that match to the location entered.
+    feed: str (optional) The base URL which is the beginning of the query URL.
+          defaults to 'http://%s/feeds/videos' % (YOUTUBE_SERVER)
   """
 
   def __init__(self, video_id=None, feed_type=None, text_query=None,
-               params=None, categories=None):
+               params=None, categories=None, feed=None):
 
-    if feed_type in YOUTUBE_STANDARDFEEDS:
+    if feed_type in YOUTUBE_STANDARDFEEDS and feed is None:
       feed = 'http://%s/feeds/standardfeeds/%s' % (YOUTUBE_SERVER, feed_type)
-    elif feed_type is 'responses' or feed_type is 'comments' and video_id:
+    elif (feed_type is 'responses' or feed_type is 'comments' and video_id
+          and feed is None):
       feed = 'http://%s/feeds/videos/%s/%s' % (YOUTUBE_SERVER, video_id,
                                                feed_type)
-    else:
+    elif feed is None:
       feed = 'http://%s/feeds/videos' % (YOUTUBE_SERVER)
 
     gdata.service.Query.__init__(self, feed, text_query=text_query,
@@ -1536,7 +1539,7 @@ class YouTubeUserQuery(YouTubeVideoQuery):
     else:
       feed = "http://%s/feeds/users" % (YOUTUBE_SERVER)
 
-    YouTubeVideoQuery.__init__(self, feed, text_query=text_query,
+    YouTubeVideoQuery.__init__(self, feed=feed, text_query=text_query,
                                params=params, categories=categories)
 
 
@@ -1556,5 +1559,5 @@ class YouTubePlaylistQuery(YouTubeVideoQuery):
     else:
       feed = "http://%s/feeds/playlists" % (YOUTUBE_SERVER)
 
-    YouTubeVideoQuery.__init__(self, feed, text_query=text_query,
+    YouTubeVideoQuery.__init__(self, feed=feed, text_query=text_query,
                                params=params, categories=categories)

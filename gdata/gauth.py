@@ -28,6 +28,8 @@ AuthSubToken
 SecureAuthSubToken
 OAuthHmacToken
 OAuthRsaToken
+TwoLeggedOAuthHmacToken
+TwoLeggedOAuthRsaToken
 
 Functions which are often used in application code (as opposed to just within
 the gdata-python-client library) are the following:
@@ -55,6 +57,61 @@ __author__ = 'j.s@google.com (Jeff Scudder)'
 
 PROGRAMMATIC_AUTH_LABEL = 'GoogleLogin auth='
 AUTHSUB_AUTH_LABEL = 'AuthSub token='
+
+
+# This dict provides the AuthSub and OAuth scopes for all services by service
+# name. The service name (key) is used in ClientLogin requests.
+AUTH_SCOPES = {
+    'cl': ( # Google Calendar API
+        'https://www.google.com/calendar/feeds/',
+        'http://www.google.com/calendar/feeds/'),
+    'gbase': ( # Google Base API
+        'http://base.google.com/base/feeds/',
+        'http://www.google.com/base/feeds/'),
+    'blogger': ( # Blogger API
+        'http://www.blogger.com/feeds/',),
+    'codesearch': ( # Google Code Search API
+        'http://www.google.com/codesearch/feeds/',),
+    'cp': ( # Contacts API
+        'https://www.google.com/m8/feeds/',
+        'http://www.google.com/m8/feeds/'),
+    'finance': ( # Google Finance API
+        'http://finance.google.com/finance/feeds/',),
+    'health': ( # Google Health API
+        'https://www.google.com/health/feeds/',),
+    'writely': ( # Documents List API
+        'https://docs.google.com/feeds/',
+        'http://docs.google.com/feeds/'),
+    'lh2': ( # Picasa Web Albums API
+        'http://picasaweb.google.com/data/',),
+    'apps': ( # Google Apps Provisioning API
+        'http://www.google.com/a/feeds/',
+        'https://www.google.com/a/feeds/',
+        'http://apps-apis.google.com/a/feeds/',
+        'https://apps-apis.google.com/a/feeds/'),
+    'weaver': ( # Health H9 Sandbox
+        'https://www.google.com/h9/feeds/',),
+    'wise': ( # Spreadsheets Data API
+        'https://spreadsheets.google.com/feeds/',
+        'http://spreadsheets.google.com/feeds/'),
+    'sitemaps': ( # Google Webmaster Tools API
+        'https://www.google.com/webmasters/tools/feeds/',),
+    'youtube': ( # YouTube API
+        'http://gdata.youtube.com/feeds/api/',
+        'http://uploads.gdata.youtube.com/feeds/api',
+        'http://gdata.youtube.com/action/GetUploadToken'),
+    'books': ( # Google Books API
+        'http://www.google.com/books/feeds/',),
+    'analytics': ( # Google Analytics API
+        'https://www.google.com/analytics/feeds/',),
+    'jotspot': ( # Google Sites API
+        'http://sites.google.com/feeds/',
+        'https://sites.google.com/feeds/'),
+    'local': ( # Google Maps Data API
+        'http://maps.google.com/maps/feeds/',),
+    'code': ( # Project Hosting Data API
+        'http://code.google.com/feeds/issues',)}
+
 
 
 class Error(Exception):
@@ -389,7 +446,11 @@ def generate_signature(data, rsa_key):
     from gdata.tlslite.utils import keyfactory
   private_key = keyfactory.parsePrivateKey(rsa_key)
   signed = private_key.hashAndSign(data)
-  return base64.b64encode(signed)
+  # Python2.3 and lower does not have the base64.b64encode function.
+  if hasattr(base64, 'b64encode'):
+    return base64.b64encode(signed)
+  else:
+    return base64.encodestring(signed).replace('\n', '')
 
 
 class SecureAuthSubToken(AuthSubToken):
@@ -491,7 +552,13 @@ def build_oauth_base_string(http_request, consumer_key, nonce, signaure_type,
   if verifier is not None:
     params['oauth_verifier'] = verifier
   # We need to get the key value pairs in lexigraphically sorted order.
-  sorted_keys = sorted(params.keys())
+  sorted_keys = None
+  try:
+    sorted_keys = sorted(params.keys())
+  # The sorted function is not available in Python2.3 and lower
+  except NameError:
+    sorted_keys = params.keys()
+    sorted_keys.sort()
   pairs = []
   for key in sorted_keys:
     pairs.append('%s=%s' % (urllib.quote(key, safe='~'),
@@ -548,7 +615,11 @@ def generate_hmac_signature(http_request, consumer_key, consumer_secret,
   except ImportError:
     import sha
     hashed = hmac.new(hash_key, base_string, sha)
-  return base64.b64encode(hashed.digest())
+  # Python2.3 does not have base64.b64encode.
+  if hasattr(base64, 'b64encode'):
+    return base64.b64encode(hashed.digest())
+  else:
+    return base64.encodestring(hashed.digest()).replace('\n', '')
 
 
 def generate_rsa_signature(http_request, consumer_key, rsa_key,
@@ -565,7 +636,11 @@ def generate_rsa_signature(http_request, consumer_key, rsa_key,
   private_key = keyfactory.parsePrivateKey(rsa_key)
   # Sign using the key
   signed = private_key.hashAndSign(base_string)
-  return base64.b64encode(signed)
+  # Python2.3 does not have base64.b64encode.
+  if hasattr(base64, 'b64encode'):
+    return base64.b64encode(signed)
+  else:
+    return base64.encodestring(signed).replace('\n', '')
 
 
 def generate_auth_header(consumer_key, timestamp, nonce, signature_type,
@@ -950,6 +1025,54 @@ class OAuthRsaToken(OAuthHmacToken):
   ModifyRequest = modify_request
 
 
+class TwoLeggedOAuthHmacToken(OAuthHmacToken):
+
+  def __init__(self, consumer_key, consumer_secret, requestor_id):
+    self.requestor_id = requestor_id
+    OAuthHmacToken.__init__(
+        self, consumer_key, consumer_secret, None, None, ACCESS_TOKEN,
+        next=None, verifier=None)
+
+  def modify_request(self, http_request):
+    """Sets the Authorization header in the HTTP request using the token.
+
+    Calculates an HMAC signature using the information in the token to
+    indicate that the request came from this application and that this
+    application has permission to access a particular user's data using 2LO.
+
+    Returns:
+      The same HTTP request object which was passed in.
+    """
+    http_request.uri.query['xoauth_requestor_id'] = self.requestor_id
+    return OAuthHmacToken.modify_request(self, http_request)
+
+  ModifyRequest = modify_request
+
+
+class TwoLeggedOAuthRsaToken(OAuthRsaToken):
+
+  def __init__(self, consumer_key, rsa_private_key, requestor_id):
+    self.requestor_id = requestor_id
+    OAuthRsaToken.__init__(
+        self, consumer_key, rsa_private_key, None, None, ACCESS_TOKEN,
+        next=None, verifier=None)
+
+  def modify_request(self, http_request):
+    """Sets the Authorization header in the HTTP request using the token.
+
+    Calculates an RSA signature using the information in the token to
+    indicate that the request came from this application and that this
+    application has permission to access a particular user's data using 2LO.
+
+    Returns:
+      The same HTTP request object which was passed in.
+    """
+    http_request.uri.query['xoauth_requestor_id'] = self.requestor_id
+    return OAuthRsaToken.modify_request(self, http_request)
+
+  ModifyRequest = modify_request
+
+
 def _join_token_parts(*args):
   """"Escapes and combines all strings passed in.
 
@@ -986,7 +1109,8 @@ def token_to_blob(token):
   """Serializes the token data as a string for storage in a datastore.
 
   Supported token classes: ClientLoginToken, AuthSubToken, SecureAuthSubToken,
-  OAuthRsaToken, and OAuthHmacToken.
+  OAuthRsaToken, and OAuthHmacToken, TwoLeggedOAuthRsaToken,
+  TwoLeggedOAuthHmacToken.
 
   Args:
     token: A token object which must be of one of the supported token classes.
@@ -1010,6 +1134,12 @@ def token_to_blob(token):
                              *token.scopes)
   elif isinstance(token, AuthSubToken):
     return _join_token_parts('1a', token.token_string, *token.scopes)
+  elif isinstance(token, TwoLeggedOAuthRsaToken):
+    return _join_token_parts(
+        '1rtl', token.consumer_key, token.rsa_private_key, token.requestor_id)
+  elif isinstance(token, TwoLeggedOAuthHmacToken):
+    return _join_token_parts(
+        '1htl', token.consumer_key, token.consumer_secret, token.requestor_id)
   # Check RSA OAuth token first since the OAuthRsaToken is a subclass of
   # OAuthHmacToken.
   elif isinstance(token, OAuthRsaToken):
@@ -1034,7 +1164,8 @@ def token_from_blob(blob):
   """Deserializes a token string from the datastore back into a token object.
 
   Supported token classes: ClientLoginToken, AuthSubToken, SecureAuthSubToken,
-  OAuthRsaToken, and OAuthHmacToken.
+  OAuthRsaToken, and OAuthHmacToken, TwoLeggedOAuthRsaToken,
+  TwoLeggedOAuthHmacToken.
 
   Args:
     blob: string created by token_to_blob.
@@ -1055,6 +1186,10 @@ def token_from_blob(blob):
     return AuthSubToken(parts[1], parts[2:])
   elif parts[0] == '1s':
     return SecureAuthSubToken(parts[1], parts[2], parts[3:])
+  elif parts[0] == '1rtl':
+    return TwoLeggedOAuthRsaToken(parts[1], parts[2], parts[3])
+  elif parts[0] == '1htl':
+    return TwoLeggedOAuthHmacToken(parts[1], parts[2], parts[3])
   elif parts[0] == '1r':
     auth_state = int(parts[5])
     return OAuthRsaToken(parts[1], parts[2], parts[3], parts[4], auth_state,
@@ -1079,9 +1214,37 @@ def load_tokens(blob):
   return [token_from_blob(s) for s in blob.split(',')]
 
 
+def find_scopes_for_services(service_names=None):
+  """Creates a combined list of scope URLs for the desired services.
+
+  This method searches the AUTH_SCOPES dictionary.
+  
+  Args:
+    service_names: list of strings (optional) Each name must be a key in the
+                   AUTH_SCOPES dictionary. If no list is provided (None) then
+                   the resulting list will contain all scope URLs in the
+                   AUTH_SCOPES dict.
+
+  Returns:
+    A list of URL strings which are the scopes needed to access these services
+    when requesting a token using AuthSub or OAuth.
+  """
+  result_scopes = []
+  if service_names is None:
+    for service_name, scopes in AUTH_SCOPES.iteritems():
+      result_scopes.extend(scopes)
+  else:
+    for service_name in service_names:
+      result_scopes.extend(AUTH_SCOPES[service_name])
+  return result_scopes
+
+
+FindScopesForServices = find_scopes_for_services
+
+
 def ae_save(token, token_key):
   """Stores an auth token in the App Engine datastore.
-  
+
   This is a convenience method for using the library with App Engine.
   Recommended usage is to associate the auth token with the current_user.
   If a user is signed in to the app using the App Engine users API, you
@@ -1109,7 +1272,7 @@ AeSave = ae_save
 
 def ae_load(token_key):
   """Retrieves a token object from the App Engine datastore.
-  
+
   This is a convenience method for using the library with App Engine.
   See also ae_save.
 

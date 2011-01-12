@@ -1616,18 +1616,18 @@ DOCUMENT_LIST_FEED = """<?xml version='1.0' encoding='UTF-8'?>
 <ns0:feed xmlns:ns0="http://www.w3.org/2005/Atom" xmlns:ns2="http://schemas.google.com/g/2005" xmlns:ns3="http://schemas.google.com/docs/2007"><ns1:totalResults
 xmlns:ns1="http://a9.com/-/spec/opensearchrss/1.0/">2</ns1:totalResults><ns1:startIndex
 xmlns:ns1="http://a9.com/-/spec/opensearchrss/1.0/">1</ns1:startIndex><ns0:entry><ns0:content
-src="http://foo.com/fm?fmcmd=102&amp;key=supercalifragilisticexpeadocious"
+src="https://foo.com/fm?fmcmd=102&amp;key=supercalifragilisticexpeadocious"
 type="text/html"
 /><ns0:author><ns0:name>test.user</ns0:name><ns0:email>test.user@gmail.com</ns0:email></ns0:author><ns0:category
 label="spreadsheet" scheme="http://schemas.google.com/g/2005#kind"
 term="http://schemas.google.com/docs/2007#spreadsheet"
-/><ns0:id>http://docs.google.com/feeds/documents/private/full/spreadsheet%3Asupercalifragilisticexpeadocious</ns0:id><ns0:link
-href="http://foo.com/ccc?key=supercalifragilisticexpeadocious" rel="alternate"
+/><ns0:id>https://docs.google.com/feeds/documents/private/full/spreadsheet%3Asupercalifragilisticexpeadocious</ns0:id><ns0:link
+href="https://foo.com/ccc?key=supercalifragilisticexpeadocious" rel="alternate"
 type="text/html" /><ns0:link
-href="http://foo.com/feeds/worksheets/supercalifragilisticexpeadocious/private/full"
+href="https://foo.com/feeds/worksheets/supercalifragilisticexpeadocious/private/full"
 rel="http://schemas.google.com/spreadsheets/2006#worksheetsfeed"
 type="application/atom+xml" /><ns0:link
-href="http://docs.google.com/feeds/documents/private/full/spreadsheet%3Asupercalifragilisticexpeadocious"
+href="https://docs.google.com/feeds/documents/private/full/spreadsheet%3Asupercalifragilisticexpeadocious"
 rel="self" type="application/atom+xml" /><ns0:title type="text">Test Spreadsheet</ns0:title><ns0:updated>2007-07-03T18:03:32.045Z</ns0:updated>
 <ns2:feedLink href="http://docs.google.com/feeds/acl/private/full/spreadsheet%3Afoofoofoo" rel="http://schemas.google.com/acl/2007#accessControlList"/>
 <ns2:resourceId>document:dfrkj84g_3348jbxpxcd</ns2:resourceId>
@@ -1670,17 +1670,17 @@ test.user@gmail.com</ns0:title><ns0:updated>2007-07-09T23:07:21.898Z</ns0:update
 
 DOCUMENT_LIST_ENTRY = """<?xml version='1.0' encoding='UTF-8'?>
 <ns0:entry xmlns:ns0="http://www.w3.org/2005/Atom" xmlns:ns1="http://schemas.google.com/g/2005" xmlns:ns2="http://schemas.google.com/docs/2007"><ns0:content
-src="http://foo.com/fm?fmcmd=102&amp;key=supercalifragilisticexpealidocious" type="text/html"/>
+src="https://foo.com/fm?fmcmd=102&amp;key=supercalifragilisticexpealidocious" type="text/html"/>
 <ns0:author><ns0:name>test.user</ns0:name><ns0:email>test.user@gmail.com</ns0:email></ns0:author>
 <ns0:category label="spreadsheet" scheme="http://schemas.google.com/g/2005#kind"
 term="http://schemas.google.com/docs/2007#spreadsheet"
-/><ns0:id>http://docs.google.com/feeds/documents/private/full/spreadsheet%3Asupercalifragilisticexpealidocious</ns0:id>
-<ns0:link href="http://foo.com/ccc?key=supercalifragilisticexpealidocious"
+/><ns0:id>https://docs.google.com/feeds/documents/private/full/spreadsheet%3Asupercalifragilisticexpealidocious</ns0:id>
+<ns0:link href="https://foo.com/ccc?key=supercalifragilisticexpealidocious"
 rel="alternate" type="text/html" /><ns0:link
-href="http://foo.com/feeds/worksheets/supercalifragilisticexpealidocious/private/full"
+href="https://foo.com/feeds/worksheets/supercalifragilisticexpealidocious/private/full"
 rel="http://schemas.google.com/spreadsheets/2006#worksheetsfeed"
 type="application/atom+xml" /><ns0:link
-href="http://docs.google.com/feeds/documents/private/full/spreadsheet%3Asupercalifragilisticexpealidocious"
+href="https://docs.google.com/feeds/documents/private/full/spreadsheet%3Asupercalifragilisticexpealidocious"
 rel="self" type="application/atom+xml" />
 <ns0:title type="text">Test Spreadsheet</ns0:title><ns0:updated>2007-07-03T18:03:32.045Z</ns0:updated>
 <ns1:resourceId>spreadsheet:supercalifragilisticexpealidocious</ns1:resourceId>
@@ -1695,17 +1695,17 @@ rel="self" type="application/atom+xml" />
 
 DOCUMENT_LIST_ENTRY_V3 = """<?xml version='1.0' encoding='UTF-8'?>
 <ns0:entry xmlns:ns0="http://www.w3.org/2005/Atom" xmlns:ns1="http://schemas.google.com/g/2005" xmlns:ns2="http://schemas.google.com/docs/2007"><ns0:content
-src="http://foo.com/fm?fmcmd=102&amp;key=supercalifragilisticexpealidocious" type="text/html"/>
+src="https://foo.com/fm?fmcmd=102&amp;key=supercalifragilisticexpealidocious" type="text/html"/>
 <ns0:author><ns0:name>test.user</ns0:name><ns0:email>test.user@gmail.com</ns0:email></ns0:author>
 <ns0:category label="spreadsheet" scheme="http://schemas.google.com/g/2005#kind"
 term="http://schemas.google.com/docs/2007#spreadsheet"
-/><ns0:id>http://docs.google.com/feeds/documents/private/full/spreadsheet%3Asupercalifragilisticexpealidocious</ns0:id>
-<ns0:link href="http://foo.com/ccc?key=supercalifragilisticexpealidocious"
+/><ns0:id>https://docs.google.com/feeds/documents/private/full/spreadsheet%3Asupercalifragilisticexpealidocious</ns0:id>
+<ns0:link href="https://foo.com/ccc?key=supercalifragilisticexpealidocious"
 rel="alternate" type="text/html" /><ns0:link
-href="http://foo.com/feeds/worksheets/supercalifragilisticexpealidocious/private/full"
+href="https://foo.com/feeds/worksheets/supercalifragilisticexpealidocious/private/full"
 rel="http://schemas.google.com/spreadsheets/2006#worksheetsfeed"
 type="application/atom+xml" /><ns0:link
-href="http://docs.google.com/feeds/documents/private/full/spreadsheet%3Asupercalifragilisticexpealidocious"
+href="https://docs.google.com/feeds/documents/private/full/spreadsheet%3Asupercalifragilisticexpealidocious"
 rel="self" type="application/atom+xml" />
 <ns0:link rel="http://schemas.google.com/docs/2007#parent" type="application/atom+xml"
 href="http://docs.google.com/feeds/default/private/full/folder%3A12345" title="AFolderName" />
@@ -1718,8 +1718,8 @@ href="http://docs.google.com/feeds/default/private/full/folder%3A12345" title="A
 <ns1:lastViewed>2009-03-05T07:48:21.493Z</ns1:lastViewed>
 <ns2:writersCanInvite value='true'/>
 <ns1:quotaBytesUsed>1000</ns1:quotaBytesUsed>
-<ns1:feedLink rel="http://schemas.google.com/acl/2007#accessControlList" href="http://docs.google.com/feeds/default/private/full/spreadsheet%3Asupercalifragilisticexpealidocious/acl" />
-<ns1:feedLink rel="http://schemas.google.com/docs/2007/revisions" href="http://docs.google.com/feeds/default/private/full/spreadsheet%3Asupercalifragilisticexpealidocious/revisions" />
+<ns1:feedLink rel="http://schemas.google.com/acl/2007#accessControlList" href="https://docs.google.com/feeds/default/private/full/spreadsheet%3Asupercalifragilisticexpealidocious/acl" />
+<ns1:feedLink rel="http://schemas.google.com/docs/2007/revisions" href="https://docs.google.com/feeds/default/private/full/spreadsheet%3Asupercalifragilisticexpealidocious/revisions" />
 </ns0:entry>
 """
 
@@ -1768,6 +1768,43 @@ DOCUMENT_LIST_ACL_FEED = """<?xml version='1.0' encoding='UTF-8'?>
 </entry>
 </feed>"""
 
+DOCUMENT_LIST_REVISION_FEED = """<?xml version='1.0' encoding='UTF-8'?>
+<feed xmlns="http://www.w3.org/2005/Atom" xmlns:openSearch="http://a9.com/-/spec/opensearch/1.1/"
+    xmlns:batch="http://schemas.google.com/gdata/batch" xmlns:gd="http://schemas.google.com/g/2005"
+    xmlns:docs="http://schemas.google.com/docs/2007"
+    gd:etag="W/&quot;CE4HQX08cCt7ImA9WxNTFEU.&quot;">
+<id>https://docs.google.com/feeds/default/private/full/resource_id/revisions</id>
+<updated>2009-08-17T04:22:10.378Z</updated>
+<title>Document Revisions</title>
+<link rel="http://schemas.google.com/g/2005#feed" type="application/atom+xml"
+    href="https://docs.google.com/feeds/default/private/full/resource_id/revisions"/>
+<link rel="http://schemas.google.com/g/2005#batch" type="application/atom+xml"
+    href="https://docs.google.com/feeds/default/private/full/resource_id/revisions/batch"/>
+<link rel="self" type="application/atom+xml"
+    href="https://docs.google.com/feeds/default/private/full/resource_id/revisions"/>
+<openSearch:totalResults>6</openSearch:totalResults>
+<openSearch:startIndex>1</openSearch:startIndex>
+<entry>
+  <id>https://docs.google.com/feeds/id/resource_id/revisions/2</id>
+  <updated>2009-08-17T04:22:10.440Z</updated>
+  <app:edited xmlns:app="http://www.w3.org/2007/app">2009-08-14T07:11:34.197Z</app:edited>
+  <title>Revision 2</title>
+  <content type="text/html" src="https://docs.google.com/feeds/download/documents/Export?docId=doc_id&amp;revision=2"/>
+  <link rel="alternate" type="text/html"
+      href="https://docs.google.com/Doc?id=doc_id&amp;revision=2"/>
+  <link rel="self" type="application/atom+xml"
+      href="https://docs.google.com/feeds/default/private/full/resource_id/revisions/2"/>
+  <link rel='http://schemas.google.com/docs/2007#publish' type='text/html' href='https://docs.google.com/View?docid=dfr4&amp;pageview=1&amp;hgd=1'/>   
+  <author>
+    <name>another_user</name>
+    <email>another_user@gmail.com</email>
+  </author>
+  <docs:publish value="true"/>
+  <docs:publishAuto value="true"/>
+  <docs:publishOutsideDomain value="false"/>
+</entry>
+</feed>
+"""
 
 BATCH_ENTRY = """<?xml version='1.0' encoding='UTF-8'?>
 <entry xmlns="http://www.w3.org/2005/Atom"
@@ -2728,6 +2765,47 @@ CONTACT_GROUP_ENTRY = """<?xml version="1.0" encoding="UTF-8"?>
     </gd:extendedProperty>
 </entry>"""
 
+CALENDAR_RESOURCE_ENTRY = """<?xml version="1.0"?>
+<atom:entry xmlns:atom="http://www.w3.org/2005/Atom" xmlns:apps="http://schemas.google.com/apps/2006">
+  <apps:property name="resourceId" value="CR-NYC-14-12-BR"/>
+  <apps:property name="resourceCommonName" value="Boardroom"/>
+  <apps:property name="resourceDescription" value="This conference room is in New York City, building 14, floor 12, Boardroom"/>
+  <apps:property name="resourceType" value="CR"/>
+</atom:entry>"""
+
+CALENDAR_RESOURCES_FEED = """<?xml version="1.0"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xmlns:openSearch="http://a9.com/-/spec/opensearchrss/1.0/" xmlns:apps="http://schemas.google.com/apps/2006">
+  <id>https://apps-apis.google.com/a/feeds/calendar/resource/2.0/yourdomain.com</id>
+  <updated>2008-10-17T15:29:21.064Z</updated>
+  <link rel="next" type="application/atom+xml" href="https://apps-apis.google.com/a/feeds/calendar/resource/2.0/yourdomain.com/?start=the next resourceId"/>
+  <link rel="http://schemas.google.com/g/2005#feed" type="application/atom+xml" href="https://apps-apis.google.com/a/feeds/calendar/resource/2.0/yourdomain.com"/>
+  <link rel="http://schemas.google.com/g/2005#post" type="application/atom+xml" href="https://apps-apis.google.com/a/feeds/calendar/resource/2.0/yourdomain.com"/>
+  <link rel="self" type="application/atom+xml" href="https://apps-apis.google.com/a/feeds/calendar/resource/2.0/yourdomain.com?start=CR-NYC-14-12-BR"/>
+  <openSearch:startIndex>1</openSearch:startIndex>
+  <entry>
+    <id>https://apps-apis.google.com/a/feeds/calendar/resource/2.0/yourdomain.com/CR-NYC-14-12-BR</id>
+    <updated>2008-10-17T15:29:21.064Z</updated>
+    <link rel="self" type="application/atom+xml" href="https://apps-apis.google.com/a/feeds/calendar/resource/2.0/yourdomain.com/CR-NYC-14-12-BR"/>
+    <link rel="edit" type="application/atom+xml" href="https://apps-apis.google.com/feeds/calendar/resource/2.0/yourdomain.com/CR-NYC-14-12-BR"/>
+    <apps:property name="resourceId" value="CR-NYC-14-12-BR"/>
+    <apps:property name="resourceCommonName" value="Boardroom"/>
+    <apps:property name="resourceEmail" value="domain_123456@resource.calendar.google.com"/>
+    <apps:property name="resourceDescription" value="This conference room is in New York City, building 14, floor 12, Boardroom"/>
+    <apps:property name="resourceType" value="CR"/>
+  </entry>
+  <entry>
+    <id>https://apps-apis.google.com/a/feeds/calendar/resource/2.0/yourdomain.com/?start=(Bike)-London-43-Lobby-Bike-1</id>
+    <updated>2008-10-17T15:29:21.064Z</updated>
+    <link rel="self" type="application/atom+xml" href="https://apps-apis.google.com/a/feeds/calendar/resource/2.0/yourdomain.com/(Bike)-London-43-Lobby-Bike-1"/>
+    <link rel="edit" type="application/atom+xml" href="https://apps-apis.google.com/a/feeds/calendar/resource/2.0/yourdomain.com/(Bike)-London-43-Lobby-Bike-1"/>
+    <apps:property name="resourceId" value="(Bike)-London-43-Lobby-Bike-1"/>
+    <apps:property name="resourceCommonName" value="London bike-1"/>
+    <apps:property name="resourceEmail" value="domain_123457@resource.calendar.google.com"/>
+    <apps:property name="resourceDescription" value="Bike is in London at building 43's lobby."/>
+    <apps:property name="resourceType" value="(Bike)"/>
+  </entry>
+</feed>"""
+
 BLOG_ENTRY = """<entry xmlns='http://www.w3.org/2005/Atom'>
   <id>tag:blogger.com,1999:blog-blogID.post-postID</id>
   <published>2006-08-02T18:44:43.089-07:00</published>
@@ -2833,7 +2911,7 @@ BLOG_COMMENTS_FEED = """<feed xmlns="http://www.w3.org/2005/Atom" xmlns:openSear
     <updated>2007-04-04T21:56:29.803-07:00</updated>
     <title type="text">This is my first comment</title>
     <content type="html">This is my first comment</content>
-    <link rel="alternate" type="text/html" href="http://blogName.blogspot.com/2007/04/first-post.html#commentID"/>
+    <link rel="alternate" type="text/html" href="http://a-blogName.blogspot.com/2007/04/first-post.html#commentID"/>
     <link rel="self" type="application/atom+xml" href="http://blogName.blogspot.com/feeds/postID/comments/default/commentID"/>
     <link rel="edit" type="application/atom+xml" href="http://www.blogger.com/feeds/blogID/postID/comments/default/commentID"/>
     <author>
@@ -4891,8 +4969,10 @@ xmlns:gd="http://schemas.google.com/g/2005" xmlns:thr="http://purl.org/syndicati
   </jot:section>
   </div>
   </content>
+  <link rel="alternate" type="text/html" href="http:///sites.google.com/site/gdatatestsite/asdfsdfsdf"/>
   <link rel="self" type="application/atom+xml" href="http:///sites.google.com/feeds/content/site/gdatatestsite/1712987567114738703"/>
   <link rel="edit" type="application/atom+xml" href="http:///sites.google.com/feeds/content/site/gdatatestsite/1712987567114738703"/>
+  <link rel="http://schemas.google.com/sites/2008#revision" type="application/atom+xml" href="http:///sites.google.com/feeds/content/site/gdatatestsite/12345"/>
   <author>
     <name>Test User</name>
     <email>test@gmail.com</email>
@@ -4926,6 +5006,7 @@ xmlns:gd="http://schemas.google.com/g/2005" xmlns:thr="http://purl.org/syndicati
 <link rel="http://schemas.google.com/sites/2008#parent" type="application/atom+xml" href="http://sites.google.com/feeds/content/site/gdatatestsite/abc123"/>
 <link rel="self" type="application/atom+xml" href="http://sites.google.com/feeds/content/site/gdatatestsite/abc123"/>
 <link rel="edit" type="application/atom+xml" href="http://sites.google.com/feeds/content/site/gdatatestsite/abc123"/>
+<link rel="http://schemas.google.com/sites/2008#revision" type="application/atom+xml" href="http:///sites.google.com/feeds/content/site/gdatatestsite/abc123"/>
  <author>
     <name>Test User</name>
     <email>test@gmail.com</email>
@@ -4940,6 +5021,7 @@ xmlns:gd="http://schemas.google.com/g/2005" xmlns:thr="http://purl.org/syndicati
   <link rel="http://schemas.google.com/sites/2008#parent" type="application/atom+xml" href="http://sites.google.com/feeds/content/site/gdatatestsite/abc123def"/>
   <link rel="self" type="application/atom+xml" href="http://sites.google.com/feeds/content/site/gdatatestsite/abc123"/>
   <link rel="edit" type="application/atom+xml" href="http://sites.google.com/feeds/content/site/gdatatestsite/abc123"/>
+  <link rel="http://schemas.google.com/sites/2008#revision" type="application/atom+xml" href="http:///sites.google.com/feeds/content/site/gdatatestsite/abc123"/>
   <author>
     <name>Test User</name>
     <email>test@gmail.com</email>
@@ -4959,6 +5041,7 @@ xmlns:gd="http://schemas.google.com/g/2005" xmlns:thr="http://purl.org/syndicati
   <link rel="http://schemas.google.com/sites/2008#parent" type="application/atom+xml" href="http://sites.google.com/feeds/content/site/gdatatestsite/abc123"/>
   <link rel="self" type="application/atom+xml" href="http://sites.google.com/feeds/content/site/gdatatestsite/abc123"/>
   <link rel="edit" type="application/atom+xml" href="http://sites.google.com/feeds/content/site/gdatatestsite/abc123"/>
+  <link rel="http://schemas.google.com/sites/2008#revision" type="application/atom+xml" href="http:///sites.google.com/feeds/content/site/gdatatestsite/abc123"/>
   <author>
     <name>Test User</name>
     <email>test@gmail.com</email>
@@ -4977,6 +5060,7 @@ xmlns:gd="http://schemas.google.com/g/2005" xmlns:thr="http://purl.org/syndicati
   <link rel="http://schemas.google.com/sites/2008#parent" type="application/atom+xml" href="http://sites.google.com/feeds/content/site/gdatatestsite/abc123"/>
   <link rel="self" type="application/atom+xml" href="http://sites.google.com/feeds/content/site/gdatatestsite/abc123"/>
   <link rel="edit" type="application/atom+xml" href="http://sites.google.com/feeds/content/site/gdatatestsite/abc123"/>
+  <link rel="http://schemas.google.com/sites/2008#revision" type="application/atom+xml" href="http:///sites.google.com/feeds/content/site/gdatatestsite/abc123"/>
   <author>
     <name>Test User</name>
     <email>test@gmail.com</email>
@@ -4998,6 +5082,7 @@ xmlns:gd="http://schemas.google.com/g/2005" xmlns:thr="http://purl.org/syndicati
 <link rel="http://schemas.google.com/sites/2008#parent" type="application/atom+xml" href="http://sites.google.com/feeds/content/site/gdatatestsite/abc123"/>
 <link rel="self" type="application/atom+xml" href="http://sites.google.com/feeds/content/site/gdatatestsite/abc123"/>
 <link rel="edit" type="application/atom+xml" href="http://sites.google.com/feeds/content/site/gdatatestsite/abc123"/>
+<link rel="http://schemas.google.com/sites/2008#revision" type="application/atom+xml" href="http:///sites.google.com/feeds/content/site/gdatatestsite/abc123"/>
 <author>
   <name>Test User</name>
   <email>test@gmail.com</email>
@@ -5024,6 +5109,7 @@ xmlns:gd="http://schemas.google.com/g/2005" xmlns:thr="http://purl.org/syndicati
 </content>
 <link rel="self" type="application/atom+xml" href="http://sites.google.com/feeds/content/site/gdatatestsite/abc123"/>
 <link rel="edit" type="application/atom+xml" href="http://sites.google.com/feeds/content/site/gdatatestsite/abc123"/>
+<link rel="http://schemas.google.com/sites/2008#revision" type="application/atom+xml" href="http:///sites.google.com/feeds/content/site/gdatatestsite/abc123"/>
 <author>
   <name>Test User</name>
   <email>test@gmail.com</email>
@@ -5040,6 +5126,7 @@ xmlns:gd="http://schemas.google.com/g/2005" xmlns:thr="http://purl.org/syndicati
 </content>
 <link rel="self" type="application/atom+xml" href="http://sites.google.com/feeds/content/site/gdatatestsite/abc123"/>
 <link rel="edit" type="application/atom+xml" href="http://sites.google.com/feeds/content/site/gdatatestsite/abc123"/>
+<link rel="http://schemas.google.com/sites/2008#revision" type="application/atom+xml" href="http:///sites.google.com/feeds/content/site/gdatatestsite/abc123"/>
 <author>
   <name>Test User</name>
   <email>test@gmail.com</email>
@@ -5128,6 +5215,68 @@ SITES_REVISION_FEED = '''
 </author>
 <thr:in-reply-to href="http://sites.google.com/site/siteName/code/js" ref="http://sites.google.com/feeds/content/site/siteName/54395424125706119" source="http://sites.google.com/feeds/content/google.com/siteName" type="text/html;charset=UTF-8"/>
 <sites:revision>1</sites:revision>
+</entry>
+</feed>'''
+
+SITES_SITE_FEED = '''
+<feed xmlns="http://www.w3.org/2005/Atom" xmlns:openSearch="http://a9.com/-/spec/opensearch/1.1/" xmlns:gAcl="http://schemas.google.com/acl/2007" xmlns:sites="http://schemas.google.com/sites/2008" xmlns:gs="http://schemas.google.com/spreadsheets/2006" xmlns:dc="http://purl.org/dc/terms" xmlns:batch="http://schemas.google.com/gdata/batch" xmlns:gd="http://schemas.google.com/g/2005" xmlns:thr="http://purl.org/syndication/thread/1.0">
+<id>https://sites.google.com/feeds/site/example.com</id>
+<updated>2009-12-09T01:05:54.631Z</updated>
+<title>Site</title>
+<link rel="http://schemas.google.com/g/2005#feed" type="application/atom+xml" href="https://sites.google.com/feeds/site/example.com"/>
+<link rel="http://schemas.google.com/g/2005#post" type="application/atom+xml" href="https://sites.google.com/feeds/site/example.com"/>
+<link rel="self" type="application/atom+xml" href="https://sites.google.com/feeds/site/example.com"/>
+<generator version="1" uri="http://sites.google.com">Google Sites</generator>
+<openSearch:startIndex>1</openSearch:startIndex>
+<entry gd:etag="W/&quot;DkIHQH4_eCl7I2A9WxNaF0Q.&quot;">
+<id>https://sites.google.com/feeds/site/example.com/new-test-site</id>
+<updated>2009-12-02T22:55:31.040Z</updated>
+<app:edited xmlns:app="http://www.w3.org/2007/app">2009-12-02T22:55:31.040Z</app:edited>
+<title>New Test Site</title>
+<summary>A new site to hold memories</summary>
+<link rel="alternate" type="text/html" href="http://sites.google.com/a/example.com/new-test-site/"/>
+<link rel="http://schemas.google.com/sites/2008#source" type="application/atom+xml" href="http://sites.google.com/feeds/site/example.com/source-site"/>
+<link rel="http://schemas.google.com/acl/2007#accessControlList" type="application/atom+xml" href="http://sites.google.com/feeds/acl/site/example.com/new-test-site"/>
+<link rel="self" type="application/atom+xml" href="https://sites.google.com/feeds/site/example.com/new-test-site"/>
+<link rel="edit" type="application/atom+xml" href="https://sites.google.com/feeds/site/example.com/new-test-site"/>
+<sites:siteName>new-test-site</sites:siteName>
+<sites:theme>iceberg</sites:theme>
+</entry>
+<entry gd:etag="W/&quot;CE8MQH48fyl7I2A9WxNaGUo.&quot;">
+<id>https://sites.google.com/feeds/site/example.com/newautosite2</id>
+<updated>2009-12-05T00:28:01.077Z</updated>
+<app:edited xmlns:app="http://www.w3.org/2007/app">2009-12-05T00:28:01.077Z</app:edited>
+<title>newAutoSite3</title>
+<summary>A new site to hold memories2</summary>
+<link rel="alternate" type="text/html" href="http://sites.google.com/a/example.com/newautosite2/"/>
+<link rel="http://schemas.google.com/acl/2007#accessControlList" type="application/atom+xml" href="http://sites.google.com/feeds/acl/site/examp.e.com/newautosite2"/>
+<link rel="self" type="application/atom+xml" href="https://sites.google.com/feeds/site/example.com/newautosite2"/>
+<link rel="edit" type="application/atom+xml" href="https://sites.google.com/feeds/site/example.com/newautosite2"/>
+<sites:siteName>newautosite2</sites:siteName>
+<sites:theme>default</sites:theme>
+</entry>
+</feed>'''
+
+SITES_ACL_FEED = '''
+<feed xmlns="http://www.w3.org/2005/Atom" xmlns:openSearch="http://a9.com/-/spec/opensearch/1.1/" xmlns:gAcl="http://schemas.google.com/acl/2007" xmlns:sites="http://schemas.google.com/sites/2008" xmlns:gs="http://schemas.google.com/spreadsheets/2006" xmlns:dc="http://purl.org/dc/terms" xmlns:batch="http://schemas.google.com/gdata/batch" xmlns:gd="http://schemas.google.com/g/2005" xmlns:thr="http://purl.org/syndication/thread/1.0">
+<id>https://sites.google.comsites.google.com/feeds/acl/site/example.com/new-test-site</id>
+<updated>2009-12-09T01:24:59.080Z</updated>
+<category scheme="http://schemas.google.com/g/2005#kind" term="http://schemas.google.com/acl/2007#accessRule"/>
+<title>Acl</title>
+<link rel="http://schemas.google.com/g/2005#feed" type="application/atom+xml" href="https://sites.google.com/feeds/acl/site/example.com/new-test-site"/>
+<link rel="http://schemas.google.com/g/2005#post" type="application/atom+xml" href="https://sites.google.com/feeds/acl/site/example.com/new-test-site"/>
+<link rel="self" type="application/atom+xml" href="https://sites.google.com/feeds/acl/site/example.com/new-test-site"/>
+<generator version="1" uri="http://sites.google.com">Google Sites</generator>
+<openSearch:startIndex>1</openSearch:startIndex>
+<entry>
+  <id>https://sites.google.com/feeds/acl/site/google.com/new-test-site/user%3Auser%40example.com</id>
+  <updated>2009-12-09T01:24:59.080Z</updated>
+  <app:edited xmlns:app="http://www.w3.org/2007/app">2009-12-09T01:24:59.080Z</app:edited>
+  <category scheme="http://schemas.google.com/g/2005#kind" term="http://schemas.google.com/acl/2007#accessRule"/>
+  <link rel="self" type="application/atom+xml" href="https://sites.google.com/feeds/acl/site/example.com/new-test-site/user%3Auser%40example.com"/>
+  <link rel="edit" type="application/atom+xml" href="https://sites.google.com/feeds/acl/site/example.com/new-test-site/user%3Auser%40example.com"/>
+  <gAcl:scope type="user" value="user@example.com"/>
+  <gAcl:role value="owner"/>
 </entry>
 </feed>'''
 
@@ -5228,6 +5377,7 @@ ANALYTICS_DATA_FEED = '''
     <dxp:metric confidenceInterval='0.0' name='ga:visits' type='integer' value='136540'/>
     <dxp:metric confidenceInterval='0.0' name='ga:bounces' type='integer' value='101535'/>
   </dxp:aggregates>
+  <dxp:containsSampledData>true</dxp:containsSampledData>
   <dxp:dataSource>
     <dxp:tableId>ga:1174</dxp:tableId>
     <dxp:tableName>www.googlestore.com</dxp:tableName>
@@ -5246,3 +5396,100 @@ ANALYTICS_DATA_FEED = '''
     <dxp:metric confidenceInterval='0.0' name='ga:bounces' type='integer' value='61095'/>
   </entry>
 </feed>'''
+
+
+ANALYTICS_MGMT_PROFILE_FEED = '''
+<feed xmlns='http://www.w3.org/2005/Atom' xmlns:dxp='http://schemas.google.com/analytics/2009' xmlns:openSearch='http://a9.com/-/spec/opensearchrss/1.0/' xmlns:gd='http://schemas.google.com/g/2005' gd:kind='analytics#profiles'>
+  <id>https://www.google.com/analytics/feeds/datasources/ga/accounts/~all/webproperties/~all/profiles</id>
+  <updated>2010-06-14T22:18:48.676Z</updated>
+  <title type='text'>Google Analytics Profiles for superman@gmail.com</title>
+  <link rel='self' type='application/atom+xml' href='https://www.google.com/analytics/feeds/datasources/ga/accounts/~all/webproperties/~all/profiles'/>
+  <author>
+    <name>Google Analytics</name>
+  </author>
+  <generator version='1.0'>Google Analytics</generator>
+  <openSearch:totalResults>1</openSearch:totalResults>
+  <openSearch:startIndex>1</openSearch:startIndex>
+  <openSearch:itemsPerPage>1000</openSearch:itemsPerPage>
+  <entry gd:etag='W/&quot;CkQAQ3Y-fSp7I2A9WxFXGEU.&quot;' gd:kind='analytics#profile'>
+    <id>https://www.google.com/analytics/feeds/datasources/ga/accounts/30481/webproperties/UA-30481-1/profiles/1174</id>
+    <updated>2010-06-09T05:58:15.436-07:00</updated>
+    <title type='text'>Google Analytics Profile www.googlestore.com</title>
+    <link rel='self' type='application/atom+xml' href='https://www.google.com/analytics/feeds/datasources/ga/accounts/30481/webproperties/UA-30481-1/profiles/1174'/>
+    <link rel='http://schemas.google.com/ga/2009#parent' type='application/atom+xml' href='https://www.google.com/analytics/feeds/datasources/ga/accounts/30481/webproperties/UA-30481-1' gd:targetKind='analytics#webproperty'/>
+    <link rel='http://schemas.google.com/ga/2009#child' type='application/atom+xml' href='https://www.google.com/analytics/feeds/datasources/ga/accounts/30481/webproperties/UA-30481-1/profiles/1174/goals' gd:targetKind='analytics#goals'/>
+    <dxp:property name='ga:accountId' value='30481'/>
+    <dxp:property name='ga:webPropertyId' value='UA-30481-1'/>
+    <dxp:property name='ga:profileName' value='www.googlestore.com'/>
+    <dxp:property name='ga:profileId' value='1174'/>
+    <dxp:property name='dxp:tableId' value='ga:1174'/>
+    <dxp:property name='ga:currency' value='USD'/>
+    <dxp:property name='ga:timezone' value='America/Los_Angeles'/>
+  </entry>
+</feed>
+'''
+
+ANALYTICS_MGMT_GOAL_FEED = '''
+<feed xmlns='http://www.w3.org/2005/Atom' xmlns:dxp='http://schemas.google.com/analytics/2009' xmlns:ga='http://schemas.google.com/ga/2009' xmlns:openSearch='http://a9.com/-/spec/opensearchrss/1.0/' xmlns:gd='http://schemas.google.com/g/2005' gd:kind='analytics#goals'>
+  <id>https://www.google.com/analytics/feeds/datasources/ga/accounts/~all/webproperties/~all/profiles/~all/goals</id>
+  <updated>2010-06-14T22:21:18.485Z</updated>
+  <title type='text'>Google Analytics Goals for superman@gmail.com</title>
+  <link rel='self' type='application/atom+xml' href='https://www.google.com/analytics/feeds/datasources/ga/accounts/~all/webproperties/~all/profiles/~all/goals'/>
+  <author>
+    <name>Google Analytics</name>
+  </author>
+  <generator version='1.0'>Google Analytics</generator>
+  <openSearch:totalResults>3</openSearch:totalResults>
+  <openSearch:startIndex>1</openSearch:startIndex>
+  <openSearch:itemsPerPage>1000</openSearch:itemsPerPage>
+  <entry gd:etag='W/&quot;DUYCQn08fip7I2A9WxBWFUo.&quot;' gd:kind='analytics#goal'>
+    <id>https://www.google.com/analytics/feeds/datasources/ga/accounts/30481/webproperties/UA-30481-1/profiles/1174/goals/1</id>
+    <updated>2010-02-07T13:12:43.377-08:00</updated>
+    <title type='text'>Google Analytics Goal 1</title>
+    <link rel='self' type='application/atom+xml' href='https://www.google.com/analytics/feeds/datasources/ga/accounts/30481/webproperties/UA-30481-1/profiles/1174/goals/1'/>
+    <link rel='http://schemas.google.com/ga/2009#parent' type='application/atom+xml' href='https://www.google.com/analytics/feeds/datasources/ga/accounts/30481/webproperties/UA-30481-1/profiles/1174' gd:targetKind='analytics#profile'/>
+    <ga:goal active='true' name='Completing Order' number='1' value='10.0'>
+      <ga:destination caseSensitive='false' expression='/purchaseComplete.html' matchType='regex' step1Required='false'>
+        <ga:step name='View Product Categories' number='1' path='/Apps|Accessories'/>
+      </ga:destination>
+    </ga:goal>
+    <dxp:property name='ga:profileId' value='1174'/>
+  </entry>
+  <entry gd:etag='W/&quot;DUYCQn08fip7I2A9WxBWFUo.&quot;' gd:kind='analytics#goal'>
+    <id>https://www.google.com/analytics/feeds/datasources/ga/accounts/30481/webproperties/UA-30481-1/profiles/1174/goals/2</id>
+    <updated>2010-02-07T13:12:43.376-08:00</updated>
+    <title type='text'>Google Analytics Goal 2</title>
+    <link rel='self' type='application/atom+xml' href='https://www.google.com/analytics/feeds/datasources/ga/accounts/30481/webproperties/UA-30481-1/profiles/1174/goals/2'/>
+    <link rel='http://schemas.google.com/ga/2009#parent' type='application/atom+xml' href='https://www.google.com/analytics/feeds/datasources/ga/accounts/30481/webproperties/UA-30481-1/profiles/1174' gd:targetKind='analytics#profile'/>
+    <ga:goal active='true' name='Browsed my site over 5 minutes' number='2' value='0.0'>
+      <ga:engagement comparison='&gt;' thresholdValue='300' type='timeOnSite'/>
+    </ga:goal>
+    <dxp:property name='ga:profileId' value='1174'/>
+  </entry>
+</feed>
+'''
+
+ANALYTICS_MGMT_ADV_SEGMENT_FEED = '''
+<feed xmlns='http://www.w3.org/2005/Atom' xmlns:dxp='http://schemas.google.com/analytics/2009' xmlns:openSearch='http://a9.com/-/spec/opensearchrss/1.0/' xmlns:gd='http://schemas.google.com/g/2005' gd:kind='analytics#segments'>
+  <id>https://www.google.com/analytics/feeds/datasources/ga/segments</id>
+  <updated>2010-06-14T22:22:02.728Z</updated>
+  <title type='text'>Google Analytics Advanced Segments for superman@gmail.com</title>
+  <link rel='self' type='application/atom+xml' href='https://www.google.com/analytics/feeds/datasources/ga/segments'/>
+  <author>
+    <name>Google Analytics</name>
+  </author>
+  <generator version='1.0'>Google Analytics</generator>
+  <openSearch:totalResults>2</openSearch:totalResults>
+  <openSearch:startIndex>1</openSearch:startIndex>
+  <openSearch:itemsPerPage>1000</openSearch:itemsPerPage>
+  <entry gd:etag='W/&quot;YDwqeyM.&quot;' gd:kind='analytics#segment'>
+    <id>https://www.google.com/analytics/feeds/datasources/ga/segments/gaid::0</id>
+    <updated>2009-10-26T13:00:44.915-07:00</updated>
+    <title type='text'>Google Analytics Advanced Segment Sources Form Google</title>
+    <link rel='self' type='application/atom+xml' href='https://www.google.com/analytics/feeds/datasources/ga/segments/gaid::0'/>
+    <dxp:segment id='gaid::0' name='Sources Form Google'>
+      <dxp:definition>ga:source=~^\Qgoogle\E</dxp:definition>
+    </dxp:segment>
+  </entry>
+</feed>
+'''

@@ -59,8 +59,10 @@ TOO_MANY_RECIPIENTS_ON_EMAIL_LIST=1500
 
 DEFAULT_QUOTA_LIMIT='2048'
 
+
 class Error(Exception):
   pass
+
 
 class AppsForYourDomainException(Error):
 
@@ -74,6 +76,7 @@ class AppsForYourDomainException(Error):
       self.invalidInput = self.element_tree[0].attrib['invalidInput']
     except:
       self.error_code = UNKOWN_ERROR
+
 
 class AppsService(gdata.service.GDataService):
   """Client for the Google Apps Provisioning service."""
@@ -103,19 +106,6 @@ class AppsService(gdata.service.GDataService):
 
   def _baseURL(self):
     return "/a/feeds/%s" % self.domain 
-
-  def GetGeneratorFromLinkFinder(self, link_finder, func, 
-                                 num_retries=gdata.service.DEFAULT_NUM_RETRIES,
-                                 delay=gdata.service.DEFAULT_DELAY,
-                                 backoff=gdata.service.DEFAULT_BACKOFF):
-    """returns a generator for pagination"""
-    yield link_finder
-    next = link_finder.GetNextLink()
-    while next is not None:
-      next_feed = func(str(self.GetWithRetries(
-            next.href, num_retries=num_retries, delay=delay, backoff=backoff)))
-      yield next_feed
-      next = next_feed.GetNextLink()
 
   def AddAllElementsFromAllPages(self, link_finder, func):
     """retrieve all pages and add all elements"""
@@ -387,14 +377,16 @@ class AppsService(gdata.service.GDataService):
 
   def CreateUser(self, user_name, family_name, given_name, password,
                  suspended='false', quota_limit=None, 
-                 password_hash_function=None):
+                 password_hash_function=None,
+                 change_password=None):
     """Create a user account. """
 
     uri = "%s/user/%s" % (self._baseURL(), API_VER)
     user_entry = gdata.apps.UserEntry()
     user_entry.login = gdata.apps.Login(
         user_name=user_name, password=password, suspended=suspended,
-        hash_function_name=password_hash_function)
+        hash_function_name=password_hash_function,
+        change_password=change_password)
     user_entry.name = gdata.apps.Name(family_name=family_name,
                                       given_name=given_name)
     if quota_limit is not None:
@@ -468,6 +460,7 @@ class AppsService(gdata.service.GDataService):
     # pagination
     return self.AddAllElementsFromAllPages(
       ret, gdata.apps.UserFeedFromString)
+
 
 class PropertyService(gdata.service.GDataService):
   """Client for the Google Apps Property service."""
@@ -551,3 +544,9 @@ class PropertyService(gdata.service.GDataService):
       self.Delete(uri)
     except gdata.service.RequestError, e:
       raise gdata.apps.service.AppsForYourDomainException(e.args[0])
+
+
+def _bool2str(b):
+  if b is None:
+    return None
+  return str(b is True).lower()

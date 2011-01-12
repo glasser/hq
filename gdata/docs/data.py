@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Data model classes for parsing and generating XML for the Sites Data API."""
+"""Data model classes for parsing and generating XML for the DocList Data API"""
 
 __author__ = 'e.bidelman (Eric Bidelman)'
 
@@ -48,6 +48,7 @@ SHARED_WITH_DOMAIN_LABEL_TERM = LABEL_SCHEME + '#shared-with-domain'
 VIEWED_LABEL_TERM = LABEL_SCHEME + '#viewed'
 
 DOCS_PARENT_LINK_REL = DOCUMENTS_NS + '#parent'
+DOCS_PUBLISH_LINK_REL = DOCUMENTS_NS + '#publish'
 
 FILE_EXT_PATTERN = re.compile('.*\.([a-zA-Z]{3,}$)')
 RESOURCE_ID_PATTERN = re.compile('^([a-z]*)(:|%3A)([\w-]*)$')
@@ -115,7 +116,7 @@ def make_content_link_from_resource_id(resource_id):
     if label == PRESENTATION_LABEL:
       return '/feeds/download/presentations/Export?docId=%s' % doc_id
     if label == SPREADSHEET_LABEL:
-      return ('http://spreadsheets.google.com/feeds/download/spreadsheets/'
+      return ('https://spreadsheets.google.com/feeds/download/spreadsheets/'
               'Export?key=%s' % doc_id)
   raise ValueError, ('Invalid resource id: %s, or manually creating the '
                      'download url for this type of doc is not possible'
@@ -144,9 +145,28 @@ class WritersCanInvite(atom.core.XmlElement):
   _qname = DOCUMENTS_TEMPLATE  % 'writersCanInvite'
   value = 'value'
 
+
 class QuotaBytesUsed(atom.core.XmlElement):
   """The DocList gd:quotaBytesUsed element."""
   _qname = gdata.data.GDATA_TEMPLATE  % 'quotaBytesUsed'
+
+
+class Publish(atom.core.XmlElement):
+  """The DocList docs:publish element."""
+  _qname = DOCUMENTS_TEMPLATE  % 'publish'
+  value = 'value'
+
+
+class PublishAuto(atom.core.XmlElement):
+  """The DocList docs:publishAuto element."""
+  _qname = DOCUMENTS_TEMPLATE  % 'publishAuto'
+  value = 'value'
+
+
+class PublishOutsideDomain(atom.core.XmlElement):
+  """The DocList docs:publishOutsideDomain element."""
+  _qname = DOCUMENTS_TEMPLATE  % 'publishOutsideDomain'
+  value = 'value'
 
 
 class DocsEntry(gdata.data.GDEntry):
@@ -230,6 +250,29 @@ class AclFeed(gdata.acl.data.AclFeed):
 
 class Revision(gdata.data.GDEntry):
   """A document Revision entry."""
+  publish = Publish
+  publish_auto = PublishAuto
+  publish_outside_domain = PublishOutsideDomain
+
+  def find_publish_link(self):
+    """Get the link that points to the published document on the web.
+
+    Returns:
+      A str for the URL in the link with a rel ending in #publish.
+    """
+    return self.find_url(DOCS_PUBLISH_LINK_REL)
+
+  FindPublishLink = find_publish_link
+
+  def get_publish_link(self):
+    """Get the link that points to the published document on the web.
+
+    Returns:
+      A gdata.data.Link for the link with a rel ending in #publish.
+    """
+    return self.get_link(DOCS_PUBLISH_LINK_REL)
+
+  GetPublishLink = get_publish_link
 
 
 class RevisionFeed(gdata.data.GDFeed):
