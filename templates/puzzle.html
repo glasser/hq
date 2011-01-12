@@ -86,7 +86,8 @@
     <iframe width='80%' height='250' frameborder='1'
             src="http://spreadsheets.google.com/ccc?key={{ spreadsheet.spreadsheet_key|urlencode }}&amp;output=html&amp;authkey={{ spreadsheet.auth_key|urlencode }}"></iframe>
     <br/>
-    <a href="http://spreadsheets.google.com/ccc?key={{ spreadsheet.spreadsheet_key|urlencode }}&amp;authkey={{ spreadsheet.auth_key|urlencode }}" target="_blank"
+    <a href="http://spreadsheets.google.com/ccc?key={{ spreadsheet.spreadsheet_key|urlencode }}&amp;authkey={{ spreadsheet.auth_key|urlencode }}"
+       target="spreadsheet+{{ spreadsheet.spreadsheet_key|urlencode }}"
        >Edit the spreadsheet</a> (this link may work even if the link in the frame does not)
     <br/>
   {% endfor %}
