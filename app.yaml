@@ -8,3 +8,4 @@ handlers:
   static_dir: static
 - url: .*
   script: hq/main.py
+  login: required

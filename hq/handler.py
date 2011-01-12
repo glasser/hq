@@ -11,8 +11,6 @@ from hq import my_template
 from hq import model
 
 INSTANCE_NAME = 'Battlestar Electronica'
-APPS_DOMAIN = 'battlestarelectronica.org'  # For spreadsheets, etc
-GROUP_ACL = 'battlestar-electronica@googlegroups.com'
 
 port = os.environ['SERVER_PORT']
 if port and port != '80':

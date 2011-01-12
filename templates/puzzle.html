@@ -91,10 +91,15 @@
     <br/>
   {% endfor %}
 
-  <form action="{% url SpreadsheetAddHandler puzzle.key.id %}" method="get">
-    <input type="text" name="title" autocomplete="off" />
-    <input type="submit" value="add spreadsheet" />
-  </form>
+    {% if has_access_token %}
+      <form action="{% url SpreadsheetAddHandler puzzle.key.id %}" method="get">
+        <input type="text" name="title" autocomplete="off" />
+        <input type="submit" value="add spreadsheet" />
+      </form>
+    {% else %}
+      <p><a href="{% url GetOAuthTokenHandler puzzle.key.id %}">Enable
+          spreadsheet creation</a></p>
+    {% endif %}
 </div>
 
 <div id="related-puzzles">

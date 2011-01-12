@@ -1,4 +1,5 @@
 #!/usr/bin/env python2.5
+import os.path
 import random
 import re
 import StringIO
@@ -11,13 +12,41 @@ from google.appengine.ext import db
 
 import bzrlib.merge3
 from django.utils import html
-import atom.data
-import gdata.acl.data
-import gdata.client
+import gdata.auth
 import gdata.docs.client
-import gdata.docs.data
 import gdata.gauth
 import gdata.spreadsheets.client
+
+# The file named here should not be checked into version control.
+def LoadConsumerSecret():
+  f = file(os.path.join(os.path.dirname(__file__), '..', 'CONSUMER_SECRET'))
+  return f.read().strip()
+
+
+GDATA_SETTINGS = {
+  'APP_NAME': 'battlestarelectronica-cic',
+  'CONSUMER_KEY': 'cic.battlestarelectronica.org',
+  'CONSUMER_SECRET': LoadConsumerSecret(),
+  'SIG_METHOD': gdata.auth.OAuthSignatureMethod.HMAC_SHA1,
+  'SCOPES': (gdata.docs.client.DocsClient.auth_scopes +
+             gdata.spreadsheets.client.SpreadsheetsClient.auth_scopes),
+}
+
+
+def RequestTokenKey():
+  return 'RequestToken' + users.get_current_user().user_id()
+
+
+def AccessTokenKey():
+  return 'AccessToken' + users.get_current_user().user_id()
+
+
+def LoadAccessToken():
+  access_token = gdata.gauth.AeLoad(AccessTokenKey())
+  if isinstance(access_token, gdata.gauth.OAuthHmacToken):
+    return access_token
+  return None
+
 
 class PuzzleListHandler(handler.RequestHandler):
   def get(self, tags=None):
@@ -46,6 +75,7 @@ class PuzzleHandler(handler.RequestHandler):
       "puzzle": puzzle,
       "comments": comments,
       "families": families,
+      "has_access_token": LoadAccessToken() is not None,
     })
 
 
@@ -244,42 +274,31 @@ class CommentPrioritizeHandler(handler.RequestHandler):
     self.redirect(PuzzleHandler.get_url(puzzle.key().id()))
 
 
-# TODO(glasser): Figure out if we can now DESTROY THIS COMPLETELY.
-# From gdata/samples/blogger/app/blogapp.py
-def get_auth_token(request):
-  """Retrieves the AuthSub token for the current user.
+DOCS_CLIENT = gdata.docs.client.DocsClient()
 
-  Will first check the request URL for a token request parameter
-  indicating that the user has been sent to this page after 
-  authorizing the app. Auto-upgrades to a session token.
 
-  If the token was not in the URL, which will usually be the case,
-  looks for the token in the datastore.
+class GetOAuthTokenHandler(handler.RequestHandler):
+  def get(self, puzzle_id):
+    callback_url = ('http://' + GDATA_SETTINGS['CONSUMER_KEY']
+                    + GetAccessTokenHandler.get_url(puzzle_id))
+    request_token = DOCS_CLIENT.GetOAuthToken(
+      GDATA_SETTINGS['SCOPES'], callback_url, GDATA_SETTINGS['CONSUMER_KEY'],
+      GDATA_SETTINGS['CONSUMER_SECRET'])
+    gdata.gauth.AeSave(request_token, RequestTokenKey())
+    self.redirect(str(request_token.generate_authorization_url()))
 
-  Returns:
-    The token object if one was found for the current user. If there
-    is no current user, it returns False, if there is a current user
-    but no AuthSub token, it returns None.
-  """
-  current_user = users.get_current_user()
-  if current_user is None or current_user.user_id() is None:
-    return False
-  # Look for the token string in the current page's URL.
-  token_string, token_scopes = gdata.gauth.auth_sub_string_from_url(
-     request.url)
-  if token_string is None:
-    # Try to find a previously obtained session token.
-    return gdata.gauth.ae_load('hq-spread-' + current_user.user_id())
-  # If there was a new token in the current page's URL, convert it to
-  # to a long lived session token and persist it to be used in future
-  # requests.
-  single_use_token = gdata.gauth.AuthSubToken(token_string, token_scopes)
-  # Create a client to make the HTTP request to upgrade the single use token
-  # to a long lived session token.
-  client = gdata.client.GDClient()
-  session_token = client.upgrade_token(single_use_token)
-  gdata.gauth.ae_save(session_token, 'hq-spread-' + current_user.user_id())
-  return session_token
+
+class GetAccessTokenHandler(handler.RequestHandler):
+  def get(self, puzzle_id):
+    request_token = gdata.gauth.AeLoad(RequestTokenKey())
+    request_token.token = self.request.get('oauth_token')
+    assert request_token.token != ''
+    request_token.verifier = self.request.get('oauth_verifier')
+    assert request_token.verifier != ''
+    request_token.auth_state = gdata.gauth.AUTHORIZED_REQUEST_TOKEN
+    access_token = DOCS_CLIENT.GetAccessToken(request_token)
+    gdata.gauth.AeSave(access_token, AccessTokenKey())
+    self.redirect(PuzzleHandler.get_url(puzzle_id))
 
 
 class SpreadsheetAddHandler(handler.RequestHandler):
@@ -289,38 +308,43 @@ class SpreadsheetAddHandler(handler.RequestHandler):
     # TODO(glasser): Better error handling.
     assert puzzle is not None
 
-    # See if we have an auth token for this user.
-    token = get_auth_token(self.request)
-    if token is None:
-      auth_url = gdata.gauth.generate_auth_sub_url(
-          self.request.url,
-          (gdata.docs.client.DocsClient.auth_scopes +
-           gdata.spreadsheets.client.SpreadsheetsClient.auth_scopes),
-          domain=handler.APPS_DOMAIN)
-      self.render_template("auth_required", {"auth_url": auth_url})
-      return
-    assert token != False  # There must be a user to access the app at all
+    # access_token = gdata.gauth.AeLoad(SETTINGS['ACCESS_TOKEN'])
+    # if not isinstance(access_token, gdata.gauth.OAuthHmacToken):
+    #   self.redirect(GetOAuthTokenHandler.get_url())
+    #   return
 
-    client = gdata.docs.client.DocsClient()
-    doc = client.Create(gdata.docs.data.SPREADSHEET_LABEL,
-                        "%s [%s]" % (self.request.get('title'), puzzle.title),
-                        writers_can_invite=True,
-                        auth_token=token)
-    match = gdata.docs.data.RESOURCE_ID_PATTERN.match(doc.resource_id.text)
-    assert match
-    assert match.group(1) == gdata.docs.data.SPREADSHEET_LABEL
-    doc_key = match.group(3)
-    acl_entry = gdata.docs.data.Acl(
-      role=gdata.acl.data.AclRole(value="writer"),
-      scope=gdata.acl.data.AclScope(type="group",
-                                    value=handler.GROUP_ACL))
-    acl_entry.category.append(atom.data.Category(
-      scheme=gdata.docs.data.DATA_KIND_SCHEME,
-      term="http://schemas.google.com/acl/2007#accessRule"))
-    client.post(acl_entry, doc.get_acl_feed_link().href, auth_token=token)
-    sheet = model.Spreadsheet(puzzle=puzzle, spreadsheet_key=doc_key)
-    sheet.put()
-    self.redirect(PuzzleHandler.get_url(puzzle_id))
+    # # See if we have an auth token for this user.
+    # token = get_auth_token(self.request)
+    # if token is None:
+    #   auth_url = gdata.gauth.generate_auth_sub_url(
+    #       self.request.url,
+    #       (gdata.docs.client.DocsClient.auth_scopes +
+    #        gdata.spreadsheets.client.SpreadsheetsClient.auth_scopes),
+    #       domain=handler.APPS_DOMAIN)
+    #   self.render_template("auth_required", {"auth_url": auth_url})
+    #   return
+    # assert token != False  # There must be a user to access the app at all
+
+    # client = gdata.docs.client.DocsClient()
+    # doc = client.Create(gdata.docs.data.SPREADSHEET_LABEL,
+    #                     "%s [%s]" % (self.request.get('title'), puzzle.title),
+    #                     writers_can_invite=True,
+    #                     auth_token=token)
+    # match = gdata.docs.data.RESOURCE_ID_PATTERN.match(doc.resource_id.text)
+    # assert match
+    # assert match.group(1) == gdata.docs.data.SPREADSHEET_LABEL
+    # doc_key = match.group(3)
+    # acl_entry = gdata.docs.data.Acl(
+    #   role=gdata.acl.data.AclRole(value="writer"),
+    #   scope=gdata.acl.data.AclScope(type="group",
+    #                                 value=handler.GROUP_ACL))
+    # acl_entry.category.append(atom.data.Category(
+    #   scheme=gdata.docs.data.DATA_KIND_SCHEME,
+    #   term="http://schemas.google.com/acl/2007#accessRule"))
+    # client.post(acl_entry, doc.get_acl_feed_link().href, auth_token=token)
+    # sheet = model.Spreadsheet(puzzle=puzzle, spreadsheet_key=doc_key)
+    # sheet.put()
+    # self.redirect(PuzzleHandler.get_url(puzzle_id))
 
 
 class RelatedAddHandler(handler.RequestHandler):
@@ -426,5 +450,7 @@ HANDLERS = [
     ('/puzzles/add-image/(\\d+)/?', ImageUploadHandler),
     ('/puzzles/delete-image/(\\d+)/?', ImageDeleteHandler),
     ('/change-user/?', UserChangeHandler),
+    ('/get-oauth-token/(\\d+)', GetOAuthTokenHandler),
+    ('/get-access-token/(\\d+)', GetAccessTokenHandler),
     ('/?', TopPageHandler),
 ]
