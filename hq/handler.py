@@ -97,6 +97,7 @@ class RequestHandler(webapp.RequestHandler):
   def render_template(self, template_name, params, **kwds):
     params['usernames'] = model.Username.all()
     params['current_user'] = self.username
+    params['unsolved_puzzle_count'] = model.Puzzle.unsolved_count()
     self.response.out.write(self.render_template_to_string(template_name,
                                                            params, **kwds))
 

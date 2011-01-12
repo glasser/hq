@@ -231,6 +231,14 @@ class Puzzle(db.Expando):
       return 'tag_' + tag.replace(':', '_')
     return ' '.join(map(as_css_class, self.tags))
 
+  @classmethod
+  def unsolved_count(cls):
+    count = 0
+    for p in cls.all():
+      if 'status:solved' not in p.tags:
+        count += 1
+    return count
+
 
 class PuzzleQuery(object):
   def __init__(self, db_query, orders, tags, negative_tags, show_metas):
