@@ -26,24 +26,17 @@ def LoadConsumerSecret():
 
 
 GDATA_SETTINGS = {
-  'APP_NAME': 'battlestarelectronica-cic',
   'CONSUMER_KEY': 'cic.battlestarelectronica.org',
   'CONSUMER_SECRET': LoadConsumerSecret(),
+  'REQUEST_TOKEN': 'RequestToken',
+  'ACCESS_TOKEN':  'AccessToken',
   'SCOPES': (gdata.docs.client.DocsClient.auth_scopes +
              gdata.spreadsheets.client.SpreadsheetsClient.auth_scopes),
 }
 
 
-def RequestTokenKey():
-  return 'RequestToken'
-
-
-def AccessTokenKey():
-  return 'AccessToken'
-
-
 def LoadAccessToken():
-  access_token = gdata.gauth.AeLoad(AccessTokenKey())
+  access_token = gdata.gauth.AeLoad(GDATA_SETTINGS['ACCESS_TOKEN'])
   if isinstance(access_token, gdata.gauth.OAuthHmacToken):
     return access_token
   return None
@@ -277,8 +270,8 @@ class CommentPrioritizeHandler(handler.RequestHandler):
 
 class LogOutForTokensHandler(handler.RequestHandler):
   def get(self, puzzle_id):
-    gdata.gauth.AeDelete(RequestTokenKey())
-    gdata.gauth.AeDelete(AccessTokenKey())
+    gdata.gauth.AeDelete(GDATA_SETTINGS['REQUEST_TOKEN'])
+    gdata.gauth.AeDelete(GDATA_SETTINGS['ACCESS_TOKEN'])
     self.redirect(users.create_logout_url(
         dest_url=GetOAuthTokenHandler.get_url(puzzle_id)))
 
@@ -291,13 +284,13 @@ class GetOAuthTokenHandler(handler.RequestHandler):
     request_token = client.GetOAuthToken(
       GDATA_SETTINGS['SCOPES'], callback_url, GDATA_SETTINGS['CONSUMER_KEY'],
       GDATA_SETTINGS['CONSUMER_SECRET'])
-    gdata.gauth.AeSave(request_token, RequestTokenKey())
+    gdata.gauth.AeSave(request_token, GDATA_SETTINGS['REQUEST_TOKEN'])
     self.redirect(str(request_token.generate_authorization_url()))
 
 
 class GetAccessTokenHandler(handler.RequestHandler):
   def get(self, puzzle_id):
-    request_token = gdata.gauth.AeLoad(RequestTokenKey())
+    request_token = gdata.gauth.AeLoad(GDATA_SETTINGS['REQUEST_TOKEN'])
     request_token.token = self.request.get('oauth_token')
     assert request_token.token != ''
     request_token.verifier = self.request.get('oauth_verifier')
@@ -305,7 +298,7 @@ class GetAccessTokenHandler(handler.RequestHandler):
     request_token.auth_state = gdata.gauth.AUTHORIZED_REQUEST_TOKEN
     client = gdata.docs.client.DocsClient()
     access_token = client.GetAccessToken(request_token)
-    gdata.gauth.AeSave(access_token, AccessTokenKey())
+    gdata.gauth.AeSave(access_token, GDATA_SETTINGS['ACCESS_TOKEN'])
     self.redirect(LogOutAfterTokensHandler.get_url(puzzle_id))
 
 
