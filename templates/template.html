@@ -33,7 +33,8 @@
   <body {% block bodyattrs %}{% endblock bodyattrs %}>
     <div id="current-user-info">
       Battlestar Electronica Combat Information Center.
-      {{ unsolved_puzzle_count }} puzzle{{ unsolved_puzzle_count|pluralize }}
+      {{ unsolved_puzzle_count }} {{ unsolved_puzzle_thirds }}
+      puzzle{{ unsolved_puzzle_count|pluralize }}
       in search of a solution. Called Earth.
       You are: <span class="username">{{ current_user|escape }}</span>.
       {% ifequal current_user "nobody" %}

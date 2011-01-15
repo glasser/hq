@@ -235,9 +235,19 @@ class Puzzle(db.Expando):
   def unsolved_count(cls):
     count = 0
     for p in cls.all():
-      if 'status:solved' not in p.tags:
+      if 'status:solved-1-of-3' in p.tags:
+        count += 2
+      elif 'status:solved-2-of-3' in p.tags:
         count += 1
-    return count
+      elif 'status:solved' not in p.tags:
+        count += 3
+    puzzle_thirds = count % 3
+    count -= puzzle_thirds
+    count /= 3
+    puzzle_thirds_text = ''
+    if puzzle_thirds != 0:
+      puzzle_thirds_text = '%s/3' % puzzle_thirds
+    return (count, puzzle_thirds_text)
 
 
 class PuzzleQuery(object):
