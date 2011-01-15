@@ -134,6 +134,16 @@ class PuzzleTagAddHandler(handler.RequestHandler):
       newsfeed = model.Newsfeed(
           contents='<a href="%s">%s</a> solved!' % (puzzle_url, title))
       newsfeed.put()
+    elif tag == 'status:solved-1-of-3':
+      title = html.escape(model.Puzzle.get_by_id(puzzle_id).title)
+      newsfeed = model.Newsfeed(
+          contents='1/3 of <a href="%s">%s</a> solved!' % (puzzle_url, title))
+      newsfeed.put()
+    elif tag == 'status:solved-2-of-3':
+      title = html.escape(model.Puzzle.get_by_id(puzzle_id).title)
+      newsfeed = model.Newsfeed(
+          contents='2/3 of <a href="%s">%s</a> solved!' % (puzzle_url, title))
+      newsfeed.put()
 
     self.redirect(puzzle_url)
 
